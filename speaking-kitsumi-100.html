@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Kitsumi Speaking — 100 Latihan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#eefbff;color:#17324a;font-family:"Nunito",Arial,sans-serif}
+.app{max-width:900px;margin:auto;min-height:100vh;background:#f7fdff;position:relative;box-shadow:0 0 40px rgba(35,160,220,.12)}
+.top{height:360px;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;background:linear-gradient(180deg,#8fe1ff 0%,#dff8ff 70%,#f7fdff 100%)}
+.stars{position:absolute;inset:0;background-image:radial-gradient(#fff 2px,transparent 2.5px);background-size:58px 58px;opacity:.9}
+.close{position:absolute;top:18px;left:22px;font-size:38px;z-index:3;cursor:pointer;color:#17324a}
+.kitsu{position:relative;z-index:2;width:190px;height:190px;border-radius:55px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:18px;border:7px solid #35baf4;box-shadow:0 12px 0 rgba(25,125,180,.12);transform:rotate(-2deg)}
+.face{font-size:92px}
+.bar{position:absolute;bottom:0;width:220px;height:13px;border-radius:20px;background:#a9d8e9}
+.content{padding:25px 24px 120px}
+h1{text-align:center;color:#149edc;font-size:25px;margin:0 0 18px;font-weight:900}
+.audio{background:#e8f9ff;border:2px solid #b7eaff;border-radius:24px;padding:18px 22px;display:flex;align-items:center;gap:18px;box-shadow:0 8px 18px rgba(25,160,220,.10)}
+.play{width:52px;height:52px;border:0;border-radius:16px;background:#18aaf0;color:#fff;font-size:27px}
+.wave{height:48px;flex:1;display:flex;align-items:center;gap:4px;overflow:hidden}
+.wave i{width:5px;border-radius:10px;background:#18aaf0;opacity:.8}
+.audio.playing .wave i{animation:pulse .5s infinite alternate}
+@keyframes pulse{to{transform:scaleY:.3);opacity:.45}}
+.counter{text-align:center;color:#5790a9;font-size:14px;margin:11px 0 20px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.choice{background:#fff;border:4px solid #ccebf5;border-radius:26px;padding:7px;color:#17324a;min-height:310px;cursor:pointer;box-shadow:0 8px 18px rgba(30,150,200,.10)}
+.choice:active{transform:scale(.97)}
+.pic{height:245px;border-radius:20px;background:linear-gradient(145deg,#effcff,#dff7ff);display:flex;align-items:center;justify-content:center;font-size:100px}
+.label{font-size:19px;font-weight:900;padding:13px 5px 8px}
+.choice.correct{border-color:#27c96f;background:#edfff4}
+.choice.wrong{border-color:#ff7474;background:#fff0f0}
+.feedback{min-height:58px;text-align:center;padding:16px 8px;font-size:17px;font-weight:900;color:#24718e}
+.progressWrap{position:fixed;left:50%;bottom:67px;transform:translateX(-50%);width:min(850px,calc(100% - 48px));z-index:5}
+.progress{height:10px;background:#cce8f0;border-radius:20px;overflow:hidden}
+.progress>div{height:100%;background:#18aaf0;width:0;transition:.3s}
+.xp{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:12px;color:#149edc;font-weight:900}
+.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(900px,100%);height:70px;background:#f7fdff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:6}
+.flag,.tool{height:52px;min-width:52px;border-radius:18px;cursor:pointer;font-size:25px}
+.flag{border:0;background:#e2f5fb;color:#24718e}
+.tools{display:flex;gap:12px}.tool{border:3px solid #12aaf1;background:#fff;color:#12aaf1;font-weight:900;box-shadow:0 5px 0 #c5ebf8}
+.result{display:none;text-align:center;padding:45px 25px}.result .big{font-size:72px}
+.result h2{font-size:32px;color:#18aaf0}.result p{font-size:18px;color:#bbb}
+.restart{border:0;background:#18aaf0;padding:15px 28px;border-radius:18px;font:900 18px "Nunito"}
+@media(max-width:600px){.top{height:350px}.choice{min-height:285px}.pic{height:220px;font-size:84px}.label{font-size:17px}}
+@media(max-width:430px){.answers{gap:15px}.choice{min-height:265px}.pic{height:200px;font-size:72px}.label{font-size:15px}.content{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<section class="top">
+<div class="stars"></div>
+<div class="close" onclick="location.href='index.html'">×</div>
+<div class="kitsu"><div class="face">🦊</div></div>
+<div class="bar"></div>
+</section>
+<main class="content" id="lesson">
+<h1>Apa yang kamu dengar?</h1>
+<div class="audio" id="audioBox">
+<button class="play" onclick="speak()">▶</button>
+<div class="wave" id="wave"></div>
+</div>
+<div class="counter" id="counter">Latihan 1 / 100</div>
+<div class="answers" id="answers"></div>
+<div class="feedback" id="feedback"></div>
+</main>
+<section class="result" id="result">
+<div class="big">🎉</div><h2>Subarashii!</h2>
+<p>100 latihan Speaking selesai.</p><p id="scoreText"></p>
+<button class="restart" onclick="restart()">Ulangi</button>
+</section>
+<div class="progressWrap"><div class="xp" id="xp">0 XP</div><div class="progress"><div id="progress"></div></div></div>
+<nav class="bottom">
+<button class="flag" onclick="reportQuestion()">⚑</button>
+<div class="tools">
+<button class="tool" id="speedBtn" onclick="slowSpeak()">1×</button>
+<button class="tool" onclick="hint()">💡</button>
+<button class="tool" onclick="nextQuestion()">»</button>
+</div>
+</nav>
+</div>
+<script>
+const lessons=[{"jp": "おはようございます。", "correct": "Selamat pagi", "wrong": "Selamat malam", "emojiCorrect": "🌅", "emojiWrong": "🌙"}, {"jp": "こんにちは。", "correct": "Halo / selamat siang", "wrong": "Sampai jumpa", "emojiCorrect": "👋", "emojiWrong": "🚪"}, {"jp": "こんばんは。", "correct": "Selamat malam", "wrong": "Selamat pagi", "emojiCorrect": "🌙", "emojiWrong": "🌅"}, {"jp": "ありがとうございます。", "correct": "Terima kasih", "wrong": "Permisi", "emojiCorrect": "🙏", "emojiWrong": "🙇"}, {"jp": "すみません。", "correct": "Permisi / maaf", "wrong": "Selamat pagi", "emojiCorrect": "🙇", "emojiWrong": "🌅"}, {"jp": "おねがいします。", "correct": "Tolong", "wrong": "Sampai jumpa", "emojiCorrect": "🙏", "emojiWrong": "👋"}, {"jp": "また あした。", "correct": "Sampai besok", "wrong": "Selamat malam", "emojiCorrect": "🌄", "emojiWrong": "🌙"}, {"jp": "いただきます。", "correct": "Selamat makan / sebelum makan", "wrong": "Selamat tidur", "emojiCorrect": "🍱", "emojiWrong": "🛏️"}, {"jp": "ごちそうさまでした。", "correct": "Terima kasih atas makanannya", "wrong": "Selamat pagi", "emojiCorrect": "🍽️", "emojiWrong": "🌅"}, {"jp": "いってきます。", "correct": "Saya pergi dulu", "wrong": "Saya sudah pulang", "emojiCorrect": "🚶", "emojiWrong": "🏠"}, {"jp": "いってらっしゃい。", "correct": "Hati-hati di jalan", "wrong": "Selamat tidur", "emojiCorrect": "👋", "emojiWrong": "🌙"}, {"jp": "ただいま。", "correct": "Saya sudah pulang", "wrong": "Saya pergi dulu", "emojiCorrect": "🏠", "emojiWrong": "🚶"}, {"jp": "おかえりなさい。", "correct": "Selamat datang kembali", "wrong": "Selamat pagi", "emojiCorrect": "🏠", "emojiWrong": "🌅"}, {"jp": "これは りんご です。", "correct": "Ini apel", "wrong": "Ini jeruk", "emojiCorrect": "🍎", "emojiWrong": "🍊"}, {"jp": "みずを ください。", "correct": "Tolong beri saya air", "wrong": "Tolong beri saya nasi", "emojiCorrect": "💧", "emojiWrong": "🍚"}, {"jp": "おちゃを のみます。", "correct": "Minum teh", "wrong": "Makan roti", "emojiCorrect": "🍵", "emojiWrong": "🍞"}, {"jp": "パンを たべます。", "correct": "Makan roti", "wrong": "Minum kopi", "emojiCorrect": "🍞", "emojiWrong": "☕"}, {"jp": "コーヒーが すきです。", "correct": "Suka kopi", "wrong": "Suka teh", "emojiCorrect": "☕", "emojiWrong": "🍵"}, {"jp": "ねこが います。", "correct": "Ada kucing", "wrong": "Ada anjing", "emojiCorrect": "🐱", "emojiWrong": "🐶"}, {"jp": "いぬが います。", "correct": "Ada anjing", "wrong": "Ada kucing", "emojiCorrect": "🐶", "emojiWrong": "🐱"}, {"jp": "あの ひとは せんせいです。", "correct": "Orang itu guru", "wrong": "Orang itu dokter", "emojiCorrect": "👩‍🏫", "emojiWrong": "🧑‍⚕️"}, {"jp": "あの ひとは いしゃです。", "correct": "Orang itu dokter", "wrong": "Orang itu polisi", "emojiCorrect": "🧑‍⚕️", "emojiWrong": "👮"}, {"jp": "がっこうへ いきます。", "correct": "Pergi ke sekolah", "wrong": "Pergi ke rumah sakit", "emojiCorrect": "🏫", "emojiWrong": "🏥"}, {"jp": "びょういんへ いきます。", "correct": "Pergi ke rumah sakit", "wrong": "Pergi ke stasiun", "emojiCorrect": "🏥", "emojiWrong": "🚉"}, {"jp": "えきは どこですか。", "correct": "Di mana stasiun?", "wrong": "Di mana sekolah?", "emojiCorrect": "🚉", "emojiWrong": "🏫"}, {"jp": "トイレは どこですか。", "correct": "Di mana toilet?", "wrong": "Di mana toko?", "emojiCorrect": "🚻", "emojiWrong": "🏪"}, {"jp": "みぎへ まがります。", "correct": "Belok kanan", "wrong": "Belok kiri", "emojiCorrect": "➡️", "emojiWrong": "⬅️"}, {"jp": "ひだりへ まがります。", "correct": "Belok kiri", "wrong": "Belok kanan", "emojiCorrect": "⬅️", "emojiWrong": "➡️"}, {"jp": "まっすぐ いきます。", "correct": "Pergi lurus", "wrong": "Berhenti di sini", "emojiCorrect": "⬆️", "emojiWrong": "🛑"}, {"jp": "ここで まってください。", "correct": "Tolong tunggu di sini", "wrong": "Tolong masuk", "emojiCorrect": "⏳", "emojiWrong": "🚪"}, {"jp": "はいって ください。", "correct": "Silakan masuk", "wrong": "Silakan duduk", "emojiCorrect": "🚪", "emojiWrong": "🪑"}, {"jp": "すわって ください。", "correct": "Silakan duduk", "wrong": "Silakan berdiri", "emojiCorrect": "🪑", "emojiWrong": "🧍"}, {"jp": "たって ください。", "correct": "Silakan berdiri", "wrong": "Silakan duduk", "emojiCorrect": "🧍", "emojiWrong": "🪑"}, {"jp": "ドアを あけます。", "correct": "Membuka pintu", "wrong": "Menutup pintu", "emojiCorrect": "🚪", "emojiWrong": "🚪"}, {"jp": "まどを しめます。", "correct": "Menutup jendela", "wrong": "Membuka jendela", "emojiCorrect": "🪟", "emojiWrong": "🪟"}, {"jp": "ほんを よみます。", "correct": "Membaca buku", "wrong": "Menulis surat", "emojiCorrect": "📖", "emojiWrong": "✍️"}, {"jp": "てがみを かきます。", "correct": "Menulis surat", "wrong": "Membaca buku", "emojiCorrect": "✍️", "emojiWrong": "📖"}, {"jp": "おんがくを ききます。", "correct": "Mendengarkan musik", "wrong": "Menonton film", "emojiCorrect": "🎧", "emojiWrong": "🎬"}, {"jp": "えいがを みます。", "correct": "Menonton film", "wrong": "Mendengarkan musik", "emojiCorrect": "🎬", "emojiWrong": "🎧"}, {"jp": "しゃしんを とります。", "correct": "Mengambil foto", "wrong": "Menelepon", "emojiCorrect": "📷", "emojiWrong": "📱"}, {"jp": "でんわを します。", "correct": "Menelepon", "wrong": "Mengambil foto", "emojiCorrect": "📱", "emojiWrong": "📷"}, {"jp": "かいものを します。", "correct": "Berbelanja", "wrong": "Belajar", "emojiCorrect": "🛍️", "emojiWrong": "📚"}, {"jp": "にほんごを べんきょうします。", "correct": "Belajar bahasa Jepang", "wrong": "Berolahraga", "emojiCorrect": "📚", "emojiWrong": "🏃"}, {"jp": "こうえんで あそびます。", "correct": "Bermain di taman", "wrong": "Bekerja di kantor", "emojiCorrect": "🌳", "emojiWrong": "🏢"}, {"jp": "うちで やすみます。", "correct": "Beristirahat di rumah", "wrong": "Belajar di sekolah", "emojiCorrect": "🏠", "emojiWrong": "🏫"}, {"jp": "まいにち はたらきます。", "correct": "Bekerja setiap hari", "wrong": "Berlibur setiap hari", "emojiCorrect": "💼", "emojiWrong": "🏖️"}, {"jp": "あした やすみます。", "correct": "Besok libur", "wrong": "Besok bekerja", "emojiCorrect": "🛌", "emojiWrong": "💼"}, {"jp": "きょうは あついです。", "correct": "Hari ini panas", "wrong": "Hari ini dingin", "emojiCorrect": "☀️", "emojiWrong": "🥶"}, {"jp": "きょうは さむいです。", "correct": "Hari ini dingin", "wrong": "Hari ini panas", "emojiCorrect": "🥶", "emojiWrong": "☀️"}, {"jp": "あめが ふっています。", "correct": "Sedang hujan", "wrong": "Sedang turun salju", "emojiCorrect": "🌧️", "emojiWrong": "❄️"}, {"jp": "ゆきが ふっています。", "correct": "Sedang turun salju", "wrong": "Sedang hujan", "emojiCorrect": "❄️", "emojiWrong": "🌧️"}, {"jp": "そらが きれいです。", "correct": "Langitnya indah", "wrong": "Jalannya ramai", "emojiCorrect": "🌤️", "emojiWrong": "🚦"}, {"jp": "この みせは おおきいです。", "correct": "Toko ini besar", "wrong": "Toko ini kecil", "emojiCorrect": "🏬", "emojiWrong": "🏪"}, {"jp": "この かばんは ちいさいです。", "correct": "Tas ini kecil", "wrong": "Tas ini besar", "emojiCorrect": "🎒", "emojiWrong": "🧳"}, {"jp": "あたらしい くつです。", "correct": "Sepatu baru", "wrong": "Sepatu lama", "emojiCorrect": "👟", "emojiWrong": "🥾"}, {"jp": "ふるい くるまです。", "correct": "Mobil lama", "wrong": "Mobil baru", "emojiCorrect": "🚗", "emojiWrong": "✨"}, {"jp": "あかい りんごです。", "correct": "Apel merah", "wrong": "Apel hijau", "emojiCorrect": "🍎", "emojiWrong": "🍏"}, {"jp": "しろい ねこです。", "correct": "Kucing putih", "wrong": "Kucing hitam", "emojiCorrect": "🐈", "emojiWrong": "🐈‍⬛"}, {"jp": "くろい かばんです。", "correct": "Tas hitam", "wrong": "Tas putih", "emojiCorrect": "👜", "emojiWrong": "🤍"}, {"jp": "あおい そらです。", "correct": "Langit biru", "wrong": "Langit merah", "emojiCorrect": "🔵", "emojiWrong": "🔴"}, {"jp": "いちごを みっつ ください。", "correct": "Tolong beri tiga stroberi", "wrong": "Tolong beri dua stroberi", "emojiCorrect": "🍓🍓🍓", "emojiWrong": "🍓🍓"}, {"jp": "りんごを ふたつ ください。", "correct": "Tolong beri dua apel", "wrong": "Tolong beri empat apel", "emojiCorrect": "🍎🍎", "emojiWrong": "🍎🍎🍎🍎"}, {"jp": "みずを いっぱい ください。", "correct": "Tolong beri satu gelas air", "wrong": "Tolong beri satu buku", "emojiCorrect": "🥛", "emojiWrong": "📖"}, {"jp": "さんじです。", "correct": "Jam tiga", "wrong": "Jam lima", "emojiCorrect": "🕒", "emojiWrong": "🕔"}, {"jp": "ごじはんです。", "correct": "Jam setengah enam", "wrong": "Jam setengah lima", "emojiCorrect": "🕠", "emojiWrong": "🕟"}, {"jp": "あさ ろくじに おきます。", "correct": "Bangun jam enam pagi", "wrong": "Tidur jam enam pagi", "emojiCorrect": "🌅", "emojiWrong": "😴"}, {"jp": "よる じゅうじに ねます。", "correct": "Tidur jam sepuluh malam", "wrong": "Bangun jam sepuluh malam", "emojiCorrect": "🌙", "emojiWrong": "⏰"}, {"jp": "げつようびに がっこうへ いきます。", "correct": "Pergi ke sekolah hari Senin", "wrong": "Pergi ke sekolah hari Minggu", "emojiCorrect": "🏫", "emojiWrong": "🏖️"}, {"jp": "にちようびに うちに います。", "correct": "Di rumah hari Minggu", "wrong": "Di sekolah hari Senin", "emojiCorrect": "🏠", "emojiWrong": "🏫"}, {"jp": "いま なんじですか。", "correct": "Sekarang jam berapa?", "wrong": "Besok hari apa?", "emojiCorrect": "⏰", "emojiWrong": "📅"}, {"jp": "たんじょうびは いつですか。", "correct": "Kapan ulang tahunmu?", "wrong": "Di mana rumahmu?", "emojiCorrect": "🎂", "emojiWrong": "🏠"}, {"jp": "おなまえは なんですか。", "correct": "Siapa namamu?", "wrong": "Berapa harganya?", "emojiCorrect": "🪪", "emojiWrong": "💴"}, {"jp": "これは いくらですか。", "correct": "Ini berapa harganya?", "wrong": "Ini siapa?", "emojiCorrect": "💴", "emojiWrong": "🧑"}, {"jp": "どこから きましたか。", "correct": "Datang dari mana?", "wrong": "Mau makan apa?", "emojiCorrect": "🌏", "emojiWrong": "🍱"}, {"jp": "なにを たべますか。", "correct": "Mau makan apa?", "wrong": "Mau pergi ke mana?", "emojiCorrect": "🍱", "emojiWrong": "🗺️"}, {"jp": "どこへ いきますか。", "correct": "Mau pergi ke mana?", "wrong": "Mau minum apa?", "emojiCorrect": "🗺️", "emojiWrong": "🥤"}, {"jp": "だいじょうぶです。", "correct": "Tidak apa-apa", "wrong": "Saya tidak tahu", "emojiCorrect": "👍", "emojiWrong": "🤷"}, {"jp": "わかりました。", "correct": "Saya mengerti", "wrong": "Saya lupa", "emojiCorrect": "💡", "emojiWrong": "😵"}, {"jp": "わかりません。", "correct": "Saya tidak mengerti", "wrong": "Saya mengerti", "emojiCorrect": "❓", "emojiWrong": "💡"}, {"jp": "もう いちど おねがいします。", "correct": "Tolong sekali lagi", "wrong": "Tolong berhenti", "emojiCorrect": "🔁", "emojiWrong": "🛑"}, {"jp": "ゆっくり はなしてください。", "correct": "Tolong bicara pelan-pelan", "wrong": "Tolong bicara cepat", "emojiCorrect": "🐢", "emojiWrong": "⚡"}, {"jp": "にほんごが じょうずですね。", "correct": "Bahasa Jepangnya bagus", "wrong": "Makanannya enak", "emojiCorrect": "🗣️", "emojiWrong": "🍜"}, {"jp": "おいしいです。", "correct": "Enak", "wrong": "Pedas", "emojiCorrect": "😋", "emojiWrong": "🌶️"}, {"jp": "からいです。", "correct": "Pedas", "wrong": "Manis", "emojiCorrect": "🌶️", "emojiWrong": "🍬"}, {"jp": "あまいです。", "correct": "Manis", "wrong": "Asin", "emojiCorrect": "🍬", "emojiWrong": "🧂"}, {"jp": "たのしいです。", "correct": "Menyenangkan", "wrong": "Membosankan", "emojiCorrect": "🎉", "emojiWrong": "😐"}, {"jp": "むずかしいです。", "correct": "Sulit", "wrong": "Mudah", "emojiCorrect": "🧩", "emojiWrong": "✨"}, {"jp": "かんたんです。", "correct": "Mudah", "wrong": "Sulit", "emojiCorrect": "✨", "emojiWrong": "🧩"}, {"jp": "きれいですね。", "correct": "Indah / bersih ya", "wrong": "Berisik ya", "emojiCorrect": "🌸", "emojiWrong": "📢"}, {"jp": "しずかですね。", "correct": "Tenang ya", "wrong": "Ramai ya", "emojiCorrect": "🤫", "emojiWrong": "📣"}, {"jp": "ちょっと まってください。", "correct": "Tolong tunggu sebentar", "wrong": "Tolong cepat", "emojiCorrect": "⏳", "emojiWrong": "🏃"}, {"jp": "また きてください。", "correct": "Silakan datang lagi", "wrong": "Silakan pulang sekarang", "emojiCorrect": "🔁", "emojiWrong": "🏠"}, {"jp": "きをつけて ください。", "correct": "Hati-hati", "wrong": "Selamat makan", "emojiCorrect": "⚠️", "emojiWrong": "🍱"}, {"jp": "おだいじに。", "correct": "Semoga lekas membaik", "wrong": "Selamat berbelanja", "emojiCorrect": "🌼", "emojiWrong": "🛍️"}, {"jp": "きょうは きんようびです。", "correct": "Hari ini Jumat", "wrong": "Hari ini Selasa", "emojiCorrect": "📅", "emojiWrong": "📅"}, {"jp": "あしたは どようびです。", "correct": "Besok Sabtu", "wrong": "Besok Rabu", "emojiCorrect": "🗓️", "emojiWrong": "🗓️"}, {"jp": "でんしゃで いきます。", "correct": "Pergi naik kereta", "wrong": "Pergi naik sepeda", "emojiCorrect": "🚆", "emojiWrong": "🚲"}, {"jp": "じてんしゃに のります。", "correct": "Naik sepeda", "wrong": "Naik kereta", "emojiCorrect": "🚲", "emojiWrong": "🚆"}, {"jp": "ともだちと はなします。", "correct": "Berbicara dengan teman", "wrong": "Belajar sendirian", "emojiCorrect": "🧑‍🤝‍🧑", "emojiWrong": "📚"}, {"jp": "しゃしんを みせてください。", "correct": "Tolong tunjukkan fotonya", "wrong": "Tolong tutup pintunya", "emojiCorrect": "📷", "emojiWrong": "🚪"}];
+let index=0,score=0,xp=0,answered=false,slow=false;
+function wave(){const w=document.getElementById("wave");w.innerHTML="";for(let i=0;i<38;i++){let b=document.createElement("i");b.style.height=(8+Math.random()*38)+"px";w.appendChild(b)}}
+function speak(){
+if(!window.speechSynthesis)return;
+window.speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(lessons[index].jp);
+u.lang="ja-JP";u.rate=slow?.68:.88;
+const voices=window.speechSynthesis.getVoices().filter(v=>/^ja(-|_)?JP/i.test(v.lang));
+if(voices.length){
+  const maleWords=["male","man","otoya","ichiro","hattori","takumi"];
+  const femaleWords=["female","woman","kyoko","haruka"];
+  const target=index%2===0?maleWords:femaleWords;
+  let picked=voices.find(v=>target.some(w=>v.name.toLowerCase().includes(w)));
+  if(!picked)picked=voices[index%voices.length];
+  u.voice=picked;
+}
+u.pitch=index%2===0?0.92:1.08;
+const a=document.getElementById("audioBox");
+a.classList.add("playing");
+u.onend=()=>a.classList.remove("playing");
+window.speechSynthesis.speak(u)
+}
+function slowSpeak(){slow=!slow;document.getElementById("speedBtn").textContent=slow?"0.7×":"1×";speak()}
+function render(){
+answered=false;let l=lessons[index];
+document.getElementById("counter").textContent=`Latihan ${index+1} / 100`;
+document.getElementById("feedback").textContent="";
+let a=[{text:l.correct,emoji:l.emojiCorrect,ok:true},{text:l.wrong,emoji:l.emojiWrong,ok:false}];
+if(index%2)a.reverse();
+document.getElementById("answers").innerHTML=a.map(x=>`<button class="choice" data-ok="${x.ok}" onclick="choose(this)"><div class="pic">${x.emoji}</div><div class="label">${x.text}</div></button>`).join("");
+document.getElementById("progress").style.width=(index/100*100)+"%";
+document.getElementById("xp").textContent=xp+" XP";wave();setTimeout(speak,350)
+}
+function choose(btn){
+if(answered)return;answered=true;let ok=btn.dataset.ok==="true";
+if(ok){btn.classList.add("correct");score++;xp+=10;document.getElementById("feedback").textContent="✓ Benar! +10 XP"}
+else{btn.classList.add("wrong");document.querySelector('[data-ok="true"]').classList.add("correct");document.getElementById("feedback").textContent="Belum tepat. Dengarkan lagi."}
+document.getElementById("xp").textContent=xp+" XP";
+localStorage.setItem("kitsumiSpeakingXP",xp);localStorage.setItem("kitsumiSpeakingProgress",index+1)
+}
+function nextQuestion(){if(!answered){document.getElementById("feedback").textContent="Pilih jawaban dulu 😊";return}if(index<99){index++;render()}else finish()}
+function hint(){if(answered)return;let c=document.querySelector('[data-ok="true"]');c.style.opacity=".45";setTimeout(()=>c.style.opacity="1",800);document.getElementById("feedback").textContent="💡 Petunjuk: lihat gambar yang paling sesuai."}
+function reportQuestion(){document.getElementById("feedback").textContent="🚩 Latihan ditandai untuk diperiksa."}
+function finish(){document.getElementById("lesson").style.display="none";document.getElementById("result").style.display="block";document.getElementById("progress").style.width="100%";document.getElementById("scoreText").textContent=`Skor: ${score} / 100 • ${xp} XP`;localStorage.setItem("kitsumiSpeakingCompleted","true")}
+function restart(){index=0;score=0;xp=0;document.getElementById("lesson").style.display="block";document.getElementById("result").style.display="none";render()}
+render();
+</script>
+</body>
+</html>
