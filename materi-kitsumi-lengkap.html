@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitsumi — Materi</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Nunito", Arial, Helvetica, sans-serif;
+    }
+
+    :root {
+      --navy: #12396b;
+      --blue: #2f7ff0;
+      --muted: #a0a9b5;
+      --bg: #f8fbff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 620px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+
+    header {
+      height: 92px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+
+    .logo {
+      font-size: 48px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--navy);
+    }
+
+    .logo .pink {
+      color: #e95775;
+    }
+
+    .bell {
+      border: 0;
+      background: transparent;
+      font-size: 36px;
+      line-height: 1;
+    }
+
+    main {
+      padding: 24px 28px 40px;
+    }
+
+    .page-title {
+      font-size: 34px;
+      font-weight: 800;
+      margin: 8px 0 24px;
+    }
+
+    .materials {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .material {
+      min-height: 270px;
+      background: white;
+      border-radius: 27px;
+      padding: 30px 14px 22px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--navy);
+      box-shadow: 0 8px 22px rgba(30, 70, 120, .07);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      transition: transform .15s;
+    }
+
+    .material:active {
+      transform: scale(.97);
+    }
+
+    .material-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 70px;
+      margin-bottom: 22px;
+      flex-shrink: 0;
+    }
+
+    .green {
+      background: #ddfaed;
+    }
+
+    .blue {
+      background: #e4f0ff;
+    }
+
+    .purple {
+      background: #f0e7ff;
+    }
+
+    .material-icon.bunpou {
+      background: #e4f0ff;
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 70px;
+    }
+
+    .material h2 {
+      font-size: 27px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .material p {
+      color: #a0a9b5;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(620px, 100%);
+      height: 82px;
+      background: rgba(255,255,255,.98);
+      border-top: 1px solid #edf0f5;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      z-index: 100;
+      box-shadow: 0 -7px 20px rgba(20, 50, 90, .06);
+    }
+
+    .nav-item {
+      text-decoration: none;
+      color: #a1acba;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .nav-active {
+      color: var(--blue);
+    }
+
+    @media (max-width: 500px) {
+      header {
+        height: 80px;
+        padding: 0 24px;
+      }
+
+      .logo {
+        font-size: 40px;
+      }
+
+      .bell {
+        font-size: 31px;
+      }
+
+      main {
+        padding: 20px 28px 34px;
+      }
+
+      .page-title {
+        font-size: 29px;
+        margin: 6px 0 20px;
+      }
+
+      .materials {
+        gap: 14px;
+      }
+
+      .material {
+        min-height: 245px;
+        border-radius: 23px;
+        padding: 24px 8px 18px;
+      }
+
+      .material-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 58px;
+        border-radius: 24px;
+        margin-bottom: 18px;
+      }
+
+      .material h2 {
+        font-size: 23px;
+      }
+
+      .material p {
+        font-size: 15px;
+      }
+
+      .bottom-nav {
+        height: 76px;
+      }
+
+      .nav-icon {
+        font-size: 29px;
+      }
+
+      .nav-item {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      main {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .materials {
+        gap: 10px;
+      }
+
+      .material {
+        min-height: 225px;
+      }
+
+      .material-icon {
+        width: 82px;
+        height: 82px;
+        font-size: 48px;
+      }
+
+      .material h2 {
+        font-size: 20px;
+      }
+
+      .material p {
+        font-size: 13px;
+      }
+    }
+  
+    .material-icon.hiragana,
+    .material-icon.katakana {
+      font-family: "Nunito", Arial, Helvetica, sans-serif;
+      font-weight: 900;
+    }
+  
+    .material-icon.kaiwa,
+    .material-icon.speaking {
+      font-family: "Nunito", Arial, Helvetica, sans-serif;
+      font-weight: 900;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="app">
+
+    <header>
+      <div class="logo">Kits<span class="pink">u</span>mi</div>
+      <button class="bell" aria-label="Notifikasi">🔔</button>
+    </header>
+
+    <main>
+      <h1 class="page-title">Pilih Materi</h1>
+
+      <section class="materials">
+
+        <a class="material" href="kosakata.html">
+          <div class="material-icon green">📖</div>
+          <h2>Kotoba</h2>
+          <p>Kosakata</p>
+        </a>
+
+        <a class="material" href="kanji.html">
+          <div class="material-icon blue">漢</div>
+          <h2>Kanji</h2>
+          <p>Huruf Jepang</p>
+        </a>
+
+        <a class="material" href="bunpou.html">
+          <div class="material-icon bunpou">文</div>
+          <h2>Bunpou</h2>
+          <p>Tata Bahasa</p>
+        </a>
+
+        <a class="material" href="latihan.html">
+          <div class="material-icon purple">✎</div>
+          <h2>Latihan</h2>
+          <p>Uji Pemahaman</p>
+        </a>
+
+        <a class="material" href="hiragana.html">
+          <div class="material-icon green hiragana">あ</div>
+          <h2>Hiragana</h2>
+          <p>Huruf dasar Jepang</p>
+        </a>
+
+        <a class="material" href="katakana.html">
+          <div class="material-icon purple katakana">カ</div>
+          <h2>Katakana</h2>
+          <p>Huruf Jepang</p>
+        </a>
+
+        <a class="material" href="kaiwa.html">
+          <div class="material-icon blue kaiwa">会</div>
+          <h2>Kaiwa</h2>
+          <p>Percakapan Jepang</p>
+        </a>
+
+        <a class="material" href="speaking.html">
+          <div class="material-icon green speaking">話</div>
+          <h2>Speaking</h2>
+          <p>Latihan berbicara</p>
+        </a>
+
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Beranda</span>
+    </a>
+
+    <a href="materi.html" class="nav-item nav-active">
+      <span class="nav-icon">📖</span>
+      <span>Materi</span>
+    </a>
+
+    <a href="profil.html" class="nav-item">
+      <span class="nav-icon">♙</span>
+      <span>Profil</span>
+    </a>
+  </nav>
+</body>
+</html>
