@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<title>Kitsumi — Bunpou N5</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Nunito","Arial Rounded MT Bold",Arial,sans-serif;background:#f7f9fc;color:#172033;padding-bottom:92px}
+.header{background:#fff;padding:18px 20px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf0f5;position:sticky;top:0;z-index:10}
+.logo{font-family:"Nunito","Arial Rounded MT Bold",Arial,sans-serif;font-size:25px;font-weight:900;letter-spacing:-1.1px;color:#123f78}.logo .pink{color:#e84b78}.bell{font-size:22px}
+.container{max-width:650px;margin:auto;padding:20px 16px}
+h1{font-size:28px;margin:4px 0 6px}.sub{color:#687386;margin:0 0 18px}
+.stats{display:flex;gap:10px;margin-bottom:18px}.stat{background:#fff;border-radius:16px;padding:12px 14px;flex:1;box-shadow:0 3px 12px #00000008}.stat b{display:block;font-size:18px}.stat small{color:#778196}
+.unit{margin:22px 0 10px;font-weight:900;font-size:18px}
+.card{background:#fff;border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 4px 16px #0000000a;border:1px solid #edf0f5;cursor:pointer}
+.card:active{transform:scale(.99)}.tag{display:inline-block;background:#edf2ff;color:#3156d8;border-radius:9px;padding:5px 8px;font-size:12px;font-weight:800;margin-bottom:8px}
+.pattern{font-size:21px;font-weight:900}.meaning{color:#6d7789;margin-top:5px}.start{float:right;background:#3156d8;color:white;border:0;border-radius:12px;padding:10px 15px;font-weight:800}
+.bottom{position:fixed;bottom:0;left:0;right:0;height:88px;background:#fff;border-top:1px solid #e9edf3;display:flex;justify-content:space-around;align-items:center;z-index:20}.nav{text-decoration:none;color:#9aa3b0;font-size:13px;text-align:center;font-weight:700;min-width:80px}.nav span{display:block;font-size:29px;line-height:32px;margin-bottom:5px}.active{color:#3156d8}
+
+.lesson{display:none}.back{border:0;background:#edf2ff;color:#3156d8;padding:9px 13px;border-radius:11px;font-weight:800;margin-bottom:15px}
+.progress{height:9px;background:#e8ecf3;border-radius:20px;overflow:hidden;margin:10px 0 20px}.bar{height:100%;background:#3156d8;width:0;transition:.25s}
+.question{font-size:20px;font-weight:900;margin:20px 0 14px}.jp{font-family:"Nunito","Arial Rounded MT Bold",Arial,sans-serif;font-size:29px;text-align:center;font-weight:900;margin:18px 0}
+.answer{min-height:55px;background:#f7f9fc;border:2px dashed #d8deea;border-radius:14px;padding:8px;display:flex;gap:7px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:14px}
+.tiles{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}.tile{border:0;background:#fff;padding:12px 14px;border-radius:13px;box-shadow:0 3px 10px #00000012;font-size:16px;font-weight:700;cursor:pointer}.tile.used{opacity:.35}
+.check{width:100%;padding:14px;border:0;border-radius:14px;background:#3156d8;color:#fff;font-weight:900;font-size:16px;margin-top:14px}
+.feedback{display:none;padding:13px;border-radius:13px;margin-top:12px;font-weight:800}.ok{background:#e9f8ef;color:#187642}.no{background:#fff0f0;color:#c43b3b}
+.explain{background:#fff;border-radius:17px;padding:17px;margin:12px 0}.explain b{font-size:20px}.example{font-size:22px;font-weight:800;margin:12px 0}.muted{color:#707b8d}
+.finish{
+  text-align:center;
+  display:none;
+  min-height:calc(100vh - 88px);
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:20px 0 35px;
+}
+.finish .big{font-size:60px}
+.finish h1{margin:10px 0 12px}
+.finish p{max-width:560px;margin:0 auto;line-height:1.45}
+.again{border:0;background:#3156d8;color:#fff;border-radius:13px;padding:13px 20px;font-weight:900;margin-top:18px}
+.lesson-actions{position:absolute;right:16px;top:16px;display:flex;align-items:center;gap:6px}
+.understood-btn{width:46px;height:46px;border-radius:14px;border:2px solid #d8deea;background:#fff;color:#a2aab7;font-size:25px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.understood-btn.checked{background:#e8f8ef;border-color:#55b97a;color:#2e9b5c}
+.card{position:relative;padding-right:78px}
+.next-guide{background:#eef4ff;color:#3156d8;border-radius:15px;padding:13px 15px;margin:0 0 18px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.next-guide button{border:0;background:#3156d8;color:#fff;border-radius:11px;padding:9px 13px;font-weight:800}
+
+
+/* Micro-interactions */
+.tile{transition:transform .12s ease,box-shadow .12s ease,border .12s ease}
+.tile:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+
+<header class="header"><div class="logo"><span>Kits</span><span class="pink">u</span><span>mi</span></div><div class="bell">🔔</div></header>
+
+<main class="container">
+<section id="menu">
+<h1>Bunpou N5</h1>
+<p class="sub">Belajar tata bahasa dengan cara tekan, susun, dan langsung latihan.</p>
+<div class="stats">
+ <div class="stat"><b id="xp">0 XP</b><small>XP Bunpou</small></div>
+ <div class="stat"><b id="done">0</b><small>Latihan selesai</small></div>
+ <div class="stat"><b id="streak">0 🔥</b><small>Streak</small></div>
+</div>
+<div id="lessons"></div>
+</section>
+
+<section id="lesson" class="lesson">
+<button class="back" onclick="backMenu()">← Kembali</button>
+<div class="tag" id="lessonTag"></div>
+<h1 id="lessonTitle"></h1>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="explain">
+ <b id="pattern"></b>
+ <div class="muted" id="meaning"></div>
+ <div class="example" id="example"></div>
+ <div class="muted" id="translation"></div>
+</div>
+<div id="exercise"></div>
+<div class="feedback" id="feedback"></div>
+</section>
+
+<section id="finish" class="finish">
+<div class="big">🎉</div>
+<h1>Latihan selesai!</h1>
+<p id="finishText"></p>
+<button class="again" onclick="backMenu()">Kembali ke Bunpou</button>
+</section>
+</main>
+
+<nav class="bottom">
+<a class="nav" href="index.html"><span>🏠</span>Beranda</a>
+<a class="nav active" href="materi.html"><span>📖</span>Materi</a>
+<a class="nav" href="profil.html"><span>♙</span>Profil</a>
+</nav>
+
+<script>
+const lessons=[
+["Partikel は","は","Penanda topik","わたしは がくせいです。","Saya adalah siswa."],
+["Partikel が","が","Penanda subjek","ねこが います。","Ada kucing."],
+["Partikel を","を","Penanda objek","みずを のみます。","Minum air."],
+["Partikel に","に","Waktu / tujuan / keberadaan","7じに おきます。","Bangun pukul 7."],
+["Partikel で","で","Tempat melakukan aktivitas","がっこうで べんきょうします。","Belajar di sekolah."],
+["Partikel の","の","Kepemilikan / hubungan","これは わたしの ほんです。","Ini buku saya."],
+["Partikel も","も","Juga","わたしも がくせいです。","Saya juga siswa."],
+["Partikel と","と","Dan / bersama","ともだちと はなします。","Berbicara dengan teman."],
+["Partikel から・まで","から〜まで","Dari〜sampai","9じから 5じまでです。","Dari jam 9 sampai jam 5."],
+["Kata tunjuk","これ・それ・あれ","Ini / itu","これは ほんです。","Ini buku."],
+["あります・います","あります・います","Ada / berada","つくえの うえに ほんが あります。","Ada buku di atas meja."],
+["い-adjective","〜いです","Kata sifat い","この りんごは おいしいです。","Apel ini enak."],
+["な-adjective","な-adjective + です","Kata sifat な","この まちは しずかです。","Kota ini tenang."],
+["Negatif","〜ません","Bentuk negatif sopan","コーヒーを のみません。","Tidak minum kopi."],
+["Lampau","〜ました","Bentuk lampau sopan","きのう べんきょうしました。","Kemarin belajar."],
+["Negatif lampau","〜ませんでした","Negatif lampau","きのう べんきょうしませんでした。","Kemarin tidak belajar."],
+["て-form","〜てください","Tolong lakukan","みてください。","Tolong lihat."],
+["Larangan","〜てはいけません","Tidak boleh","ここで たべてはいけません。","Tidak boleh makan di sini."],
+["Izin","〜てもいいです","Boleh","ここに すわってもいいです。","Boleh duduk di sini."],
+["Sedang berlangsung","〜ています","Sedang / keadaan","いま べんきょうしています。","Sekarang sedang belajar."],
+["Setelah melakukan","〜てから","Setelah","ごはんを たべてから べんきょうします。","Belajar setelah makan."],
+["Permintaan","〜たいです","Ingin melakukan","にほんへ いきたいです。","Ingin pergi ke Jepang."],
+["Ajakan","〜ませんか","Maukah...","いっしょに いきませんか。","Maukah pergi bersama?"],
+["Ajakan santai","〜ましょう","Mari","いっしょに べんきょうしましょう。","Mari belajar bersama."],
+["Bisa / kemampuan","〜ことができます","Bisa melakukan","にほんごを はなすことができます。","Bisa berbicara bahasa Jepang."],
+["Pengalaman","〜たことがあります","Pernah","にほんへ いったことがあります。","Pernah pergi ke Jepang."],
+["Rencana","〜つもりです","Berniat","らいねん にほんへ いくつもりです。","Berniat pergi ke Jepang tahun depan."],
+["Saat","〜とき","Ketika / saat","ひまなとき ほんを よみます。","Membaca buku saat senggang."],
+["Sebelum","〜まえに","Sebelum","ねるまえに はを みがきます。","Menggosok gigi sebelum tidur."],
+["Sesudah","〜あとで","Sesudah","しごとのあとで かえります。","Pulang setelah kerja."],
+["Perbandingan","〜より","Lebih ... daripada","これより あれが おおきいです。","Itu lebih besar daripada ini."],
+["Paling","いちばん","Paling","これが いちばん おいしいです。","Ini yang paling enak."],
+["Dan lain-lain","〜や〜など","Dan / seperti","りんごや バナナなどを たべます。","Makan apel, pisang, dan sebagainya."],
+["Alasan","〜から","Karena","あついから みずを のみます。","Karena panas, minum air."],
+["Kalau / ketika","〜と","Kalau / ketika","はるになると あたたかくなります。","Kalau musim semi tiba, menjadi hangat."],
+["Memberi","あげます","Memberikan","ともだちに ほんを あげます。","Memberi buku kepada teman."],
+["Menerima","もらいます","Menerima","ともだちに ほんを もらいます。","Menerima buku dari teman."],
+["Memberi kepada saya","くれます","Memberikan kepada saya","ともだちが ほんを くれました。","Teman memberi saya buku."],
+["Harus","〜なければなりません","Harus","べんきょうしなければなりません。","Harus belajar."],
+["Tidak perlu","〜なくてもいいです","Tidak perlu","いそがなくてもいいです。","Tidak perlu terburu-buru."],
+["Boleh / bolehkah","〜てもいいですか","Bolehkah","はいってもいいですか。","Bolehkah masuk?"],
+["Sambil","〜ながら","Sambil","おんがくを ききながら べんきょうします。","Belajar sambil mendengarkan musik."],
+["Cara","〜かた","Cara melakukan","たべかたを おしえてください。","Tolong ajari cara makan."],
+["Mudah / sulit","〜やすい・にくい","Mudah / sulit dilakukan","この ほんは よみやすいです。","Buku ini mudah dibaca."],
+["Banyak / sedikit","たくさん・すこし","Jumlah","たくさん たべました。","Sudah makan banyak."],
+["Harus (percakapan)","〜なくちゃ","Harus (bentuk percakapan)","べんきょうしなくちゃ。","Harus belajar."],
+["Keharusan sederhana","〜ないと","Harus","もう いかないと。","Harus pergi sekarang."],
+["Sangat","とても","Sangat","とても おもしろいです。","Sangat menarik."],
+["Sedikit","あまり〜ません","Tidak terlalu","あまり たべません。","Tidak terlalu banyak makan."],
+["Tidak sama sekali","ぜんぜん〜ません","Sama sekali tidak","ぜんぜん わかりません。","Sama sekali tidak mengerti."],
+["Sudah","もう","Sudah","もう たべました。","Sudah makan."],
+["Belum","まだ〜ません","Belum","まだ たべていません。","Belum makan."],
+["Mungkin","たぶん","Mungkin","たぶん あした いきます。","Mungkin pergi besok."],
+["Sepertinya","〜でしょう","Mungkin / ya?","あしたは あめでしょう。","Besok mungkin hujan."],
+["Menurut saya","〜とおもいます","Saya pikir","いいと おもいます。","Saya pikir bagus."],
+["Mengatakan","〜といいます","Berkata / disebut","これは にほんごで なんと いいますか。","Ini disebut apa dalam bahasa Jepang?"],
+["Pertanyaan tidak langsung","〜か","Apakah / kata tanya","どこへ いくか わかりません。","Tidak tahu pergi ke mana."],
+["Tujuan","〜にいきます","Pergi untuk melakukan","えいがを みに いきます。","Pergi untuk menonton film."],
+["Kegiatan berulang","〜たり〜たりします","Melakukan hal-hal seperti","ほんを よんだり おんがくを きいたりします。","Melakukan hal seperti membaca dan mendengarkan musik."],
+["Urutan","〜て、〜","Lalu","あさごはんを たべて、がっこうへ いきます。","Makan sarapan lalu pergi sekolah."],
+["Jumlah waktu","〜ぐらい","Sekitar","1じかんぐらい べんきょうします。","Belajar sekitar satu jam."],
+["Frekuensi","〜に〜かい","... kali dalam ...","しゅうに 3かい べんきょうします。","Belajar 3 kali seminggu."],
+["Keinginan benda","〜がほしいです","Ingin benda","あたらしい かばんが ほしいです。","Ingin tas baru."],
+["Kehendak","〜ませんか","Maukah...","おちゃを のみませんか。","Maukah minum teh?"],
+["Perubahan","〜になります","Menjadi","さむく なりました。","Menjadi dingin."],
+["Cara / dengan","〜で","Dengan / memakai","バスで いきます。","Pergi dengan bus."],
+["Bersama","いっしょに","Bersama","いっしょに べんきょうします。","Belajar bersama."],
+["Tempat keberadaan","〜にあります・います","Ada di","つくえの したに ねこが います。","Ada kucing di bawah meja."],
+["Kuantitas","〜しか〜ません","Hanya","100えんしか ありません。","Hanya punya 100 yen."],
+["Kata tanya + でも","なにでも・どこでも","Apa saja / di mana saja","どこでも いいです。","Di mana saja tidak apa-apa."],
+["Kata tanya + も","なにも〜ません","Tidak ... apa pun","なにも たべません。","Tidak makan apa pun."],
+["Batas waktu","までに","Sebelum batas waktu","5じまでに きてください。","Tolong datang sebelum jam 5."],
+["Sejak","〜から","Sejak / dari","9じから はじまります。","Mulai dari jam 9."],
+["Dengan mudah","すぐに","Segera","すぐに いきます。","Segera pergi."],
+["Arah","〜ほうがいいです","Sebaiknya","はやく ねたほうがいいです。","Sebaiknya tidur lebih cepat."],
+["Perbandingan 2","〜と〜とどちら","Yang mana","どちらが すきですか。","Mana yang kamu suka?"],
+["Alasan 2","どうして〜","Mengapa","どうして おくれましたか。","Mengapa terlambat?"],
+["Jawaban alasan","〜からです","Karena...","あめだからです。","Karena hujan."],
+["Penekanan","〜よ","Lho / penegasan","おいしいですよ。","Enak lho."],
+["Konfirmasi","〜ね","Ya / bukan?","いい てんきですね。","Cuacanya bagus ya."],
+["Harapan","〜といいです","Semoga","あした はれるといいです。","Semoga besok cerah."],
+["Mencoba","〜てみます","Mencoba","たべてみます。","Saya akan mencoba makan."],
+["Selesai","〜てしまいます","Selesai / terlanjur","わすれてしまいました。","Saya sampai lupa."],
+["Sebelum suatu tindakan","〜ておきます","Melakukan sebagai persiapan","よしゅうしておきます。","Saya akan belajar dulu sebagai persiapan."],
+["Keadaan hasil","〜ています","Dalam keadaan","ドアが あいています。","Pintunya terbuka."],
+["Syarat","〜たら","Kalau / setelah","ひまだったら きてください。","Kalau senggang, datanglah."],
+["Ketika","〜ときに","Ketika","にほんへ いくときに つかいます。","Digunakan ketika pergi ke Jepang."]
+];
+
+const examples=[
+ {q:"Susun kalimat: Saya adalah siswa.", a:["わたし","は","がくせい","です"]},
+ {q:"Susun kalimat: Minum air.", a:["みず","を","のみます"]},
+ {q:"Susun kalimat: Belajar di sekolah.", a:["がっこう","で","べんきょうします"]},
+ {q:"Susun kalimat: Saya juga siswa.", a:["わたし","も","がくせい","です"]},
+ {q:"Susun kalimat: Tolong lihat.", a:["みて","ください"]},
+ {q:"Susun kalimat: Boleh duduk di sini.", a:["ここに","すわっても","いいです"]},
+ {q:"Susun kalimat: Ingin pergi ke Jepang.", a:["にほんへ","いきたい","です"]},
+ {q:"Susun kalimat: Maukah pergi bersama?", a:["いっしょに","いきませんか"]},
+ {q:"Susun kalimat: Harus belajar.", a:["べんきょうしなければ","なりません"]},
+ {q:"Susun kalimat: Belum makan.", a:["まだ","たべて","いません"]},
+ {q:"Susun kalimat: Saya pikir bagus.", a:["いいと","おもいます"]},
+ {q:"Susun kalimat: Semoga besok cerah.", a:["あした","はれると","いいです"]}
+];
+
+let current=0, step=0, selected=[], xp=Number(localStorage.getItem("kitsumiBunpouXP")||0), done=Number(localStorage.getItem("kitsumiBunpouDone")||0), understood=JSON.parse(localStorage.getItem("kitsumiBunpouUnderstood")||"[]");
+const $=id=>document.getElementById(id);
+
+function updateStats(){
+ $("xp").textContent=xp+" XP";
+ $("done").textContent=done;
+ $("streak").textContent=(localStorage.getItem("kitsumiStreak")||"0")+" 🔥";
+}
+function save(){localStorage.setItem("kitsumiBunpouXP",xp);localStorage.setItem("kitsumiBunpouDone",done);}
+
+function renderMenu(){
+ $("lessons").innerHTML="";
+
+ const nextIndex=lessons.findIndex((_,i)=>!understood.includes(i));
+ if(nextIndex>=0){
+   const guide=document.createElement("div");
+   guide.className="next-guide";
+   guide.innerHTML=`<span>📍 Lanjut dari <b>Pelajaran ${nextIndex+1}</b></span><button onclick="start(${nextIndex})">Lanjut</button>`;
+   $("lessons").appendChild(guide);
+ }else{
+   const guide=document.createElement("div");
+   guide.className="next-guide";
+   guide.innerHTML=`<span>🎉 Semua Bunpou sudah kamu tandai paham!</span>`;
+   $("lessons").appendChild(guide);
+ }
+
+ lessons.forEach((l,i)=>{
+  const unit=Math.floor(i/8)+1;
+  if(i%8===0){
+    let h=document.createElement("div");
+    h.className="unit";
+    h.textContent="Unit "+unit;
+    $("lessons").appendChild(h);
+  }
+
+  const c=document.createElement("div");
+  c.className="card";
+  const checked=understood.includes(i);
+  c.innerHTML=`
+    <span class="tag">${i+1}/${lessons.length}</span>
+    <div class="lesson-actions">
+      <button class="understood-btn ${checked?'checked':''}" title="${checked?'Sudah dipahami':'Tandai sudah paham'}"
+        onclick="event.stopPropagation();toggleUnderstood(${i})">
+        ${checked?'✓':'○'}
+      </button>
+    </div>
+    <div class="pattern">${l[1]}</div>
+    <div class="meaning">${l[0]} · ${l[2]}</div>
+    ${checked?'<div style="margin-top:8px;color:#2e9b5c;font-weight:800;font-size:13px">✓ Sudah dipahami</div>':''}
+  `;
+  c.onclick=()=>start(i);
+  $("lessons").appendChild(c);
+ });
+ updateStats();
+}
+
+function toggleUnderstood(i){
+ const pos=understood.indexOf(i);
+ if(pos===-1){
+   understood.push(i);
+   understood.sort((a,b)=>a-b);
+   playCorrect();
+   speakFeedback("Pola ditandai sudah dipahami.");
+ }else{
+   understood.splice(pos,1);
+   playWrong();
+   speakFeedback("Tanda pemahaman dibatalkan.");
+ }
+ localStorage.setItem("kitsumiBunpouUnderstood",JSON.stringify(understood));
+ renderMenu();
+}
+
+function start(i){
+ current=i;step=0;selected=[];
+ $("menu").style.display="none";$("finish").style.display="none";$("lesson").style.display="block";
+ renderLesson();
+}
+
+let audioCtx=null;
+
+function getAudioContext(){
+ if(!audioCtx){
+   const Ctx=window.AudioContext||window.webkitAudioContext;
+   if(!Ctx) return null;
+   audioCtx=new Ctx();
+ }
+ if(audioCtx.state==="suspended") audioCtx.resume();
+ return audioCtx;
+}
+
+function tone(freq, duration, type="sine", volume=0.045, delay=0){
+ const ctx=getAudioContext();
+ if(!ctx) return;
+ const osc=ctx.createOscillator();
+ const gain=ctx.createGain();
+ osc.type=type;
+ osc.frequency.value=freq;
+ gain.gain.setValueAtTime(0.0001,ctx.currentTime+delay);
+ gain.gain.exponentialRampToValueAtTime(volume,ctx.currentTime+delay+0.015);
+ gain.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+delay+duration);
+ osc.connect(gain);
+ gain.connect(ctx.destination);
+ osc.start(ctx.currentTime+delay);
+ osc.stop(ctx.currentTime+delay+duration+0.03);
+}
+
+function playCorrect(){
+ // Dua nada pendek: terasa seperti konfirmasi berhasil.
+ tone(660,0.11,"sine",0.05,0);
+ tone(880,0.16,"sine",0.05,0.10);
+}
+
+function playWrong(){
+ // Nada turun, singkat dan tidak mengganggu.
+ tone(330,0.13,"sine",0.04,0);
+ tone(220,0.18,"sine",0.035,0.12);
+}
+
+function playComplete(){
+ // Jingle selesai 4 nada.
+ tone(523,0.12,"sine",0.045,0);
+ tone(659,0.12,"sine",0.045,0.12);
+ tone(784,0.12,"sine",0.045,0.24);
+ tone(1047,0.22,"sine",0.05,0.36);
+}
+
+function speakFeedback(text, lang="id-ID"){
+ if(!("speechSynthesis" in window)) return;
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang=lang;
+ u.rate=0.92;
+ u.pitch=1.08;
+ u.volume=0.9;
+ speechSynthesis.speak(u);
+}
+
+function renderLesson(){
+ const l=lessons[current];
+ $("lessonTag").textContent=`Pelajaran ${current+1} / ${lessons.length}`;
+ $("lessonTitle").textContent=l[0];
+ $("pattern").textContent=l[1];
+ $("meaning").textContent=l[2];
+ $("example").textContent=l[3];
+ $("translation").textContent=l[4];
+ $("bar").style.width=((step)/3*100)+"%";
+ $("feedback").style.display="none";
+ selected=[];
+
+ // Step 0 = explanation only. No question appears immediately.
+ if(step===0){
+   $("exercise").innerHTML=`
+    <div class="question">📘 Pahami dulu pola ini</div>
+    <div class="explain">
+      <div class="example">"${l[3]}"</div>
+      <div class="muted">${l[4]}</div>
+      <p class="muted" style="margin-bottom:0">
+        Pola <b>${l[1]}</b> digunakan untuk ${l[2].toLowerCase()}.
+        Dengarkan penjelasan singkatnya, lalu lanjut ke latihan.
+      </p>
+    </div>
+    <button class="check" onclick="speakExplanation()">🔊 Dengarkan penjelasan</button>
+    <button class="check" style="margin-top:8px;background:#eef2ff;color:#3156d8" onclick="startExercises()">Saya sudah paham → Mulai latihan</button>`;
+   speakExplanation(true);
+   return;
+ }
+
+ // Step 1 = exercise 1: identify the active pattern.
+ if(step===1){
+   const choices=makePatternChoices(current);
+   $("exercise").innerHTML=`
+    <div class="question">Soal 1/3 — Pola mana yang sedang dipelajari?</div>
+    <div class="tiles" id="tiles"></div>
+    <button class="check" onclick="checkPattern()">Periksa</button>`;
+   choices.forEach((x,i)=>addChoice(x,i));
+ }
+ // Step 2 = exercise 2: build the exact example sentence from the active lesson.
+ else if(step===2){
+   const practice = makePracticeSentence(l[3], l[4]);
+   const words=tokenizeSentence(practice.jp);
+   const shuffled=words.slice();
+   shuffle(shuffled);
+   $("exercise").innerHTML=`
+    <div class="question">Soal 2/3 — Susun kalimat baru dengan pola yang sama.</div>
+    <div class="muted" style="margin-bottom:12px">Arti: ${practice.id}</div>
+    <div class="answer" id="answer"></div>
+    <div class="tiles" id="tiles"></div>
+    <button class="check" onclick="checkSentence()">Periksa</button>`;
+   shuffled.forEach((x,i)=>addTile(x,i));
+ }
+ // Step 3 = exercise 3: exact meaning of the active lesson's example.
+ else {
+   const choices=makeMeaningChoices(current);
+   $("exercise").innerHTML=`
+    <div class="question">Soal 3/3 — Apa arti kalimat ini?</div>
+    <div class="jp">${l[3]}</div>
+    <div class="tiles" id="tiles"></div>
+    <button class="check" onclick="checkMeaningFinal()">Periksa</button>`;
+   choices.forEach((x,i)=>addChoice(x,i));
+ }
+}
+
+function startExercises(){
+ stopSpeech();
+ step=1;
+ renderLesson();
+}
+
+function speakExplanation(auto=false){
+ if("speechSynthesis" in window){
+   speechSynthesis.cancel();
+   const l=lessons[current];
+   const text=`Pola ${l[1]}. ${l[2]}. Contohnya, ${l[3]}. Artinya, ${l[4]}. Ingat pola ini sebelum mulai latihan.`;
+   const u=new SpeechSynthesisUtterance(text);
+   u.lang="id-ID";
+   u.rate=0.88;
+   u.pitch=1.08;
+   speechSynthesis.speak(u);
+ }
+}
+
+function stopSpeech(){
+ if("speechSynthesis" in window) speechSynthesis.cancel();
+}
+
+function tokenizeSentence(sentence){
+ return sentence.replace(/[。！？]/g,"").split(/\s+/).filter(Boolean);
+}
+
+function makePatternChoices(index){
+ const correct=lessons[index][1];
+ const pool=[];
+ for(let offset=1; pool.length<2 && offset<lessons.length; offset++){
+   const candidate=lessons[(index+offset)%lessons.length][1];
+   if(candidate!==correct && !pool.includes(candidate)) pool.push(candidate);
+ }
+ const result=[correct,...pool];
+ shuffle(result);
+ return result;
+}
+
+function makeMeaningChoices(index){
+ const correct=lessons[index][4];
+ const pool=[];
+ for(let offset=1; pool.length<2 && offset<lessons.length; offset++){
+   const candidate=lessons[(index+offset)%lessons.length][4];
+   if(candidate!==correct && !pool.includes(candidate)) pool.push(candidate);
+ }
+ const result=[correct,...pool];
+ shuffle(result);
+ return result;
+}
+
+
+// Membuat soal baru yang tetap memakai pola pelajaran aktif,
+// tetapi tidak mengulang contoh penjelasan di atas.
+function makePracticeSentence(example, translation){
+ const jpMap = [
+   ["わたし","せんせい"],["がくせい","せんせい"],["ともだち","かぞく"],
+   ["ほん","えんぴつ"],["みず","おちゃ"],["コーヒー","おちゃ"],
+   ["りんご","パン"],["バナナ","りんご"],["ねこ","いぬ"],
+   ["いぬ","ねこ"],["がっこう","としょかん"],["にほん","きょうと"],
+   ["ここ","あそこ"],["あした","あさって"],["きょう","あした"],
+   ["きのう","おととい"],["あさ","よる"],["よる","あさ"],
+   ["7じ","8じ"],["9じ","10じ"],["5じ","6じ"],["1じかん","2じかん"],
+   ["べんきょうします","はたらきます"],["はなします","よみます"],
+   ["のみます","たべます"],["たべます","のみます"],["みます","ききます"],
+   ["いきます","かえります"],["かえります","いきます"],
+   ["おもしろいです","たのしいです"],["おいしいです","あまいです"],
+   ["しずかです","きれいです"],["おおきいです","ちいさいです"],
+   ["あつい","さむい"],["ひま","いそがしい"]
+ ];
+ let jp=example;
+ for(const [a,b] of jpMap){
+   if(jp.includes(a)){ jp=jp.replace(a,b); break; }
+ }
+ if(jp===example){
+   // Fallback: make a safe lexical variation while keeping the grammar shape.
+   if(jp.includes("ほん")) jp=jp.replace("ほん","かばん");
+   else if(jp.includes("みず")) jp=jp.replace("みず","おちゃ");
+   else if(jp.includes("がっこう")) jp=jp.replace("がっこう","としょかん");
+   else if(jp.includes("ともだち")) jp=jp.replace("ともだち","かぞく");
+   else jp=jp.replace("です","です。").replace(/。+/,"。");
+ }
+ let id=translation;
+ const idMap=[
+   ["Saya adalah siswa.","Saya adalah guru."],
+   ["Saya adalah siswa.","Saya adalah guru."],
+   ["Minum air.","Minum teh."],
+   ["Belajar di sekolah.","Belajar di perpustakaan."],
+   ["Berbicara dengan teman.","Berbicara dengan keluarga."],
+   ["Ini buku saya.","Ini pensil saya."],
+   ["Ada kucing.","Ada anjing."],
+   ["Ada buku di atas meja.","Ada pensil di atas meja."],
+   ["Kemarin belajar.","Kemarin bekerja."],
+   ["Sekarang sedang belajar.","Sekarang sedang bekerja."],
+   ["Ingin pergi ke Jepang.","Ingin pergi ke Kyoto."],
+   ["Makan apel.","Makan roti."],
+   ["Karena panas, minum air.","Karena panas, minum teh."],
+   ["Semoga besok cerah.","Semoga lusa cerah."]
+ ];
+ for(const [a,b] of idMap){
+   if(id===a){id=b;break;}
+ }
+ return {jp, id};
+}
+
+function addChoice(text,i){
+ const b=document.createElement("button");
+ b.className="tile";
+ b.textContent=text;
+ b.dataset.i=i;
+ b.onclick=()=>{
+   document.querySelectorAll("#tiles .tile").forEach(x=>{
+     x.classList.remove("used");
+     x.style.border="";
+   });
+   b.classList.add("used");
+   b.style.border="2px solid #3156d8";
+   selected=[text];
+ };
+ $("tiles").appendChild(b);
+}
+
+function addTile(text,i){
+ const b=document.createElement("button");
+ b.className="tile";
+ b.textContent=text;
+ b.dataset.i=i;
+ b.onclick=()=>{
+   if(b.classList.contains("used"))return;
+   b.classList.add("used");
+   selected.push(text);
+   const s=document.createElement("span");
+   s.className="tile";
+   s.textContent=text;
+   s.onclick=()=>{
+     const pos=selected.indexOf(text);
+     if(pos>-1) selected.splice(pos,1);
+     b.classList.remove("used");
+     s.remove();
+   };
+   $("answer").appendChild(s);
+ };
+ $("tiles").appendChild(b);
+}
+
+function selectedChoice(){
+ return selected.length ? selected[0] : null;
+}
+
+function checkPattern(){
+ result(selectedChoice()===lessons[current][1]);
+}
+
+function checkSentence(){
+ const practice = makePracticeSentence(lessons[current][3], lessons[current][4]);
+ const target=tokenizeSentence(practice.jp);
+ const good=selected.length===target.length &&
+            selected.every((word,i)=>word===target[i]);
+ result(good);
+}
+
+function checkMeaningFinal(){
+ result(selectedChoice()===lessons[current][4]);
+}
+
+function result(good){
+ const f=$("feedback");
+ f.style.display="block";
+ if(good){
+   playCorrect();
+   speakFeedback("Benar! Bagus sekali.");
+   f.className="feedback ok";
+   f.textContent="🌟 素晴らしい！ Benar!";
+   xp+=5;
+   save();
+   updateStats();
+   setTimeout(()=>{
+     step++;
+     selected=[];
+     if(step>3) complete();
+     else renderLesson();
+   },850);
+ }else{
+   playWrong();
+   speakFeedback("Belum tepat. Coba lagi.");
+   f.className="feedback no";
+   f.textContent="Belum tepat. Perhatikan pola dan contoh di atas, lalu coba lagi.";
+   selected=[];
+   document.querySelectorAll("#tiles .tile").forEach(x=>{
+     x.classList.remove("used");
+     x.style.border="";
+   });
+   if($("answer")) $("answer").innerHTML="";
+ }
+}
+
+function complete(){
+ stopSpeech();
+ if(!understood.includes(current)){
+   understood.push(current);
+   understood.sort((a,b)=>a-b);
+   localStorage.setItem("kitsumiBunpouUnderstood",JSON.stringify(understood));
+ }
+ done++;
+ xp+=10;
+ save();
+ let s=Number(localStorage.getItem("kitsumiStreak")||0);
+ const today=new Date().toDateString(), last=localStorage.getItem("kitsumiLastBunpou");
+ if(last!==today){
+   s++;
+   localStorage.setItem("kitsumiStreak",s);
+   localStorage.setItem("kitsumiLastBunpou",today);
+ }
+ playComplete();
+ setTimeout(()=>{
+   speakFeedback("Selamat! Kamu sudah menyelesaikan tiga soal Bunpou. Luar biasa, lanjut ke pola berikutnya!", "id-ID");
+ },420);
+ $("lesson").style.display="none";
+ $("finish").style.display="flex";
+ $("finishText").textContent=`Kamu menyelesaikan ${lessons[current][0]} dan mendapatkan XP. Mau lanjut ke pelajaran lain?`;
+ updateStats();
+}
+
+function backMenu(){ stopSpeech(); $("lesson").style.display="none"; $("finish").style.display="none"; $("menu").style.display="block"; renderMenu();$("finish").style.display="none";$("menu").style.display="block";renderMenu();window.scrollTo(0,0)}
+function shuffle(a){a.sort(()=>Math.random()-.5)}
+renderMenu();
+</script>
+</body>
+</html>
