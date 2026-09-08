@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitsumi — Kanji</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Nunito','Arial Rounded MT Bold',Arial,sans-serif}
+:root{--navy:#12396b;--blue:#2f7ff0;--green:#20c878;--light:#eef6ff;--bg:#f7fbff;--muted:#91a0b3;--pink:#e95775}
+body{background:var(--bg);color:var(--navy);min-height:100vh}
+.app{width:100%;max-width:620px;margin:auto;min-height:100vh;padding-bottom:105px}
+header{height:82px;background:#fff;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid #edf1f6}
+.back{border:0;background:none;font-size:38px;line-height:1;color:var(--navy);cursor:pointer;margin-right:12px}
+.logo{font-size:38px;font-weight:800;letter-spacing:-2px}.pink{color:var(--pink)}
+main{padding:25px 28px}
+.screen-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.screen-title h1{font-size:30px}.counter{font-size:20px;color:#7187a1;font-weight:700}
+.progress-track{height:12px;background:#e4edf7;border-radius:20px;overflow:hidden;margin-bottom:22px}
+.progress-bar{height:100%;width:10%;background:var(--green);border-radius:20px;transition:width .25s}
+.hidden{display:none!important}
+
+.day-screen h1{font-size:30px;margin-bottom:7px}
+.day-screen p{color:#7187a1;line-height:1.5;margin-bottom:22px}
+.days{display:flex;flex-direction:column;gap:13px}
+.day{width:100%;min-height:96px;border:0;background:#fff;border-radius:23px;padding:17px 20px;display:flex;align-items:center;text-align:left;color:var(--navy);box-shadow:0 7px 20px rgba(30,70,120,.07);cursor:pointer}
+.day.locked{opacity:.55;cursor:not-allowed}
+.day-icon{width:60px;height:60px;border-radius:19px;background:#e4f0ff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin-right:15px;flex-shrink:0}
+.day.done .day-icon{background:#ddfaed;color:#16a967}
+.day-info{flex:1}.day-title{font-size:22px;font-weight:800}.day-sub{font-size:14px;color:#91a0b3;margin-top:4px}.status{font-size:24px}
+
+.word-card{background:#fff;border-radius:30px;padding:28px 25px 25px;text-align:center;box-shadow:0 9px 25px rgba(30,70,120,.08);min-height:555px;display:flex;flex-direction:column;align-items:center}
+.category{font-size:16px;font-weight:700;color:var(--blue);background:#e5f1ff;border-radius:22px;padding:9px 17px;margin-bottom:25px}
+.kanji-big{width:190px;height:190px;border-radius:32px;background:#eef6ff;display:flex;align-items:center;justify-content:center;font-size:128px;font-weight:700;margin:4px 0 20px;box-shadow:inset 0 0 0 1px #dcecff}
+.reading{font-size:25px;color:#7187a1;margin-bottom:7px}
+.romaji{font-size:22px;color:#91a0b3;margin-bottom:8px}
+.meaning{font-size:29px;font-weight:700;margin-bottom:24px}
+.tip{font-size:15px;color:#91a0b3;line-height:1.45;max-width:430px;margin-bottom:20px}
+.audio-row{display:flex;justify-content:center;gap:18px;margin-top:auto}
+.circle{width:70px;height:70px;border:0;border-radius:50%;cursor:pointer;font-size:32px;display:flex;align-items:center;justify-content:center}
+.audio{background:var(--blue);color:white;box-shadow:0 7px 15px rgba(47,127,240,.22)}
+.star{background:#edf4fc;color:#56708e}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.action{height:66px;border:0;border-radius:23px;font-size:22px;font-weight:700;cursor:pointer}
+.prev{background:#eaf2fb;color:#526d8d}.next{background:var(--blue);color:white;box-shadow:0 9px 18px rgba(47,127,240,.22)}
+.action:disabled{opacity:.45;cursor:not-allowed}
+
+.quiz-card{background:#fff;border-radius:30px;padding:28px 22px;box-shadow:0 9px 25px rgba(30,70,120,.08);text-align:center}
+.quiz-label{display:inline-block;background:#e5f1ff;color:var(--blue);border-radius:22px;padding:9px 17px;font-weight:700;font-size:15px}
+.quiz-question{font-size:19px;color:#7187a1;margin:24px 0 12px}
+.quiz-word{font-size:72px;font-weight:700;margin:5px 0}
+.quiz-reading{font-size:19px;color:#91a0b3;margin-bottom:22px}
+.quiz-options{display:grid;gap:12px;text-align:left}
+.quiz-option{min-height:58px;border:2px solid #e5edf6;background:#fff;border-radius:19px;padding:12px 16px;font-size:19px;color:var(--navy);font-weight:600;cursor:pointer}
+.quiz-option.correct{border-color:#20c878;background:#e8fbf2;color:#148d57}
+.quiz-option.wrong{border-color:#e95775;background:#fff0f3;color:#c23d59}
+.quiz-option.disabled{pointer-events:none}
+.quiz-feedback{margin-top:16px;padding:13px;border-radius:17px;font-weight:700}
+.quiz-feedback.good{background:#e8fbf2;color:#148d57}.quiz-feedback.bad{background:#fff0f3;color:#c23d59}
+.quiz-next,.result-btn{width:100%;height:60px;border:0;border-radius:21px;background:var(--blue);color:#fff;font-size:20px;font-weight:700;margin-top:18px;cursor:pointer}
+
+.result-card{background:#fff;border-radius:30px;padding:40px 25px;text-align:center;box-shadow:0 10px 30px rgba(30,70,120,.08);margin-top:20px}
+.result-big{font-size:70px}.result-card h1{font-size:30px;margin:10px 0}
+.result-score{font-size:38px;font-weight:800;color:var(--blue);margin:14px 0}
+.result-text{color:#7187a1;line-height:1.5}
+.streak-badge{display:inline-block;margin-top:15px;background:#fff4d8;color:#b87900;border-radius:20px;padding:10px 15px;font-weight:700}
+.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(620px,100%);height:78px;background:rgba(255,255,255,.98);border-top:1px solid #edf0f5;display:grid;grid-template-columns:repeat(3,1fr);z-index:100;box-shadow:0 -7px 20px rgba(20,50,90,.06)}
+.nav-item{text-decoration:none;color:#a1acba;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:14px;font-weight:600}
+.nav-icon{font-size:29px}.nav-active{color:var(--blue)}
+
+@media(max-width:500px){
+ main{padding:22px 20px}
+ .word-card{padding:24px 16px;min-height:520px}
+ .kanji-big{width:165px;height:165px;font-size:108px}
+ .quiz-word{font-size:62px}
+ .action{font-size:19px}
+}
+
+/* Checklist hafalan Kanji */
+.day{position:relative;cursor:pointer}
+.day.current{box-shadow:0 9px 24px rgba(47,127,240,.13);outline:2px solid #dcecff}
+.day.current .day-sub{color:#2f7ff0;font-weight:800}
+.day.done .day-icon{font-size:30px}
+.check-btn{
+  width:52px;height:52px;border:3px solid #dbe6f2;background:#fff;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#9aabba;font-size:27px;font-weight:900;cursor:pointer;flex-shrink:0;
+  transition:.18s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.check-btn:hover{transform:scale(1.04)}
+.check-btn:active{transform:scale(.94)}
+.check-btn.checked{background:#fff;border-color:#20c878;color:#16a967;font-size:30px}
+.day.done .day-icon{background:#ddfaed;color:#16a967;font-size:30px}
+.day:not(.done) .day-icon{background:#e4f0ff;color:#12396b;font-size:21px}
+.day.current{outline:2px solid #dcecff;box-shadow:0 9px 24px rgba(47,127,240,.13)}
+.progress-summary{display:flex;align-items:center;justify-content:space-between;margin:-7px 0 20px;padding:12px 15px;background:#fff;border-radius:17px;color:#7187a1;font-size:14px;font-weight:700;box-shadow:0 5px 16px rgba(30,70,120,.05)}
+.progress-summary strong{color:#2f7ff0;font-size:16px}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<button class="back" onclick="goBack()" aria-label="Kembali">‹</button>
+<div class="logo">Kits<span class="pink">u</span>mi</div>
+</header>
+
+<main>
+<section id="dayScreen" class="day-screen">
+<h1>漢 Kanji</h1>
+<p>Belajar 10 kanji setiap hari. Centang ✓ jika kamu sudah hafal. Semua Day tetap bisa dibuka agar kamu mudah melanjutkan dari Day terakhir.</p>
+<div class="progress-summary"><span id="masteryText">0 / 120 kanji sudah hafal</span><strong id="nextDayText">Mulai dari Day 1</strong></div>
+<div class="days" id="dayList"></div>
+</section>
+
+<section id="learnScreen" class="hidden">
+<div class="screen-title"><h1 id="dayTitle">Day 1</h1><span class="counter" id="counter">1/10</span></div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+<div class="word-card">
+<div class="category">KANJI</div>
+<div class="kanji-big" id="kanjiBig">一</div>
+<div class="reading" id="reading">いち</div>
+<div class="romaji" id="romaji">ichi</div>
+<div class="meaning" id="meaning">satu</div>
+<div class="tip">🔊 Dengarkan pengucapan kanji. Tekan ⭐ untuk menyimpan favorit.</div>
+<div class="audio-row">
+<button class="circle audio" onclick="speakKanji()" aria-label="Dengarkan">🔊</button>
+<button class="circle star" id="favoriteBtn" onclick="toggleFavorite()" aria-label="Favorit">☆</button>
+</div>
+</div>
+<div class="actions">
+<button class="action prev" id="prevBtn" onclick="previousKanji()">← Sebelumnya</button>
+<button class="action next" id="nextBtn" onclick="nextKanji()">Selanjutnya →</button>
+</div>
+</section>
+
+<section id="quizScreen" class="hidden">
+<div class="screen-title"><h1 id="quizDayTitle">Tes Kanji Day 1</h1><span class="counter" id="quizCounter">1/10</span></div>
+<div class="progress-track"><div class="progress-bar" id="quizProgressBar"></div></div>
+<div class="quiz-card">
+<div class="quiz-label">🎯 TES KANJI</div>
+<p class="quiz-question">Apa arti kanji berikut?</p>
+<div class="quiz-word" id="quizWord">一</div>
+<div class="quiz-reading" id="quizReading">いち • ichi</div>
+<div id="quizOptions" class="quiz-options"></div>
+<div id="quizFeedback" class="quiz-feedback hidden"></div>
+<button id="quizNextBtn" class="quiz-next hidden" onclick="nextQuiz()">Lanjut →</button>
+</div>
+</section>
+
+<section id="resultScreen" class="hidden">
+<div class="result-card">
+<div class="result-big">🎉</div>
+<h1 id="resultTitle">Day 1 Selesai!</h1>
+<p class="result-score" id="resultScore">8 / 10 benar</p>
+<p class="result-text" id="resultText">Kanji hari ini selesai. Streak kamu ikut terjaga!</p>
+<div class="streak-badge" id="streakBadge">🔥 Streak +1</div>
+<button class="result-btn" onclick="backToDays()">Lanjut</button>
+</div>
+</section>
+</main>
+
+<nav class="bottom-nav">
+<a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Beranda</span></a>
+<a href="materi.html" class="nav-item nav-active"><span class="nav-icon">📖</span><span>Materi</span></a>
+<a href="profil.html" class="nav-item"><span class="nav-icon">♙</span><span>Profil</span></a>
+</nav>
+</div>
+
+<script>
+// ===============================
+// DATA: 120 KANJI = 12 DAY x 10
+// [kanji, kana, romaji, arti, emoji]
+// ===============================
+const days = [[["一","いち","ichi","satu","1️⃣"],["二","に","ni","dua","2️⃣"],["三","さん","san","tiga","3️⃣"],["四","よん","yon","empat","4️⃣"],["五","ご","go","lima","5️⃣"],["六","ろく","roku","enam","6️⃣"],["七","なな","nana","tujuh","7️⃣"],["八","はち","hachi","delapan","8️⃣"],["九","きゅう","kyuu","sembilan","9️⃣"],["十","じゅう","juu","sepuluh","🔟"]],[["百","ひゃく","hyaku","seratus","💯"],["千","せん","sen","seribu","🔢"],["万","まん","man","sepuluh ribu","🔢"],["円","えん","en","yen / lingkaran","💴"],["日","ひ","hi","hari / matahari","☀️"],["月","つき","tsuki","bulan","🌙"],["火","ひ","hi","api","🔥"],["水","みず","mizu","air","💧"],["木","き","ki","pohon","🌳"],["金","かね","kane","emas / uang","💰"]],[["土","つち","tsuchi","tanah","🌱"],["年","とし","toshi","tahun","📅"],["時","とき","toki","waktu","⏰"],["分","ふん","fun","menit / bagian","⏱️"],["半","はん","han","setengah","½"],["午","ご","go","siang (dalam 午前/午後)","🌤️"],["前","まえ","mae","depan / sebelum","⬆️"],["後","あと","ato","belakang / setelah","⬇️"],["今","いま","ima","sekarang","⏰"],["毎","まい","mai","setiap","🔄"]],[["週","しゅう","shuu","minggu","📆"],["曜","よう","you","hari dalam minggu","📅"],["朝","あさ","asa","pagi","🌅"],["昼","ひる","hiru","siang","☀️"],["夜","よる","yoru","malam","🌙"],["東","ひがし","higashi","timur","➡️"],["西","にし","nishi","barat","⬅️"],["南","みなみ","minami","selatan","⬇️"],["北","きた","kita","utara","⬆️"],["上","うえ","ue","atas","⬆️"]],[["下","した","shita","bawah","⬇️"],["中","なか","naka","dalam / tengah","📦"],["外","そと","soto","luar","🌳"],["右","みぎ","migi","kanan","➡️"],["左","ひだり","hidari","kiri","⬅️"],["間","あいだ","aida","antara / jarak","↔️"],["国","くに","kuni","negara","🌏"],["家","いえ","ie","rumah","🏠"],["店","みせ","mise","toko","🏪"],["駅","えき","eki","stasiun","🚉"]],[["校","こう","kou","sekolah (akhiran)","🏫"],["学","がく","gaku","belajar / ilmu","📚"],["生","せい","sei","hidup / murid","🌱"],["先","さき","saki","sebelumnya / depan","👉"],["名","な","na","nama","🏷️"],["本","ほん","hon","buku / asal","📖"],["語","ご","go","bahasa / kata","💬"],["文","ぶん","bun","kalimat / tulisan","📝"],["字","じ","ji","huruf / karakter","🔤"],["友","とも","tomo","teman","🧑‍🤝‍🧑"]],[["父","ちち","chichi","ayah","👨"],["母","はは","haha","ibu","👩"],["兄","あに","ani","kakak laki-laki","👦"],["姉","あね","ane","kakak perempuan","👧"],["弟","おとうと","otouto","adik laki-laki","👦"],["妹","いもうと","imouto","adik perempuan","👧"],["男","おとこ","otoko","laki-laki","👨"],["女","おんな","onna","perempuan","👩"],["子","こ","ko","anak","🧒"],["人","ひと","hito","orang","👤"]],[["口","くち","kuchi","mulut","👄"],["目","め","me","mata","👁️"],["耳","みみ","mimi","telinga","👂"],["手","て","te","tangan","✋"],["足","あし","ashi","kaki","🦶"],["力","ちから","chikara","tenaga / kekuatan","💪"],["心","こころ","kokoro","hati / perasaan","❤️"],["体","からだ","karada","tubuh","🧍"],["頭","あたま","atama","kepala","🧑"],["顔","かお","kao","wajah","🙂"]],[["山","やま","yama","gunung","⛰️"],["川","かわ","kawa","sungai","🌊"],["田","た","ta","sawah","🌾"],["天","てん","ten","langit / surga","☁️"],["気","き","ki","energi / perasaan","✨"],["雨","あめ","ame","hujan","🌧️"],["雪","ゆき","yuki","salju","❄️"],["風","かぜ","kaze","angin","🌬️"],["花","はな","hana","bunga","🌸"],["草","くさ","kusa","rumput","🌿"]],[["森","もり","mori","hutan","🌲"],["林","はやし","hayashi","rimba / hutan kecil","🌳"],["石","いし","ishi","batu","🪨"],["空","そら","sora","langit","☁️"],["海","うみ","umi","laut","🌊"],["魚","さかな","sakana","ikan","🐟"],["犬","いぬ","inu","anjing","🐶"],["猫","ねこ","neko","kucing","🐱"],["鳥","とり","tori","burung","🐦"],["車","くるま","kuruma","mobil","🚗"]],[["電","でん","den","listrik","⚡"],["道","みち","michi","jalan","🛣️"],["門","もん","mon","gerbang","🚪"],["病","びょう","byou","sakit / penyakit","🤒"],["院","いん","in","institusi / rumah sakit (akhiran)","🏥"],["社","しゃ","sha","perusahaan / kuil","🏢"],["会","かい","kai","pertemuan","🤝"],["仕","し","shi","melayani / bekerja (dalam 仕事)","💼"],["事","こと","koto","hal / urusan","📌"],["休","やす","yasu","istirahat","😴"]],[["何","なに","nani","apa","❓"],["行","い","i","pergi","🚶"],["来","く","ku","datang","👋"],["帰","かえ","kae","pulang","🏠"],["見","み","mi","melihat","👀"],["聞","き","ki","mendengar / bertanya","👂"],["読","よ","yo","membaca","📖"],["書","か","ka","menulis","✍️"],["話","はな","hana","berbicara","🗣️"],["買","か","ka","membeli","🛒"]]];
+
+let currentDay=0, currentWord=0, quizIndex=0, quizScore=0, quizAnswered=false;
+
+// ===============================
+// AUDIO
+// ===============================
+let kitsumiAudioCtx=null;
+function getAudio(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) return null;
+  if(!kitsumiAudioCtx) kitsumiAudioCtx=new AC();
+  if(kitsumiAudioCtx.state==="suspended") kitsumiAudioCtx.resume().catch(()=>{});
+  return kitsumiAudioCtx;
+}
+document.addEventListener("pointerdown",()=>{
+  const c=getAudio(); if(c) c.resume().catch(()=>{});
+},{once:true});
+
+function tone(ctx,freq,delay,duration,volume,type="sine"){
+  const o=ctx.createOscillator(), g=ctx.createGain(), t=ctx.currentTime+delay;
+  o.type=type; o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(.001,t);
+  g.gain.exponentialRampToValueAtTime(volume,t+.015);
+  g.gain.exponentialRampToValueAtTime(.001,t+duration);
+  o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+duration+.03);
+}
+function kitsumiSound(type){
+  const c=getAudio(); if(!c) return;
+  try{
+    if(type==="correct"){
+      tone(c,660,0,.12,.16); tone(c,880,.09,.20,.18);
+    } else if(type==="wrong"){
+      tone(c,240,0,.15,.15,"triangle"); tone(c,175,.10,.18,.12,"sawtooth");
+    } else if(type==="success"){
+      tone(c,523,0,.15,.15); tone(c,659,.12,.15,.15);
+      tone(c,784,.24,.15,.17); tone(c,1047,.36,.38,.20);
+      for(let i=0;i<12;i++){
+        const t=c.currentTime+.56+Math.random()*.9;
+        const b=c.createBuffer(1,Math.floor(c.sampleRate*.045),c.sampleRate);
+        const d=b.getChannelData(0);
+        for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*Math.exp(-j/(d.length*.15));
+        const src=c.createBufferSource(), g=c.createGain();
+        src.buffer=b; g.gain.value=.07; src.connect(g); g.connect(c.destination); src.start(t);
+      }
+      setTimeout(()=>{
+        try{
+          if("speechSynthesis" in window){
+            speechSynthesis.cancel();
+            const u=new SpeechSynthesisUtterance("よくできました！");
+            u.lang="ja-JP"; u.rate=.9; u.pitch=1.05; u.volume=1; speechSynthesis.speak(u);
+          }
+        }catch(e){}
+      },1100);
+    }
+  }catch(e){}
+}
+function speakKanji(){
+  const w=days[currentDay][currentWord];
+  if("speechSynthesis" in window){
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(w[1]);
+    u.lang="ja-JP"; u.rate=.78; u.pitch=1; u.volume=1; speechSynthesis.speak(u);
+  }
+}
+
+// ===============================
+// SHARED DAILY STREAK
+// Completing ANY Kotoba or Kanji quiz counts as a study day.
+// ===============================
+function localDate(offset=0){
+  const d=new Date();
+  d.setHours(12,0,0,0);
+  d.setDate(d.getDate()+offset);
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function recordStudyDay(){
+  const today=localDate(0);
+  const yesterday=localDate(-1);
+  const last=localStorage.getItem("kitsumiLastStudyDate");
+  let streak=Number(localStorage.getItem("kitsumiStreak")||0);
+  let bonus=0;
+  if(last===today) return {streak,bonus,already:true};
+  if(last===yesterday) streak=Math.max(1,streak)+1;
+  else streak=1;
+  if(streak===3) bonus=10;
+  if(streak>0 && streak%7===0) bonus=25;
+  localStorage.setItem("kitsumiStreak",String(streak));
+  localStorage.setItem("kitsumiLastStudyDate",today);
+  localStorage.setItem("kitsumiStudyToday","1");
+  return {streak,bonus,already:false};
+}
+function addXP(amount){
+  const old=Number(localStorage.getItem("kitsumiXP")||0);
+  localStorage.setItem("kitsumiXP",String(old+amount));
+}
+
+// ===============================
+// DAYS / PROGRESS
+// ===============================
+function done(i){
+  return localStorage.getItem("kitsumiKanjiMasteredDay"+(i+1))==="1";
+}
+function quizDone(i){
+  return localStorage.getItem("kitsumiKanjiDay"+(i+1))==="done";
+}
+function toggleMastered(i){
+  const key="kitsumiKanjiMasteredDay"+(i+1);
+  const isChecked=localStorage.getItem(key)==="1";
+  localStorage.setItem(key,isChecked?"0":"1");
+  kitsumiSound(isChecked?"wrong":"correct");
+  renderDays();
+}
+function renderDays(){
+  const list=document.getElementById("dayList");
+  list.innerHTML="";
+  const firstUnmarked=days.findIndex((_,i)=>!done(i));
+  const masteredDays=days.filter((_,i)=>done(i)).length;
+  const masteredKanji=masteredDays*10;
+
+  document.getElementById("masteryText").textContent=masteredKanji+" / "+(days.length*10)+" kanji sudah hafal";
+  document.getElementById("nextDayText").textContent=
+    firstUnmarked===-1 ? "🎉 Semua selesai" : "Mulai dari Day "+(firstUnmarked+1);
+
+  days.forEach((w,i)=>{
+    const card=document.createElement("div");
+    const mastered=done(i);
+    const isNext=i===firstUnmarked;
+    card.className="day"+(mastered?" done":"")+(isNext?" current":"");
+    card.setAttribute("role","button");
+    card.setAttribute("tabindex","0");
+    card.onclick=()=>startDay(i);
+    card.onkeydown=(e)=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();startDay(i)}};
+
+    const statusText=mastered
+      ? "Sudah hafal • siap diulang kapan saja"
+      : isNext
+        ? "Belum dicentang • lanjut dari sini"
+        : "Belum dicentang";
+
+    card.innerHTML=`<div class="day-icon">${mastered?"✓":"DAY "+(i+1)}</div>
+      <div class="day-info"><div class="day-title">Day ${i+1}</div>
+      <div class="day-sub">${statusText}</div></div>
+      <button type="button" class="check-btn ${mastered?"checked":""}"
+        onclick="event.stopPropagation();toggleMastered(${i})"
+        aria-label="${mastered?"Batalkan hafal":"Tandai sudah hafal"}"
+        title="${mastered?"Batalkan hafal":"Tandai sudah hafal"}">
+        ${mastered?"✓":"○"}
+      </button>`;
+    list.appendChild(card);
+  });
+}
+function startDay(i){
+  currentDay=i; currentWord=0;
+  document.getElementById("dayScreen").classList.add("hidden");
+  document.getElementById("learnScreen").classList.remove("hidden");
+  document.getElementById("quizScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.add("hidden");
+  showKanji();
+}
+function showKanji(){
+  const w=days[currentDay][currentWord];
+  document.getElementById("dayTitle").textContent="Day "+(currentDay+1);
+  document.getElementById("counter").textContent=(currentWord+1)+"/10";
+  document.getElementById("progressBar").style.width=((currentWord+1)*10)+"%";
+  document.getElementById("kanjiBig").textContent=w[0];
+  document.getElementById("reading").textContent=w[1];
+  document.getElementById("romaji").textContent=w[2];
+  document.getElementById("meaning").textContent=w[3];
+  document.getElementById("prevBtn").disabled=currentWord===0;
+  document.getElementById("nextBtn").textContent=currentWord===9?"Mulai Tes ✓":"Selanjutnya →";
+  updateFavorite();
+}
+function nextKanji(){
+  if(currentWord<9){currentWord++;showKanji();return}
+  startQuiz();
+}
+function previousKanji(){if(currentWord>0){currentWord--;showKanji()}}
+
+function favoriteKey(){return "kitsumiKanjiFav_"+currentDay+"_"+currentWord}
+function toggleFavorite(){
+  localStorage.setItem(favoriteKey(),localStorage.getItem(favoriteKey())==="1"?"0":"1");
+  updateFavorite();
+}
+function updateFavorite(){
+  document.getElementById("favoriteBtn").textContent=localStorage.getItem(favoriteKey())==="1"?"★":"☆";
+}
+
+// ===============================
+// QUIZ
+// ===============================
+function startQuiz(){
+  quizIndex=0; quizScore=0; quizAnswered=false;
+  document.getElementById("learnScreen").classList.add("hidden");
+  document.getElementById("quizScreen").classList.remove("hidden");
+  document.getElementById("resultScreen").classList.add("hidden");
+  showQuiz();
+}
+function showQuiz(){
+  const w=days[currentDay][quizIndex];
+  const all=days.flat().map(x=>x[3]);
+  const others=all.filter(x=>x!==w[3]);
+  const options=[w[3],...others.sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+
+  document.getElementById("quizDayTitle").textContent="Tes Kanji Day "+(currentDay+1);
+  document.getElementById("quizCounter").textContent=(quizIndex+1)+"/10";
+  document.getElementById("quizProgressBar").style.width=((quizIndex+1)*10)+"%";
+  document.getElementById("quizWord").textContent=w[0];
+  document.getElementById("quizReading").textContent=w[1]+" • "+w[2];
+
+  const box=document.getElementById("quizOptions"); box.innerHTML="";
+  options.forEach(option=>{
+    const b=document.createElement("button");
+    b.className="quiz-option"; b.textContent=option;
+    b.onclick=()=>answerQuiz(b,option,w[3]);
+    box.appendChild(b);
+  });
+  document.getElementById("quizFeedback").className="quiz-feedback hidden";
+  document.getElementById("quizFeedback").textContent="";
+  document.getElementById("quizNextBtn").classList.add("hidden");
+  quizAnswered=false;
+}
+function answerQuiz(button,answer,correct){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  document.querySelectorAll(".quiz-option").forEach(b=>b.classList.add("disabled"));
+  const feedback=document.getElementById("quizFeedback");
+
+  if(answer===correct){
+    quizScore++; button.classList.add("correct");
+    feedback.textContent="✓ Benar!"; feedback.className="quiz-feedback good";
+    kitsumiSound("correct");
+  }else{
+    button.classList.add("wrong");
+    document.querySelectorAll(".quiz-option").forEach(b=>{if(b.textContent===correct)b.classList.add("correct")});
+    feedback.textContent="Belum tepat. Jawaban: "+correct;
+    feedback.className="quiz-feedback bad";
+    kitsumiSound("wrong");
+  }
+  document.getElementById("quizNextBtn").classList.remove("hidden");
+  document.getElementById("quizNextBtn").textContent=quizIndex===9?"Lihat Hasil →":"Lanjut →";
+}
+function nextQuiz(){
+  if(quizIndex<9){quizIndex++;showQuiz()}else finishQuiz();
+}
+function finishQuiz(){
+  kitsumiSound("success");
+  const earned=quizScore*5;
+  const streakResult=recordStudyDay();
+  const totalEarned=earned+streakResult.bonus;
+  addXP(totalEarned);
+  localStorage.setItem("kitsumiKanjiDay"+(currentDay+1),"done");
+
+  document.getElementById("quizScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.remove("hidden");
+  document.getElementById("resultTitle").textContent="Day "+(currentDay+1)+" Kanji Selesai!";
+  document.getElementById("resultScore").textContent=quizScore+" / 10 benar";
+  document.getElementById("resultText").textContent="+"+earned+" XP dari tes. Streak kamu sekarang "+streakResult.streak+" hari.";
+  document.getElementById("streakBadge").textContent=
+    streakResult.already ? "🔥 Streak sudah aman hari ini" :
+    streakResult.bonus>0 ? "🔥 Streak "+streakResult.streak+" hari • bonus +"+streakResult.bonus+" XP" :
+    "🔥 Streak +1 • sekarang "+streakResult.streak+" hari";
+}
+function goBack(){
+  const screens=["learnScreen","quizScreen","resultScreen"];
+  if(screens.some(id=>!document.getElementById(id).classList.contains("hidden"))){
+    screens.forEach(id=>document.getElementById(id).classList.add("hidden"));
+    document.getElementById("dayScreen").classList.remove("hidden");
+    renderDays();
+  }else history.back();
+}
+function backToDays(){
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("dayScreen").classList.remove("hidden");
+  renderDays();
+}
+renderDays();
+</script>
+</body>
+</html>
