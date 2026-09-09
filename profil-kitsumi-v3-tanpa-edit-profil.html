@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kitsumi — Profil</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#f7fbff;color:#173f72;
+  font-family:"Nunito","Arial Rounded MT Bold",system-ui,sans-serif;
+  font-weight:700
+}
+button{font-family:inherit}
+.app{max-width:620px;margin:auto;min-height:100vh;padding-bottom:88px}
+
+/* Header */
+header{
+  height:76px;background:#fff;display:flex;align-items:center;
+  padding:0 18px;gap:12px;position:sticky;top:0;z-index:10;
+  box-shadow:0 2px 12px rgba(30,70,120,.06)
+}
+.back{
+  width:44px;height:44px;border:0;border-radius:15px;
+  background:#edf4fa;color:#173f72;font-size:28px;cursor:pointer
+}
+.logo{font-size:27px;font-weight:900}
+.logo span{color:#ef5d82}
+.spacer{flex:1}
+.xp{font-size:14px;font-weight:900}
+
+/* Main profile */
+main{padding:18px 16px}
+.profile{
+  text-align:center;
+  padding:6px 0 21px
+}
+.photo-wrap{
+  position:relative;width:116px;height:116px;margin:4px auto 10px
+}
+.photo{
+  width:116px;height:116px;border-radius:50%;
+  background:#bfe5ff;border:5px solid #fff;
+  box-shadow:0 5px 18px rgba(30,75,120,.10);
+  display:grid;place-items:center;overflow:hidden;
+  font-size:64px;cursor:pointer
+}
+.photo img{width:100%;height:100%;object-fit:cover;display:none}
+.profile-name{font-size:28px;font-weight:900}
+.level{
+  display:inline-block;margin-top:4px;padding:6px 15px;
+  border-radius:99px;background:#e8f2ff;color:#2f80e7;
+  font-size:13px;font-weight:900
+}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{
+  background:#fff;border:1px solid #edf0f4;border-radius:19px;
+  padding:17px 8px 15px;text-align:center;
+  box-shadow:0 3px 12px rgba(30,70,120,.035)
+}
+.stat-icon{font-size:30px;line-height:32px}
+.stat-label{color:#71869a;font-size:13px;margin-top:6px}
+.stat-value{color:#173f72;font-size:21px;font-weight:900;margin-top:2px}
+
+
+/* Clickable statistics */
+.stat{
+  width:100%;border:1px solid #edf0f4;border-radius:19px;
+  background:#fff;color:#173f72;cursor:pointer;
+  box-shadow:0 3px 12px rgba(30,70,120,.035);
+  transition:transform .12s,background .12s
+}
+.stat:active{transform:translateY(2px);background:#f7fbff}
+
+/* Settings sheet */
+.setting-row{
+  width:100%;height:60px;border:0;border-bottom:1px solid #edf0f4;
+  background:#fff;display:flex;align-items:center;gap:12px;
+  text-align:left;color:#173f72;cursor:pointer;padding:0 4px
+}
+.setting-row span{font-size:22px;width:30px;text-align:center}
+.setting-row strong{flex:1;font-size:14px;font-weight:900}
+.setting-row b{font-size:22px;color:#9caebe;font-weight:600}
+.cancel-wide{
+  width:100%;height:50px;margin-top:13px;border:0;border-radius:15px;
+  background:#edf4fa;color:#6f8498;font-weight:900;cursor:pointer
+}
+.detail-text{
+  color:#71869a;font-size:13px;line-height:1.55;
+  background:#f7fbff;border-radius:15px;padding:14px
+}
+
+/* Menu */
+.menu{
+  margin-top:20px;background:#fff;border:1px solid #edf0f4;
+  border-radius:21px;overflow:hidden;
+  box-shadow:0 3px 14px rgba(30,70,120,.035)
+}
+.menu button{
+  width:100%;height:73px;border:0;border-bottom:1px solid #edf0f4;
+  background:#fff;display:flex;align-items:center;text-align:left;
+  padding:0 18px;color:#173f72;cursor:pointer
+}
+.menu button:last-child{border-bottom:0}
+.menu button:active{background:#f7fbff}
+.menu-icon{
+  width:38px;font-size:27px;display:flex;align-items:center;
+  justify-content:flex-start
+}
+.menu-text{flex:1;font-size:17px;font-weight:800}
+.arrow{font-size:27px;color:#9caebe;font-weight:600}
+
+/* Edit modal */
+.modal{
+  position:fixed;inset:0;background:rgba(23,63,114,.22);
+  display:none;align-items:flex-end;justify-content:center;z-index:50
+}
+.modal.show{display:flex}
+.sheet{
+  width:min(620px,100%);background:#fff;border-radius:27px 27px 0 0;
+  padding:22px 18px 25px;box-shadow:0 -8px 30px rgba(20,50,90,.12)
+}
+.sheet h2{font-size:22px;font-weight:900;margin-bottom:15px}
+.field{
+  width:100%;height:52px;border:2px solid #dce8f1;border-radius:15px;
+  padding:0 14px;color:#173f72;font:800 16px "Nunito",sans-serif;
+  outline:none
+}
+.field:focus{border-color:#2f80e7}
+.sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.sheet-actions button{
+  height:50px;border-radius:15px;border:0;font-weight:900;cursor:pointer
+}
+.cancel{background:#edf4fa;color:#6f8498}
+.save{background:#2f80e7;color:#fff}
+
+/* Navbar */
+.bottom-nav{
+  position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+  width:min(620px,100%);height:82px;background:#fff;
+  border-top:1px solid #edf0f5;display:grid;
+  grid-template-columns:repeat(3,1fr);z-index:20;
+  box-shadow:0 -5px 18px rgba(20,50,90,.045)
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:4px;text-decoration:none;
+  color:#a7b0bb;font-size:13px;font-weight:800
+}
+.nav-icon{font-size:27px;height:31px;line-height:31px}
+.nav-active{color:#2f80e7}
+
+@media(max-width:390px){
+  .stats{gap:7px}.stat{padding-left:4px;padding-right:4px}
+  .bottom-nav{height:78px}.nav-item{font-size:12px}.nav-icon{font-size:25px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <button class="back" onclick="history.back()">‹</button>
+  <div class="logo">Kits<span>u</span>mi</div>
+  <div class="spacer"></div>
+  <div class="xp">⭐ <span id="headerXP">0</span></div>
+</header>
+
+<main>
+  <section class="profile">
+    <div class="photo-wrap">
+      <div class="photo" id="photoBox">🦊<img id="profilePhoto" alt="Foto profil"></div>
+      <input id="photoInput" type="file" accept="image/*" hidden onchange="changePhoto(event)">
+    </div>
+
+    <div class="profile-name" id="profileName">Widi</div>
+    <div class="level">Pemula</div>
+  </section>
+
+  <section class="stats">
+    <button class="stat" onclick="showStreak()">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-label">Streak</div>
+      <div class="stat-value" id="streak">0 hari</div>
+    </button>
+    <button class="stat" onclick="showXP()">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-label">XP</div>
+      <div class="stat-value" id="xpValue">0</div>
+    </button>
+    <button class="stat" onclick="showActivity()">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-label">Aktivitas</div>
+      <div class="stat-value" id="lessons">0</div>
+    </button>
+  </section>
+
+  <section class="menu">
+    <button onclick="openSettings()">
+      <span class="menu-icon">⚙️</span>
+      <span class="menu-text">Pengaturan</span>
+      <span class="arrow">›</span>
+    </button>
+    <button onclick="aboutKitsumi()">
+      <span class="menu-icon">ⓘ</span>
+      <span class="menu-text">Tentang Kitsumi</span>
+      <span class="arrow">›</span>
+    </button>
+    <button onclick="logoutKitsumi()">
+      <span class="menu-icon">↪</span>
+      <span class="menu-text">Keluar</span>
+      <span class="arrow">›</span>
+    </button>
+  </section>
+</main>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item">
+    <span class="nav-icon">🏠</span><span>Beranda</span>
+  </a>
+  <a href="materi.html" class="nav-item">
+    <span class="nav-icon">📖</span><span>Materi</span>
+  </a>
+  <a href="profil.html" class="nav-item nav-active">
+    <span class="nav-icon">♙</span><span>Profil</span>
+  </a>
+</nav>
+</div>
+
+
+<div class="modal" id="settingsModal" onclick="closeSettings(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h2>⚙️ Pengaturan</h2>
+
+    <button class="setting-row" onclick="choosePhoto()">
+      <span>📷</span><strong>Ganti foto profil</strong><b>›</b>
+    </button>
+
+    <button class="setting-row" onclick="openNameEditorFromSettings()">
+      <span>✏️</span><strong>Ubah nama profil</strong><b>›</b>
+    </button>
+
+    <button class="setting-row" onclick="closeSettings(); alert('Pengaturan suara akan kita sambungkan ke semua materi nanti 🔊')">
+      <span>🔊</span><strong>Suara</strong><b>›</b>
+    </button>
+
+    <button class="setting-row" onclick="closeSettings(); alert('Tema akan kita sempurnakan nanti 🌙')">
+      <span>🌙</span><strong>Tampilan</strong><b>›</b>
+    </button>
+
+    <button class="cancel-wide" onclick="closeSettings()">Tutup</button>
+  </div>
+</div>
+
+<div class="modal" id="detailModal" onclick="closeDetail(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h2 id="detailTitle">Detail</h2>
+    <p id="detailText" class="detail-text"></p>
+    <button class="cancel-wide" onclick="closeDetail()">Tutup</button>
+  </div>
+</div>
+
+<div class="modal" id="nameModal" onclick="closeNameEditor(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h2>Ubah nama</h2>
+    <input class="field" id="nameInput" maxlength="24" placeholder="Masukkan nama">
+    <div class="sheet-actions">
+      <button class="cancel" onclick="closeNameEditor()">Batal</button>
+      <button class="save" onclick="saveName()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function readNumber(key){
+  const n=parseInt(localStorage.getItem(key)||"0",10);
+  return Number.isFinite(n)?n:0;
+}
+
+function loadProfile(){
+  const name=localStorage.getItem("kitsumiProfileName")||"Widi";
+  document.getElementById("profileName").textContent=name;
+
+  const xp=readNumber("kitsumiXP");
+  document.getElementById("headerXP").textContent=xp;
+  document.getElementById("xpValue").textContent=xp;
+  document.getElementById("streak").textContent=readNumber("kitsumiStreak")+" hari";
+  document.getElementById("lessons").textContent=readNumber("kitsumiLessons");
+
+  const savedPhoto=localStorage.getItem("kitsumiProfilePhoto");
+  if(savedPhoto){
+    const img=document.getElementById("profilePhoto");
+    img.src=savedPhoto; img.style.display="block";
+    document.getElementById("photoBox").childNodes[0].textContent="";
+  }
+}
+
+function choosePhoto(){document.getElementById("photoInput").click()}
+
+function changePhoto(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  if(!file.type.startsWith("image/"))return;
+  const reader=new FileReader();
+  reader.onload=function(){
+    try{
+      localStorage.setItem("kitsumiProfilePhoto",reader.result);
+      loadProfile();
+    }catch(e){
+      alert("Foto terlalu besar untuk disimpan di perangkat.");
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+
+function openSettings(){
+  document.getElementById("settingsModal").classList.add("show");
+}
+function closeSettings(event){
+  if(event && event.target!==event.currentTarget)return;
+  document.getElementById("settingsModal").classList.remove("show");
+}
+function openNameEditorFromSettings(){
+  closeSettings();
+  setTimeout(openNameEditor,120);
+}
+
+function showStreak(){
+  const streak=readNumber("kitsumiStreak");
+  document.getElementById("detailTitle").textContent="🔥 Streak";
+  document.getElementById("detailText").textContent =
+    "Streak kamu saat ini adalah "+streak+" hari. Nanti fitur ini bisa kita hubungkan dengan sistem belajar harian Kitsumi.";
+  document.getElementById("detailModal").classList.add("show");
+}
+function showXP(){
+  const xp=readNumber("kitsumiXP");
+  document.getElementById("detailTitle").textContent="⭐ XP";
+  document.getElementById("detailText").textContent =
+    "Total XP kamu adalah "+xp+" XP. Semua sumber XP dari fitur Kitsumi nantinya bisa dikumpulkan di sini.";
+  document.getElementById("detailModal").classList.add("show");
+}
+function showActivity(){
+  const count=readNumber("kitsumiLessons");
+  document.getElementById("detailTitle").textContent="🎯 Aktivitas";
+  document.getElementById("detailText").textContent =
+    "Aktivitas tercatat: "+count+". Bagian ini sengaja dibuat fleksibel supaya nanti bisa kita isi dengan fitur yang kamu inginkan.";
+  document.getElementById("detailModal").classList.add("show");
+}
+function closeDetail(event){
+  if(event && event.target!==event.currentTarget)return;
+  document.getElementById("detailModal").classList.remove("show");
+}
+
+function openNameEditor(){
+  document.getElementById("nameInput").value =
+    localStorage.getItem("kitsumiProfileName")||"Widi";
+  document.getElementById("nameModal").classList.add("show");
+  setTimeout(()=>document.getElementById("nameInput").focus(),100);
+}
+function closeNameEditor(event){
+  if(event && event.target!==event.currentTarget)return;
+  document.getElementById("nameModal").classList.remove("show");
+}
+function saveName(){
+  const value=document.getElementById("nameInput").value.trim();
+  if(!value){alert("Nama belum diisi.");return}
+  localStorage.setItem("kitsumiProfileName",value);
+  loadProfile();
+  closeNameEditor();
+}
+
+function aboutKitsumi(){
+  alert("🦊 Kitsumi\\nBelajar bahasa Jepang dengan cara yang ringan, menyenangkan, dan konsisten.");
+}
+
+function logoutKitsumi(){
+  if(confirm("Keluar dari profil Kitsumi?")) alert("Fitur akun akan kita sempurnakan nanti.");
+}
+
+loadProfile();
+</script>
+</body>
+</html>
