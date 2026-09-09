@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kitsumi — Kaiwa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f7fbff;color:#173f72;font-family:"Nunito","Arial Rounded MT Bold",system-ui,sans-serif;font-weight:700}
+button{font-family:inherit}
+.app{max-width:620px;margin:auto;min-height:100vh;padding-bottom:90px}
+header{height:76px;background:#fff;display:flex;align-items:center;padding:0 18px;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(30,70,120,.07)}
+.back{border:0;background:#edf4fa;width:44px;height:44px;border-radius:15px;color:#173f72;font-size:28px;cursor:pointer}
+.logo{font-size:28px;font-weight:900;color:#173f72}.logo span{color:#ef5d82}
+.spacer{flex:1}.xp{font-size:14px;font-weight:900}
+main{padding:18px 16px}
+.hero{background:linear-gradient(115deg,#eaf5ff,#fff6fa);border:1px solid #deebf6;border-radius:26px;padding:19px;margin-bottom:17px}
+.hero-top{display:flex;align-items:center;justify-content:space-between}
+.eyebrow{font-size:12px;letter-spacing:1px;color:#7d91a3;font-weight:800}
+h1{font-size:31px;font-weight:900;margin-top:2px}
+.hero p{font-size:13px;color:#7c90a2;line-height:1.45;margin-top:5px}
+.fox{font-size:52px}
+.progress{height:9px;background:#dfeaf3;border-radius:99px;overflow:hidden;margin-top:14px}
+.progress i{display:block;height:100%;width:0;background:#58cc02;border-radius:99px;transition:.3s}
+.progress-text{display:flex;justify-content:space-between;color:#8295a6;font-size:11px;margin-top:6px}
+.section-title{font-size:18px;font-weight:900;margin:20px 3px 9px}
+.cards{display:grid;gap:11px}
+.kaiwa-card{width:100%;border:1px solid #e2ebf2;border-bottom:4px solid #d7e3eb;background:#fff;border-radius:21px;padding:14px;text-align:left;display:flex;align-items:center;gap:13px;color:#173f72;cursor:pointer;transition:.12s;touch-action:manipulation}
+.kaiwa-card:active{transform:translateY(2px);border-bottom-width:2px}
+.card-icon{width:58px;height:58px;border-radius:17px;background:#edf5ff;display:grid;place-items:center;font-size:29px;flex:none}
+.card-info{min-width:0;flex:1}.card-info h2{font-size:17px;font-weight:900}.card-info p{font-size:11px;color:#8b9baa;margin-top:4px;font-weight:700}
+.card-progress{height:5px;background:#e9eef3;border-radius:99px;overflow:hidden;margin-top:8px}.card-progress i{display:block;height:100%;width:0;background:#58cc02}
+.card-right{font-size:27px;color:#91a0ad}.done .card-icon{background:#dff8eb}.done .card-right{color:#15985c}
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(620px,100%);
+  height:82px;
+  background:#fff;
+  border-top:1px solid #edf0f5;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  z-index:20;
+  box-shadow:0 -5px 18px rgba(20,50,90,.045);
+  padding-bottom:2px;
+}
+.nav-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  text-decoration:none;
+  color:#a7b0bb;
+  font-size:13px;
+  font-weight:800;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-icon{
+  display:block;
+  height:31px;
+  line-height:31px;
+  font-size:27px;
+  filter:grayscale(.15);
+}
+.nav-item.nav-active{
+  color:#2f80e7;
+}
+.nav-item:active{
+  transform:translateY(1px);
+}
+@media(max-width:390px){
+  .bottom-nav{height:78px}
+  .nav-item{font-size:12px}
+  .nav-icon{font-size:25px}
+}
+
+.screen{display:none;position:fixed;inset:0;background:#f7fbff;z-index:40;overflow:auto}
+.wrap{max-width:620px;margin:auto;min-height:100vh;padding:14px 17px 28px}
+.top{display:flex;align-items:center;height:52px;gap:10px}.top-back{width:42px;height:42px;border:0;border-radius:14px;background:#edf4fa;font-size:27px;color:#173f72}.title{font-size:18px;font-weight:900}.num{margin-left:auto;color:#8295a6;font-size:12px}
+.lesson-progress{height:10px;background:#e1ebf2;border-radius:99px;overflow:hidden;margin:7px 0 15px}.lesson-progress i{display:block;height:100%;width:0;background:#58cc02;border-radius:99px;transition:.25s}
+.lesson-card{background:#fff;border:1px solid #e1ebf3;border-radius:26px;padding:17px;box-shadow:0 7px 22px rgba(30,75,120,.06);text-align:center}
+.scene{text-align:center;font-size:12px;color:#7d91a3;text-transform:uppercase;letter-spacing:.7px;font-weight:800}
+.lesson-title{text-align:center;font-size:25px;font-weight:900;margin:4px 0 2px}.lesson-sub{text-align:center;font-size:12px;color:#8b9baa}
+.dialogue{display:grid;gap:10px;margin-top:18px;max-width:100%;margin-left:auto;margin-right:auto}
+.bubble{border:2px solid #e1ebf2;background:#f8fbfd;border-radius:19px;padding:13px 14px;text-align:center;cursor:pointer;transition:.12s;touch-action:manipulation}
+.bubble:active{transform:scale(.99)}.bubble.kitsu{border-bottom-left-radius:6px}.bubble.you{border-bottom-right-radius:6px;background:#eef7ff;margin-left:24px}
+.speaker{font-size:11px;color:#2f80e7;font-weight:900;margin-bottom:4px}.jp{font-family:"Noto Sans JP",sans-serif;font-size:22px;font-weight:800;color:#173f72}.romaji{font-size:12px;color:#6f8498;margin-top:3px}.meaning{font-size:12px;color:#4f667a;margin-top:3px;display:none}
+.bubble.open .meaning{display:block}
+.bubble.open{background:#fff}
+.actions{display:flex;justify-content:center;gap:9px;margin-top:14px}.actions button{width:min(340px,100%)}
+.listen,.next{height:52px;border-radius:17px;font-weight:900;cursor:pointer;touch-action:manipulation}
+.listen{border:2px solid #dceaf2;background:#fff;color:#2f80e7;box-shadow:0 3px #dceaf2}.next{border:2px solid #46a302;background:#58cc02;color:#fff;box-shadow:0 3px #46a302}
+.tip{background:#fff7e5;border-radius:14px;padding:10px 12px;color:#80682d;font-size:11px;line-height:1.4;margin-top:11px}
+.finish{text-align:center;padding:70px 15px 20px}.finish .emoji{font-size:62px}.finish h2{font-size:29px;font-weight:900;margin:10px 0 5px}.finish p{color:#7d8f9e;font-size:13px;line-height:1.5}
+.finish-btn{width:100%;height:52px;margin-top:13px;border:0;border-radius:17px;background:#2f80e7;color:#fff;font-weight:900;box-shadow:0 3px #2065bd}
+
+@media(max-width:390px){h1{font-size:28px}.fox{font-size:46px}.jp{font-size:20px}}
+
+.answer-label{text-align:center;margin:16px 0 9px;color:#7d91a3;font-size:12px;font-weight:800}
+.answer-cards{display:grid;gap:9px;max-width:100%;margin:0 auto}
+.answer-card{width:100%;min-height:60px;border:2px solid #dce8f1;border-bottom:4px solid #d4e1e9;border-radius:17px;background:#fff;color:#173f72;text-align:center;padding:10px 14px;cursor:pointer;touch-action:manipulation;transition:.12s}
+.answer-card:active{transform:translateY(2px);border-bottom-width:2px}
+.answer-card .answer-jp{font-family:"Noto Sans JP",sans-serif;font-size:19px;font-weight:800}
+.answer-card .answer-id{font-size:11px;color:#8b9baa;margin-top:2px}
+.answer-card.correct{border-color:#58cc02;background:#eaffdf;color:#15985c}
+.answer-card.wrong{border-color:#ef5d82;background:#fff0f3;color:#d13d62}
+.answer-feedback{text-align:center;min-height:22px;margin-top:8px;font-size:12px;font-weight:900}
+.answer-feedback.good{color:#15985c}.answer-feedback.bad{color:#d13d62}
+
+
+
+/* ===== CHECKLIST KAIWA — SAMA SEPERTI CHECKLIST KANJI ===== */
+.card-check{
+  width:56px;
+  height:56px;
+  min-width:56px;
+  border-radius:50%;
+  border:3px solid #dbe5ed;
+  background:#fff;
+  color:#a6b4bf;
+  display:grid;
+  place-items:center;
+  position:relative;
+  padding:0;
+  margin:0;
+  cursor:pointer;
+  flex:none;
+  font-size:0;
+  touch-action:manipulation;
+  transition:transform .12s ease, border-color .16s ease, background .16s ease;
+}
+.card-check::before{
+  content:"";
+  width:9px;
+  height:9px;
+  border:3px solid #aebbc5;
+  border-radius:50%;
+  background:#fff;
+  opacity:1;
+}
+.card-check.checked{
+  border-color:#39bd83;
+  background:#e5faef;
+  color:#20a86b;
+  box-shadow:inset 0 0 0 2px #fff;
+}
+.card-check.checked::before{
+  width:23px;
+  height:13px;
+  border:0;
+  border-left:4px solid #20a86b;
+  border-bottom:4px solid #20a86b;
+  border-radius:0;
+  background:transparent;
+  transform:rotate(-45deg) translate(1px,-2px);
+}
+.card-check:active{transform:scale(.91)}
+.card-right{font-size:27px;color:#91a0ad}
+.kaiwa-card.done .card-right{color:#91a0ad}
+@media(max-width:390px){
+  .card-check{width:52px;height:52px;min-width:52px}
+  .card-check.checked::before{width:21px;height:12px}
+}
+
+/* ===== HANYA SATU PROGRESS BAR UTAMA ===== */
+.card-progress{
+  display:none !important;
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<button class="back" onclick="history.back()">‹</button>
+<div class="logo">Kits<span>u</span>mi</div><div class="spacer"></div>
+<div class="xp">⭐ <span id="xp">0</span></div>
+</header>
+
+<main>
+<section class="hero">
+<div class="hero-top">
+<div><div class="eyebrow">SPEAKING • KAIWA</div><h1>Latihan Kaiwa</h1></div>
+<div class="fox">🦊</div>
+</div>
+<p>Kitsu bertanya, lalu kamu memilih kartu jawaban. Ada 10 pertanyaan per topik agar lebih mudah menghafal.</p>
+<div class="progress"><i id="totalBar"></i></div>
+<div class="progress-text"><span id="totalText">0 / 30 topik</span><span>30 Kaiwa</span></div>
+</section>
+
+<div class="section-title">Pilih topik</div><div class="check-note">Centang jika sudah hafal • Bisa di-uncheck • Tersimpan otomatis</div>
+<div class="cards" id="cards"></div>
+</main>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Beranda</span></a>
+  <a href="materi.html" class="nav-item nav-active"><span class="nav-icon">📖</span><span>Materi</span></a>
+  <a href="profil.html" class="nav-item"><span class="nav-icon">♙</span><span>Profil</span></a>
+</nav>
+</div>
+
+<div class="screen" id="lessonScreen">
+<div class="wrap">
+<div class="top">
+<button class="top-back" onclick="closeLesson()">‹</button>
+<div class="title" id="lessonTopTitle">Salam</div>
+<div class="num" id="lessonNum">1 / 4</div>
+</div>
+<div class="lesson-progress"><i id="lessonProgress"></i></div>
+
+<section class="lesson-card" id="lessonContent">
+<div class="scene" id="scene">SEHARI-HARI</div>
+<div class="lesson-title" id="lessonTitle">Salam</div>
+<div class="lesson-sub">Tap percakapan untuk membuka arti</div>
+
+<div class="dialogue" id="dialogue"></div>
+<div class="answer-label" id="answerLabel">Pilih jawabanmu:</div>
+<div class="answer-cards" id="answerCards"></div>
+<div class="answer-feedback" id="answerFeedback"></div>
+
+<div class="tip">💡 Dengarkan pertanyaan Kitsu, lalu pilih kartu jawaban yang paling tepat.</div>
+<div class="actions">
+<button class="listen" onclick="speakCurrent()">🔊 Dengarkan</button>
+<button class="next" onclick="nextLine()" style="display:none">Lanjut →</button>
+</div>
+</section>
+
+<section class="finish" id="finish" style="display:none">
+<div class="emoji">🎉</div>
+<h2>Kaiwa selesai!</h2>
+<p id="finishText">Bagus! Kamu sudah menyelesaikan satu percakapan.</p>
+<button class="finish-btn" onclick="closeLesson()">Kembali ke Kaiwa</button>
+</section>
+</div>
+</div>
+
+<script>
+const TOPICS = [
+["Salam & Perkenalan","👋","Dasar"],
+["Nama Kitsu","🦊","Perkenalan"],
+["Asal Negara","🌏","Perkenalan"],
+["Pelajar","🎒","Perkenalan"],
+["Terima Kasih","🙏","Dasar"],
+["Minta Maaf","🙇","Dasar"],
+["Tanya Kabar","😊","Sehari-hari"],
+["Cuaca","☀️","Sehari-hari"],
+["Makanan","🍚","Sehari-hari"],
+["Minuman","🥤","Sehari-hari"],
+["Di Restoran","🍜","Restoran"],
+["Pesan Makanan","🍱","Restoran"],
+["Harga","💴","Belanja"],
+["Belanja","🛍️","Belanja"],
+["Di Toko","🏪","Belanja"],
+["Stasiun","🚉","Perjalanan"],
+["Arah","🧭","Perjalanan"],
+["Naik Kereta","🚆","Perjalanan"],
+["Bertemu Teman","🤝","Teman"],
+["Mengajak Pergi","✨","Teman"],
+["Hobi","🎮","Teman"],
+["Waktu","⏰","Sehari-hari"],
+["Hari Ini","📅","Sehari-hari"],
+["Di Rumah","🏠","Sehari-hari"],
+["Belajar Jepang","📚","Belajar"],
+["Minta Bantuan","🆘","Sehari-hari"],
+["Meminta Izin","✋","Sehari-hari"],
+["Tidak Mengerti","🤔","Belajar"],
+["Sampai Jumpa","👋","Dasar"],
+["Percakapan Santai","💬","Review"]
+];
+
+/* Setiap topik: Kitsu bertanya -> pengguna memilih kartu jawaban.
+   answer[0] adalah jawaban benar; opsi lain adalah pengecoh. */
+const KAIWA = [[["Kitsu","こんにちは！","Konnichiwa!","Halo!",[["こんにちは！","Konnichiwa!","Halo!",1],["さようなら。","Sayounara.","Sampai jumpa.",0],["ありがとう。","Arigatou.","Terima kasih.",0]]],["Kitsu","おはようございます。","Ohayou gozaimasu.","Selamat pagi.",[["おはようございます。","Ohayou gozaimasu.","Selamat pagi.",1],["こんばんは。","Konbanwa.","Selamat malam.",0],["おやすみなさい。","Oyasuminasai.","Selamat tidur.",0]]],["Kitsu","こんばんは！","Konbanwa!","Selamat malam!",[["こんばんは！","Konbanwa!","Selamat malam!",1],["おはようございます。","Ohayou gozaimasu.","Selamat pagi.",0],["こんにちは。","Konnichiwa.","Halo.",0]]],["Kitsu","はじめまして。","Hajimemashite.","Salam kenal.",[["はじめまして。","Hajimemashite.","Salam kenal.",1],["また明日。","Mata ashita.","Sampai besok.",0],["いただきます。","Itadakimasu.","Selamat makan.",0]]],["Kitsu","よろしくお願いします。","Yoroshiku onegaishimasu.","Senang berkenalan.",[["よろしくお願いします。","Yoroshiku onegaishimasu.","Senang berkenalan.",1],["すみません。","Sumimasen.","Permisi/maaf.",0],["大丈夫です。","Daijoubu desu.","Tidak apa-apa.",0]]],["Kitsu","おはよう！","Ohayou!","Selamat pagi!",[["おはよう！","Ohayou!","Selamat pagi!",1],["こんばんは。","Konbanwa.","Selamat malam.",0],["ありがとう。","Arigatou.","Terima kasih.",0]]],["Kitsu","また会いましたね。","Mata aimashita ne.","Kita bertemu lagi ya.",[["はい、うれしいです。","Hai, ureshii desu.","Ya, saya senang.",1],["おやすみなさい。","Oyasuminasai.","Selamat tidur.",0],["水をください。","Mizu o kudasai.","Tolong air.",0]]],["Kitsu","初めまして。","Hajimemashite.","Senang berkenalan.",[["初めまして。","Hajimemashite.","Senang berkenalan.",1],["さようなら。","Sayounara.","Sampai jumpa.",0],["いただきます。","Itadakimasu.","Selamat makan.",0]]],["Kitsu","今日はよろしくお願いします。","Kyou wa yoroshiku onegaishimasu.","Mohon bantuannya hari ini.",[["こちらこそ、よろしくお願いします。","Kochira koso, yoroshiku onegaishimasu.","Saya juga, senang bekerja sama.",1],["おいしいです。","Oishii desu.","Enak.",0],["どこですか。","Doko desu ka.","Di mana?",0]]],["Kitsu","じゃあ、またね。","Jaa, mata ne.","Kalau begitu, sampai nanti.",[["またね！","Mata ne!","Sampai nanti!",1],["ありがとうございます。","Arigatou gozaimasu.","Terima kasih.",0],["何時ですか。","Nanji desu ka.","Jam berapa?",0]]]],[["Kitsu","お名前は何ですか。","Onamae wa nan desu ka.","Siapa nama kamu?",[["キツです。","Kitsu desu.","Nama saya Kitsu.",1],["学生です。","Gakusei desu.","Saya pelajar.",0],["元気です。","Genki desu.","Saya baik.",0]]],["Kitsu","お名前を教えてください。","Onamae o oshiete kudasai.","Tolong beri tahu nama kamu.",[["キツです。","Kitsu desu.","Nama saya Kitsu.",1],["日本語です。","Nihongo desu.","Bahasa Jepang.",0],["先生です。","Sensei desu.","Guru.",0]]],["Kitsu","キツさんですか。","Kitsu-san desu ka.","Apakah kamu Kitsu?",[["はい、そうです。","Hai, sou desu.","Ya, benar.",1],["いいえ、学生です。","Iie, gakusei desu.","Bukan, saya pelajar.",0],["元気です。","Genki desu.","Saya baik.",0]]],["Kitsu","あなたのお名前は？","Anata no onamae wa?","Siapa namamu?",[["キツです。","Kitsu desu.","Nama saya Kitsu.",1],["駅です。","Eki desu.","Stasiun.",0],["水です。","Mizu desu.","Air.",0]]],["Kitsu","名前はキツですか。","Namae wa Kitsu desu ka.","Apakah namanya Kitsu?",[["はい、キツです。","Hai, Kitsu desu.","Ya, Kitsu.",1],["はい、学生です。","Hai, gakusei desu.","Ya, saya pelajar.",0],["いい天気です。","Ii tenki desu.","Cuacanya bagus.",0]]],["Kitsu","お名前を教えてください。","Onamae o oshiete kudasai.","Tolong beri tahu nama kamu.",[["キツです。","Kitsu desu.","Nama saya Kitsu.",1],["学生です。","Gakusei desu.","Saya pelajar.",0],["日本から来ました。","Nihon kara kimashita.","Saya dari Jepang.",0]]],["Kitsu","名前はキツですか。","Namae wa Kitsu desu ka.","Namamu Kitsu?",[["はい、キツです。","Hai, Kitsu desu.","Ya, Kitsu.",1],["いい天気です。","Ii tenki desu.","Cuacanya bagus.",0],["右です。","Migi desu.","Di kanan.",0]]],["Kitsu","名前をもう一度お願いします。","Namae o mou ichido onegaishimasu.","Tolong sebutkan nama sekali lagi.",[["キツです。","Kitsu desu.","Kitsu.",1],["水です。","Mizu desu.","Air.",0],["駅です。","Eki desu.","Stasiun.",0]]],["Kitsu","キツさんですね。","Kitsu-san desu ne.","Kamu Kitsu ya.",[["はい、そうです。","Hai, sou desu.","Ya, benar.",1],["いいえ、食べません。","Iie, tabemasen.","Tidak, saya tidak makan.",0],["明日です。","Ashita desu.","Besok.",0]]],["Kitsu","どうぞよろしく、キツさん。","Douzo yoroshiku, Kitsu-san.","Senang berkenalan, Kitsu.",[["こちらこそ！","Kochira koso!","Saya juga!",1],["おやすみなさい。","Oyasuminasai.","Selamat tidur.",0],["いくらですか。","Ikura desu ka.","Berapa harganya?",0]]]],[["Kitsu","どこから来ましたか。","Doko kara kimashita ka.","Kamu berasal dari mana?",[["インドネシアから来ました。","Indonesia kara kimashita.","Saya berasal dari Indonesia.",1],["日本から来ました。","Nihon kara kimashita.","Saya berasal dari Jepang.",0],["駅から来ました。","Eki kara kimashita.","Saya datang dari stasiun.",0]]],["Kitsu","出身はどこですか。","Shusshin wa doko desu ka.","Asalmu dari mana?",[["インドネシアです。","Indonesia desu.","Indonesia.",1],["東京です。","Tokyo desu.","Tokyo.",0],["学校です。","Gakkou desu.","Sekolah.",0]]],["Kitsu","インドネシアの人ですか。","Indonesia no hito desu ka.","Apakah kamu orang Indonesia?",[["はい、そうです。","Hai, sou desu.","Ya, benar.",1],["いい天気です。","Ii tenki desu.","Cuacanya bagus.",0],["右です。","Migi desu.","Di kanan.",0]]],["Kitsu","どこの国ですか。","Doko no kuni desu ka.","Negara mana?",[["インドネシアです。","Indonesia desu.","Indonesia.",1],["水です。","Mizu desu.","Air.",0],["学生です。","Gakusei desu.","Pelajar.",0]]],["Kitsu","インドネシアから来ましたか。","Indonesia kara kimashita ka.","Apakah kamu dari Indonesia?",[["はい、来ました。","Hai, kimashita.","Ya, saya berasal dari sana.",1],["いいえ、学生です。","Iie, gakusei desu.","Bukan, saya pelajar.",0],["はい、元気です。","Hai, genki desu.","Ya, saya baik.",0]]],["Kitsu","出身はどこですか。","Shusshin wa doko desu ka.","Asal kamu dari mana?",[["インドネシアです。","Indonesia desu.","Indonesia.",1],["学生です。","Gakusei desu.","Pelajar.",0],["駅です。","Eki desu.","Stasiun.",0]]],["Kitsu","インドネシアに住んでいますか。","Indonesia ni sunde imasu ka.","Apakah tinggal di Indonesia?",[["はい、住んでいます。","Hai, sunde imasu.","Ya, saya tinggal di sana.",1],["はい、食べます。","Hai, tabemasu.","Ya, saya makan.",0],["右に行きます。","Migi ni ikimasu.","Pergi ke kanan.",0]]],["Kitsu","日本へ行ったことがありますか。","Nihon e itta koto ga arimasu ka.","Pernah pergi ke Jepang?",[["まだありません。","Mada arimasen.","Belum pernah.",1],["五百円です。","Gohyaku en desu.","500 yen.",0],["元気です。","Genki desu.","Saya baik.",0]]],["Kitsu","どの国の人ですか。","Dono kuni no hito desu ka.","Kamu orang dari negara mana?",[["インドネシアの人です。","Indonesia no hito desu.","Saya orang Indonesia.",1],["日本語を飲みます。","Nihongo o nomimasu.","Saya minum bahasa Jepang.",0],["駅を食べます。","Eki o tabemasu.","Saya makan stasiun.",0]]],["Kitsu","国はインドネシアですね。","Kuni wa Indonesia desu ne.","Negaramu Indonesia ya.",[["はい、そうです。","Hai, sou desu.","Ya, benar.",1],["いいえ、右です。","Iie, migi desu.","Tidak, kanan.",0],["おいしいです。","Oishii desu.","Enak.",0]]]],[["Kitsu","学生ですか。","Gakusei desu ka.","Apakah kamu pelajar?",[["はい、学生です。","Hai, gakusei desu.","Ya, saya pelajar.",1],["はい、元気です。","Hai, genki desu.","Ya, saya baik.",0],["いいえ、駅です。","Iie, eki desu.","Bukan, stasiun.",0]]],["Kitsu","何を勉強しますか。","Nani o benkyou shimasu ka.","Apa yang kamu pelajari?",[["日本語を勉強します。","Nihongo o benkyou shimasu.","Saya belajar bahasa Jepang.",1],["水を飲みます。","Mizu o nomimasu.","Saya minum air.",0],["駅へ行きます。","Eki e ikimasu.","Saya pergi ke stasiun.",0]]],["Kitsu","学校へ行きますか。","Gakkou e ikimasu ka.","Apakah pergi ke sekolah?",[["はい、行きます。","Hai, ikimasu.","Ya, saya pergi.",1],["はい、食べます。","Hai, tabemasu.","Ya, saya makan.",0],["右です。","Migi desu.","Di kanan.",0]]],["Kitsu","日本語が好きですか。","Nihongo ga suki desu ka.","Apakah suka bahasa Jepang?",[["はい、好きです。","Hai, suki desu.","Ya, saya suka.",1],["いい天気です。","Ii tenki desu.","Cuacanya bagus.",0],["五百円です。","Gohyaku en desu.","500 yen.",0]]],["Kitsu","毎日勉強しますか。","Mainichi benkyou shimasu ka.","Apakah belajar setiap hari?",[["はい、勉強します。","Hai, benkyou shimasu.","Ya, saya belajar.",1],["いいえ、食べます。","Iie, tabemasu.","Tidak, saya makan.",0],["駅です。","Eki desu.","Ini stasiun.",0]]],["Kitsu","何を勉強していますか。","Nani o benkyou shite imasu ka.","Sedang belajar apa?",[["日本語を勉強しています。","Nihongo o benkyou shite imasu.","Saya sedang belajar bahasa Jepang.",1],["ラーメンを食べています。","Ramen o tabete imasu.","Sedang makan ramen.",0],["駅にいます。","Eki ni imasu.","Ada di stasiun.",0]]],["Kitsu","学校は好きですか。","Gakkou wa suki desu ka.","Suka sekolah?",[["はい、好きです。","Hai, suki desu.","Ya, suka.",1],["はい、飲みます。","Hai, nomimasu.","Ya, minum.",0],["右が好きです。","Migi ga suki desu.","Suka kanan.",0]]],["Kitsu","日本語は難しいですか。","Nihongo wa muzukashii desu ka.","Bahasa Jepang sulit?",[["少し難しいです。","Sukoshi muzukashii desu.","Sedikit sulit.",1],["五百円です。","Gohyaku en desu.","500 yen.",0],["駅は食べます。","Eki wa tabemasu.","Stasiun dimakan.",0]]],["Kitsu","毎日勉強しますか。","Mainichi benkyou shimasu ka.","Belajar setiap hari?",[["はい、毎日勉強します。","Hai, mainichi benkyou shimasu.","Ya, belajar setiap hari.",1],["いいえ、毎日食べます。","Iie, mainichi tabemasu.","Tidak, makan setiap hari.",0],["駅に買います。","Eki ni kaimasu.","Membeli di stasiun.",0]]],["Kitsu","宿題は終わりましたか。","Shukudai wa owari mashita ka.","Apakah PR sudah selesai?",[["はい、終わりました。","Hai, owari mashita.","Ya, sudah selesai.",1],["いいえ、飲みました。","Iie, nomimashita.","Tidak, sudah minum.",0],["明日は右です。","Ashita wa migi desu.","Besok adalah kanan.",0]]]],[["Kitsu","ありがとうございます。","Arigatou gozaimasu.","Terima kasih.",[["どういたしまして。","Dou itashimashite.","Sama-sama.",1],["よかったです。","Yokatta desu.","Syukurlah.",0],["いいえ、どういたしまして。","Iie, dou itashimashite.","Sama-sama.",0]]],["Kitsu","助かりました！","Tasukarimashita!","Sangat membantu!",[["よかったです。","Yokatta desu.","Syukurlah.",1],["どういたしまして。","Dou itashimashite.","Sama-sama.",0],["いいえ、どういたしまして。","Iie, dou itashimashite.","Sama-sama.",0]]],["Kitsu","お手伝いありがとうございます。","Otetsudai arigatou gozaimasu.","Terima kasih sudah membantu.",[["いいえ、どういたしまして。","Iie, dou itashimashite.","Sama-sama.",1],["どういたしまして。","Dou itashimashite.","Sama-sama.",0],["よかったです。","Yokatta desu.","Syukurlah.",0]]],["Kitsu","本当にありがとう。","Hontou ni arigatou.","Terima kasih banyak.",[["こちらこそ。","Kochira koso.","Sama-sama.",1],["どういたしまして。","Dou itashimashite.","Sama-sama.",0],["よかったです。","Yokatta desu.","Syukurlah.",0]]],["Kitsu","ありがとうと言われたら何と言いますか。","Arigatou to iwaretara nan to iimasu ka.","Apa yang dikatakan saat diberi ucapan terima kasih?",[["どういたしまして。","Dou itashimashite.","Sama-sama.",1],["よかったです。","Yokatta desu.","Syukurlah.",0],["いいえ、どういたしまして。","Iie, dou itashimashite.","Sama-sama.",0]]],["Kitsu","助けてくれてありがとう。","Tasukete kurete arigatou.","Terima kasih sudah membantu.",[["どういたしまして。","Dou itashimashite.","Sama-sama.",1],["おはようございます。","Ohayou gozaimasu.","Selamat pagi.",0],["どこからですか。","Doko kara desu ka.","Dari mana?",0]]],["Kitsu","本当にありがとうございます。","Hontou ni arigatou gozaimasu.","Terima kasih banyak.",[["こちらこそ、ありがとうございます。","Kochira koso, arigatou gozaimasu.","Saya juga berterima kasih.",1],["いくらですか。","Ikura desu ka.","Berapa harganya?",0],["暑いですね。","Atsui desu ne.","Panas ya.",0]]],["Kitsu","ありがとうと言われたら？","Arigatou to iwaretara?","Kalau seseorang berkata terima kasih?",[["どういたしまして。","Dou itashimashite.","Sama-sama.",1],["いただきます。","Itadakimasu.","Selamat makan.",0],["おやすみ。","Oyasumi.","Selamat tidur.",0]]],["Kitsu","手伝ってくれて、ありがとう。","Tetsudatte kurete, arigatou.","Terima kasih sudah membantu.",[["いいえ、どういたしまして。","Iie, dou itashimashite.","Tidak, sama-sama.",1],["はい、駅です。","Hai, eki desu.","Ya, stasiun.",0],["ご飯ですか。","Gohan desu ka.","Nasi?",0]]],["Kitsu","感謝しています。","Kansha shiteimasu.","Saya berterima kasih.",[["こちらこそ、ありがとうございます。","Kochira koso, arigatou gozaimasu.","Saya juga berterima kasih.",1],["右へどうぞ。","Migi e douzo.","Silakan ke kanan.",0],["元気を食べます。","Genki o tabemasu.","Makan kesehatan.",0]]]],[["Kitsu","すみません。","Sumimasen.","Permisi / maaf.",[["大丈夫です。","Daijoubu desu.","Tidak apa-apa.",1],["気にしないでください。","Ki ni shinaide kudasai.","Jangan khawatir.",0],["大丈夫ですよ。","Daijoubu desu yo.","Tidak apa-apa.",0]]],["Kitsu","ごめんなさい。","Gomen nasai.","Maaf.",[["気にしないでください。","Ki ni shinaide kudasai.","Jangan khawatir.",1],["大丈夫です。","Daijoubu desu.","Tidak apa-apa.",0],["大丈夫ですよ。","Daijoubu desu yo.","Tidak apa-apa.",0]]],["Kitsu","遅れてすみません。","Okurete sumimasen.","Maaf terlambat.",[["大丈夫ですよ。","Daijoubu desu yo.","Tidak apa-apa.",1],["大丈夫です。","Daijoubu desu.","Tidak apa-apa.",0],["気にしないでください。","Ki ni shinaide kudasai.","Jangan khawatir.",0]]],["Kitsu","間違えてしまいました。","Machigaete shimaimashita.","Saya membuat kesalahan.",[["大丈夫です。","Daijoubu desu.","Tidak apa-apa.",1],["気にしないでください。","Ki ni shinaide kudasai.","Jangan khawatir.",0],["大丈夫ですよ。","Daijoubu desu yo.","Tidak apa-apa.",0]]],["Kitsu","謝るとき何と言いますか。","Ayamaru toki nan to iimasu ka.","Apa yang dikatakan saat meminta maaf?",[["すみません。","Sumimasen.","Maaf / permisi.",1],["大丈夫です。","Daijoubu desu.","Tidak apa-apa.",0],["気にしないでください。","Ki ni shinaide kudasai.","Jangan khawatir.",0]]],["Kitsu","遅れてすみません。","Okurete sumimasen.","Maaf saya terlambat.",[["大丈夫ですよ。","Daijoubu desu yo.","Tidak apa-apa.",1],["おいしいですよ。","Oishii desu yo.","Enak.",0],["五時です。","Goji desu.","Jam lima.",0]]],["Kitsu","ごめんね。","Gomen ne.","Maaf ya.",[["気にしないでください。","Ki ni shinaide kudasai.","Jangan dipikirkan.",1],["水を飲んでください。","Mizu o nonde kudasai.","Silakan minum air.",0],["右を買ってください。","Migi o katte kudasai.","Beli kanan.",0]]],["Kitsu","間違えてすみません。","Machigaete sumimasen.","Maaf saya salah.",[["大丈夫です。","Daijoubu desu.","Tidak apa-apa.",1],["いただきます。","Itadakimasu.","Selamat makan.",0],["駅ですか。","Eki desu ka.","Stasiun?",0]]],["Kitsu","迷惑をかけてごめんなさい。","Meiwaku o kakete gomen nasai.","Maaf sudah merepotkan.",[["大丈夫ですよ。","Daijoubu desu yo.","Tidak apa-apa.",1],["元気ですよ。","Genki desu yo.","Saya baik.",0],["明日ですよ。","Ashita desu yo.","Besok.",0]]],["Kitsu","すみません、もう一度言ってください。","Sumimasen, mou ichido itte kudasai.","Maaf, tolong katakan sekali lagi.",[["はい、わかりました。","Hai, wakarimashita.","Ya, saya mengerti.",1],["いい天気です。","Ii tenki desu.","Cuaca bagus.",0],["五百円です。","Gohyaku en desu.","500 yen.",0]]]],[["Kitsu","元気ですか。","Genki desu ka.","Apa kabar?",[["はい、元気です。","Hai, genki desu.","Ya, saya baik.",1],["元気です。","Genki desu.","Saya baik.",0],["いいです。","Ii desu.","Baik.",0]]],["Kitsu","今日はどうですか。","Kyou wa dou desu ka.","Bagaimana hari ini?",[["元気です。","Genki desu.","Saya baik.",1],["はい、元気です。","Hai, genki desu.","Ya, saya baik.",0],["いいです。","Ii desu.","Baik.",0]]],["Kitsu","最近どうですか。","Saikin dou desu ka.","Bagaimana akhir-akhir ini?",[["元気です。","Genki desu.","Saya baik.",1],["はい、元気です。","Hai, genki desu.","Ya, saya baik.",0],["いいです。","Ii desu.","Baik.",0]]],["Kitsu","調子はどうですか。","Choushi wa dou desu ka.","Bagaimana keadaanmu?",[["いいです。","Ii desu.","Baik.",1],["はい、元気です。","Hai, genki desu.","Ya, saya baik.",0],["元気です。","Genki desu.","Saya baik.",0]]],["Kitsu","元気じゃないですか。","Genki janai desu ka.","Kamu tidak baik-baik saja?",[["大丈夫です。","Daijoubu desu.","Saya baik-baik saja.",1],["はい、元気です。","Hai, genki desu.","Ya, saya baik.",0],["元気です。","Genki desu.","Saya baik.",0]]],["Kitsu","今日はどうですか。","Kyou wa dou desu ka.","Bagaimana hari ini?",[["元気です。","Genki desu.","Saya baik.",1],["学生です。","Gakusei desu.","Saya pelajar.",0],["右です。","Migi desu.","Di kanan.",0]]],["Kitsu","疲れていますか。","Tsukarete imasu ka.","Apakah lelah?",[["少し疲れています。","Sukoshi tsukarete imasu.","Sedikit lelah.",1],["少し高いです。","Sukoshi takai desu.","Sedikit mahal.",0],["駅を飲みます。","Eki o nomimasu.","Minum stasiun.",0]]],["Kitsu","気分はいいですか。","Kibun wa ii desu ka.","Apakah perasaanmu baik?",[["はい、いいです。","Hai, ii desu.","Ya, baik.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["三時です。","Sanji desu.","Jam tiga.",0]]],["Kitsu","元気そうですね。","Genki sou desu ne.","Kamu terlihat sehat ya.",[["ありがとうございます。","Arigatou gozaimasu.","Terima kasih.",1],["いただきます。","Itadakimasu.","Selamat makan.",0],["どこですか。","Doko desu ka.","Di mana?",0]]],["Kitsu","今日は忙しいですか。","Kyou wa isogashii desu ka.","Apakah sibuk hari ini?",[["はい、少し忙しいです。","Hai, sukoshi isogashii desu.","Ya, agak sibuk.",1],["はい、少し飲みます。","Hai, sukoshi nomimasu.","Ya, minum sedikit.",0],["駅はおいしいです。","Eki wa oishii desu.","Stasiun enak.",0]]]],[["Kitsu","今日はいい天気ですね。","Kyou wa ii tenki desu ne.","Hari ini cuacanya bagus ya.",[["そうですね。","Sou desu ne.","Iya, benar.",1],["はい、降っています。","Hai, futte imasu.","Ya, sedang hujan.",0],["はい、晴れます。","Hai, haremasu.","Ya, akan cerah.",0]]],["Kitsu","暑いですね。","Atsui desu ne.","Panas ya.",[["そうですね。","Sou desu ne.","Iya, benar.",1],["はい、降っています。","Hai, futte imasu.","Ya, sedang hujan.",0],["はい、晴れます。","Hai, haremasu.","Ya, akan cerah.",0]]],["Kitsu","寒いですね。","Samui desu ne.","Dingin ya.",[["そうですね。","Sou desu ne.","Iya, benar.",1],["はい、降っています。","Hai, futte imasu.","Ya, sedang hujan.",0],["はい、晴れます。","Hai, haremasu.","Ya, akan cerah.",0]]],["Kitsu","雨が降っていますか。","Ame ga futte imasu ka.","Apakah sedang hujan?",[["はい、降っています。","Hai, futte imasu.","Ya, sedang hujan.",1],["そうですね。","Sou desu ne.","Iya, benar.",0],["はい、晴れます。","Hai, haremasu.","Ya, akan cerah.",0]]],["Kitsu","明日は晴れますか。","Ashita wa haremasu ka.","Apakah besok cerah?",[["はい、晴れます。","Hai, haremasu.","Ya, akan cerah.",1],["そうですね。","Sou desu ne.","Iya, benar.",0],["はい、降っています。","Hai, futte imasu.","Ya, sedang hujan.",0]]],["Kitsu","雨が降っていますか。","Ame ga futte imasu ka.","Apakah sedang hujan?",[["はい、雨です。","Hai, ame desu.","Ya, hujan.",1],["はい、晴れです。","Hai, hare desu.","Ya, cerah.",0],["電車です。","Densha desu.","Kereta.",0]]],["Kitsu","今日は寒いですか。","Kyou wa samui desu ka.","Hari ini dingin?",[["はい、少し寒いです。","Hai, sukoshi samui desu.","Ya, agak dingin.",1],["はい、少し高いです。","Hai, sukoshi takai desu.","Ya, agak mahal.",0],["駅は寒いです。","Eki wa samui desu.","Stasiun dingin.",0]]],["Kitsu","傘を持っていますか。","Kasa o motte imasu ka.","Apakah membawa payung?",[["はい、持っています。","Hai, motte imasu.","Ya, membawanya.",1],["はい、食べています。","Hai, tabete imasu.","Ya, sedang makan.",0],["五時を持っています。","Goji o motte imasu.","Membawa jam lima.",0]]],["Kitsu","明日は晴れますか。","Ashita wa haremasu ka.","Besok akan cerah?",[["たぶん晴れます。","Tabun haremasu.","Mungkin cerah.",1],["たぶん食べます。","Tabun tabemasu.","Mungkin makan.",0],["駅へ晴れます。","Eki e haremasu.","Cerah ke stasiun.",0]]],["Kitsu","天気予報を見ましたか。","Tenki yohou o mimashita ka.","Sudah melihat ramalan cuaca?",[["はい、見ました。","Hai, mimashita.","Ya, sudah melihat.",1],["はい、飲みました。","Hai, nomimashita.","Ya, sudah minum.",0],["右を見ました。","Migi o mimashita.","Melihat kanan.",0]]]],[["Kitsu","何を食べますか。","Nani o tabemasu ka.","Mau makan apa?",[["ご飯を食べます。","Gohan o tabemasu.","Saya makan nasi.",1],["ラーメンが好きです。","Ramen ga suki desu.","Saya suka ramen.",0],["はい、空きました。","Hai, sukimashita.","Ya, saya lapar.",0]]],["Kitsu","朝ご飯は何ですか。","Asagohan wa nan desu ka.","Apa sarapanmu?",[["ご飯を食べます。","Gohan o tabemasu.","Saya makan nasi.",1],["ラーメンが好きです。","Ramen ga suki desu.","Saya suka ramen.",0],["はい、空きました。","Hai, sukimashita.","Ya, saya lapar.",0]]],["Kitsu","何が好きですか。","Nani ga suki desu ka.","Apa yang kamu suka?",[["ラーメンが好きです。","Ramen ga suki desu.","Saya suka ramen.",1],["ご飯を食べます。","Gohan o tabemasu.","Saya makan nasi.",0],["はい、空きました。","Hai, sukimashita.","Ya, saya lapar.",0]]],["Kitsu","お腹が空きましたか。","Onaka ga sukimashita ka.","Apakah lapar?",[["はい、空きました。","Hai, sukimashita.","Ya, saya lapar.",1],["ご飯を食べます。","Gohan o tabemasu.","Saya makan nasi.",0],["ラーメンが好きです。","Ramen ga suki desu.","Saya suka ramen.",0]]],["Kitsu","これはおいしいですか。","Kore wa oishii desu ka.","Apakah ini enak?",[["はい、おいしいです。","Hai, oishii desu.","Ya, enak.",1],["ご飯を食べます。","Gohan o tabemasu.","Saya makan nasi.",0],["ラーメンが好きです。","Ramen ga suki desu.","Saya suka ramen.",0]]],["Kitsu","何が好きですか。","Nani ga suki desu ka.","Apa yang kamu suka?",[["ラーメンが好きです。","Ramen ga suki desu.","Saya suka ramen.",1],["駅が好きです。","Eki ga suki desu.","Saya suka stasiun.",0],["雨を好きです。","Ame o suki desu.","Saya suka hujan.",0]]],["Kitsu","朝ご飯を食べましたか。","Asagohan o tabemashita ka.","Sudah sarapan?",[["はい、食べました。","Hai, tabemashita.","Ya, sudah makan.",1],["はい、飲みました。","Hai, nomimashita.","Ya, sudah minum.",0],["右へ行きました。","Migi e ikimashita.","Pergi ke kanan.",0]]],["Kitsu","辛い食べ物は好きですか。","Karai tabemono wa suki desu ka.","Suka makanan pedas?",[["はい、好きです。","Hai, suki desu.","Ya, suka.",1],["はい、寒いです。","Hai, samui desu.","Ya, dingin.",0],["五時が好きです。","Goji ga suki desu.","Suka jam lima.",0]]],["Kitsu","何を食べたいですか。","Nani o tabetai desu ka.","Ingin makan apa?",[["お寿司を食べたいです。","Osushi o tabetai desu.","Saya ingin makan sushi.",1],["電車を食べたいです。","Densha o tabetai desu.","Ingin makan kereta.",0],["雨を食べたいです。","Ame o tabetai desu.","Ingin makan hujan.",0]]],["Kitsu","もうお腹いっぱいですか。","Mou onaka ippai desu ka.","Sudah kenyang?",[["はい、お腹いっぱいです。","Hai, onaka ippai desu.","Ya, sudah kenyang.",1],["はい、駅いっぱいです。","Hai, eki ippai desu.","Ya, stasiun penuh.",0],["いいえ、右いっぱいです。","Iie, migi ippai desu.","Tidak, kanan penuh.",0]]]],[["Kitsu","何を飲みますか。","Nani o nomimasu ka.","Mau minum apa?",[["水を飲みます。","Mizu o nomimasu.","Saya minum air.",1],["はい、飲みます。","Hai, nomimasu.","Ya, saya minum.",0],["はい、お茶をください。","Hai, ocha o kudasai.","Ya, tolong teh.",0]]],["Kitsu","お茶を飲みますか。","Ocha o nomimasu ka.","Apakah minum teh?",[["はい、飲みます。","Hai, nomimasu.","Ya, saya minum.",1],["水を飲みます。","Mizu o nomimasu.","Saya minum air.",0],["はい、お茶をください。","Hai, ocha o kudasai.","Ya, tolong teh.",0]]],["Kitsu","何か飲みませんか。","Nanika nomimasen ka.","Mau minum sesuatu?",[["はい、お茶をください。","Hai, ocha o kudasai.","Ya, tolong teh.",1],["水を飲みます。","Mizu o nomimasu.","Saya minum air.",0],["はい、飲みます。","Hai, nomimasu.","Ya, saya minum.",0]]],["Kitsu","水はありますか。","Mizu wa arimasu ka.","Apakah ada air?",[["はい、あります。","Hai, arimasu.","Ya, ada.",1],["水を飲みます。","Mizu o nomimasu.","Saya minum air.",0],["はい、飲みます。","Hai, nomimasu.","Ya, saya minum.",0]]],["Kitsu","冷たい水が好きですか。","Tsumetai mizu ga suki desu ka.","Apakah suka air dingin?",[["はい、好きです。","Hai, suki desu.","Ya, saya suka.",1],["水を飲みます。","Mizu o nomimasu.","Saya minum air.",0],["はい、飲みます。","Hai, nomimasu.","Ya, saya minum.",0]]],["Kitsu","コーヒーを飲みますか。","Koohii o nomimasu ka.","Minum kopi?",[["はい、飲みます。","Hai, nomimasu.","Ya, saya minum.",1],["はい、食べます。","Hai, tabemasu.","Ya, saya makan.",0],["右です。","Migi desu.","Di kanan.",0]]],["Kitsu","冷たい水が好きですか。","Tsumetai mizu ga suki desu ka.","Suka air dingin?",[["はい、好きです。","Hai, suki desu.","Ya, suka.",1],["はい、暑いです。","Hai, atsui desu.","Ya, panas.",0],["駅が好きです。","Eki ga suki desu.","Suka stasiun.",0]]],["Kitsu","何を飲みたいですか。","Nani o nomitai desu ka.","Ingin minum apa?",[["お茶を飲みたいです。","Ocha o nomitai desu.","Saya ingin minum teh.",1],["本を飲みたいです。","Hon o nomitai desu.","Ingin minum buku.",0],["駅を飲みたいです。","Eki o nomitai desu.","Ingin minum stasiun.",0]]],["Kitsu","水をもう一杯どうですか。","Mizu o mou ippai dou desu ka.","Mau satu gelas air lagi?",[["はい、お願いします。","Hai, onegaishimasu.","Ya, tolong.",1],["いいえ、食べます。","Iie, tabemasu.","Tidak, saya makan.",0],["明日です。","Ashita desu.","Besok.",0]]],["Kitsu","喉が渇いていますか。","Nodo ga kawaite imasu ka.","Apakah haus?",[["はい、喉が渇いています。","Hai, nodo ga kawaite imasu.","Ya, saya haus.",1],["はい、お腹がいっぱいです。","Hai, onaka ga ippai desu.","Ya, kenyang.",0],["右が渇いています。","Migi ga kawaite imasu.","Kanan haus.",0]]]],[["Kitsu","ラーメンをください。","Ramen o kudasai.","Tolong beri saya ramen.",[["はい、どうぞ。","Hai, douzo.","Baik, silakan.",1],["ラーメンをお願いします。","Ramen o onegaishimasu.","Saya pesan ramen.",0],["はい、ここで食べます。","Hai, koko de tabemasu.","Ya, makan di sini.",0]]],["Kitsu","何を注文しますか。","Nani o chuumon shimasu ka.","Mau pesan apa?",[["ラーメンをお願いします。","Ramen o onegaishimasu.","Saya pesan ramen.",1],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0],["はい、ここで食べます。","Hai, koko de tabemasu.","Ya, makan di sini.",0]]],["Kitsu","ここで食べますか。","Koko de tabemasu ka.","Makan di sini?",[["はい、ここで食べます。","Hai, koko de tabemasu.","Ya, makan di sini.",1],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0],["ラーメンをお願いします。","Ramen o onegaishimasu.","Saya pesan ramen.",0]]],["Kitsu","おすすめは何ですか。","Osusume wa nan desu ka.","Apa rekomendasinya?",[["ラーメンです。","Ramen desu.","Ramen.",1],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0],["ラーメンをお願いします。","Ramen o onegaishimasu.","Saya pesan ramen.",0]]],["Kitsu","お会計をお願いします。","Okaikei o onegaishimasu.","Tolong minta tagihan.",[["はい、少々お待ちください。","Hai, shoushou omachi kudasai.","Baik, tunggu sebentar.",1],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0],["ラーメンをお願いします。","Ramen o onegaishimasu.","Saya pesan ramen.",0]]],["Kitsu","何名様ですか。","Nanmei-sama desu ka.","Untuk berapa orang?",[["一人です。","Hitori desu.","Satu orang.",1],["五百円です。","Gohyaku en desu.","500 yen.",0],["右です。","Migi desu.","Di kanan.",0]]],["Kitsu","予約していますか。","Yoyaku shite imasu ka.","Apakah sudah reservasi?",[["はい、予約しています。","Hai, yoyaku shite imasu.","Ya, sudah reservasi.",1],["はい、食べています。","Hai, tabete imasu.","Ya, sedang makan.",0],["駅を予約しています。","Eki o yoyaku shite imasu.","Reservasi stasiun.",0]]],["Kitsu","おすすめは何ですか。","Osusume wa nan desu ka.","Apa rekomendasinya?",[["ラーメンがおすすめです。","Ramen ga osusume desu.","Saya merekomendasikan ramen.",1],["電車がおすすめです。","Densha ga osusume desu.","Merekomendasikan kereta.",0],["右がおすすめです。","Migi ga osusume desu.","Merekomendasikan kanan.",0]]],["Kitsu","メニューをお願いします。","Menyuu o onegaishimasu.","Tolong menunya.",[["はい、どうぞ。","Hai, douzo.","Baik, silakan.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["明日、どうぞ。","Ashita, douzo.","Besok, silakan.",0]]],["Kitsu","お会計をお願いします。","Okaikei o onegaishimasu.","Tolong minta tagihannya.",[["はい、少々お待ちください。","Hai, shoushou omachi kudasai.","Baik, mohon tunggu sebentar.",1],["はい、食べてください。","Hai, tabete kudasai.","Silakan makan.",0],["右を待ってください。","Migi o matte kudasai.","Tunggu kanan.",0]]]],[["Kitsu","これをお願いします。","Kore o onegaishimasu.","Saya mau yang ini.",[["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",1],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0],["お茶にします。","Ocha ni shimasu.","Saya pilih teh.",0]]],["Kitsu","ご飯を一つください。","Gohan o hitotsu kudasai.","Tolong satu nasi.",[["はい、どうぞ。","Hai, douzo.","Baik, silakan.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["お茶にします。","Ocha ni shimasu.","Saya pilih teh.",0]]],["Kitsu","飲み物は何にしますか。","Nomimono wa nani ni shimasu ka.","Mau minum apa?",[["お茶にします。","Ocha ni shimasu.","Saya pilih teh.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0]]],["Kitsu","辛い料理は大丈夫ですか。","Karai ryouri wa daijoubu desu ka.","Apakah makanan pedas tidak masalah?",[["はい、大丈夫です。","Hai, daijoubu desu.","Ya, tidak masalah.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0]]],["Kitsu","持ち帰りですか。","Mochikaeri desu ka.","Untuk dibawa pulang?",[["はい、持ち帰ります。","Hai, mochikaerimasu.","Ya, saya bawa pulang.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["はい、どうぞ。","Hai, douzo.","Baik, silakan.",0]]],["Kitsu","ご注文はお決まりですか。","Go-chuumon wa okimari desu ka.","Sudah menentukan pesanan?",[["はい、決まりました。","Hai, kimarimashita.","Ya, sudah.",1],["はい、駅です。","Hai, eki desu.","Ya, stasiun.",0],["まだ食べます。","Mada tabemasu.","Masih makan.",0]]],["Kitsu","この料理をください。","Kono ryouri o kudasai.","Tolong beri saya hidangan ini.",[["はい、かしこまりました。","Hai, kashikomarimashita.","Baik, dimengerti.",1],["右へ行きました。","Migi e ikimashita.","Pergi ke kanan.",0],["明日をください。","Ashita o kudasai.","Tolong beri besok.",0]]],["Kitsu","飲み物は何にしますか。","Nomimono wa nani ni shimasu ka.","Minumannya mau apa?",[["お茶にします。","Ocha ni shimasu.","Saya pilih teh.",1],["駅にします。","Eki ni shimasu.","Saya pilih stasiun.",0],["五時にします。","Goji ni shimasu.","Saya pilih jam lima.",0]]],["Kitsu","ご飯を大盛りにできますか。","Gohan o oomori ni dekimasu ka.","Bisa nasi porsi besar?",[["はい、できます。","Hai, dekimasu.","Ya, bisa.",1],["いいえ、飲みます。","Iie, nomimasu.","Tidak, minum.",0],["右はできます。","Migi wa dekimasu.","Kanan bisa.",0]]],["Kitsu","辛くしないでください。","Karakushinaide kudasai.","Tolong jangan dibuat pedas.",[["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",1],["はい、辛く食べます。","Hai, karaku tabemasu.","Ya, makan pedas.",0],["駅をください。","Eki o kudasai.","Tolong beri stasiun.",0]]]],[["Kitsu","いくらですか。","Ikura desu ka.","Berapa harganya?",[["五百円です。","Gohyaku en desu.","500 yen.",1],["はい、少し高いです。","Hai, sukoshi takai desu.","Ya, agak mahal.",0],["はい、安いです。","Hai, yasui desu.","Ya, murah.",0]]],["Kitsu","これは高いですか。","Kore wa takai desu ka.","Apakah ini mahal?",[["はい、少し高いです。","Hai, sukoshi takai desu.","Ya, agak mahal.",1],["五百円です。","Gohyaku en desu.","500 yen.",0],["はい、安いです。","Hai, yasui desu.","Ya, murah.",0]]],["Kitsu","安いですか。","Yasui desu ka.","Apakah murah?",[["はい、安いです。","Hai, yasui desu.","Ya, murah.",1],["五百円です。","Gohyaku en desu.","500 yen.",0],["はい、少し高いです。","Hai, sukoshi takai desu.","Ya, agak mahal.",0]]],["Kitsu","全部でいくらですか。","Zenbu de ikura desu ka.","Totalnya berapa?",[["千円です。","Sen en desu.","1000 yen.",1],["五百円です。","Gohyaku en desu.","500 yen.",0],["はい、少し高いです。","Hai, sukoshi takai desu.","Ya, agak mahal.",0]]],["Kitsu","値段を教えてください。","Nedan o oshiete kudasai.","Tolong beri tahu harganya.",[["千円です。","Sen en desu.","1000 yen.",1],["五百円です。","Gohyaku en desu.","500 yen.",0],["はい、少し高いです。","Hai, sukoshi takai desu.","Ya, agak mahal.",0]]],["Kitsu","これはいくらですか。","Kore wa ikura desu ka.","Yang ini berapa?",[["千円です。","Sen en desu.","1000 yen.",1],["三時です。","Sanji desu.","Jam tiga.",0],["駅です。","Eki desu.","Stasiun.",0]]],["Kitsu","ちょっと高いですね。","Chotto takai desu ne.","Agak mahal ya.",[["そうですね。","Sou desu ne.","Iya, benar.",1],["そうですね、食べます。","Sou desu ne, tabemasu.","Iya, makan.",0],["そうですね、駅です。","Sou desu ne, eki desu.","Iya, stasiun.",0]]],["Kitsu","安いものはありますか。","Yasui mono wa arimasu ka.","Ada yang lebih murah?",[["はい、こちらです。","Hai, kochira desu.","Ya, yang ini.",1],["はい、あちらを食べます。","Hai, achira o tabemasu.","Ya, makan yang sana.",0],["明日はこちらです。","Ashita wa kochira desu.","Besok yang ini.",0]]],["Kitsu","全部でいくらですか。","Zenbu de ikura desu ka.","Totalnya berapa?",[["二千円です。","Nisen en desu.","2000 yen.",1],["二時です。","Niji desu.","Jam dua.",0],["二駅です。","Ni-eki desu.","Dua stasiun.",0]]],["Kitsu","カードで払えますか。","Kaado de haraemasu ka.","Bisa bayar dengan kartu?",[["はい、払えます。","Hai, haraemasu.","Ya, bisa bayar.",1],["はい、食べられます。","Hai, taberaremasu.","Ya, bisa makan.",0],["右で払えます。","Migi de haraemasu.","Bisa bayar dengan kanan.",0]]]],[["Kitsu","これを買いますか。","Kore o kaimasu ka.","Mau membeli ini?",[["はい、買います。","Hai, kaimasu.","Ya, saya beli.",1],["これを買います。","Kore o kaimasu.","Saya membeli ini.",0],["いいですね。","Ii desu ne.","Bagus ya.",0]]],["Kitsu","何を買いますか。","Nani o kaimasu ka.","Mau membeli apa?",[["これを買います。","Kore o kaimasu.","Saya membeli ini.",1],["はい、買います。","Hai, kaimasu.","Ya, saya beli.",0],["いいですね。","Ii desu ne.","Bagus ya.",0]]],["Kitsu","この服はどうですか。","Kono fuku wa dou desu ka.","Bagaimana baju ini?",[["いいですね。","Ii desu ne.","Bagus ya.",1],["はい、買います。","Hai, kaimasu.","Ya, saya beli.",0],["これを買います。","Kore o kaimasu.","Saya membeli ini.",0]]],["Kitsu","もう一つ買いますか。","Mou hitotsu kaimasu ka.","Mau membeli satu lagi?",[["はい、お願いします。","Hai, onegaishimasu.","Ya, boleh.",1],["はい、買います。","Hai, kaimasu.","Ya, saya beli.",0],["これを買います。","Kore o kaimasu.","Saya membeli ini.",0]]],["Kitsu","袋は必要ですか。","Fukuro wa hitsuyou desu ka.","Perlu kantong?",[["はい、お願いします。","Hai, onegaishimasu.","Ya, tolong.",1],["はい、買います。","Hai, kaimasu.","Ya, saya beli.",0],["これを買います。","Kore o kaimasu.","Saya membeli ini.",0]]],["Kitsu","何を探していますか。","Nani o sagashite imasu ka.","Sedang mencari apa?",[["Tシャツを探しています。","T-shatsu o sagashite imasu.","Saya mencari kaus.",1],["駅を探しています。","Eki o sagashite imasu.","Mencari stasiun.",0],["五時を探しています。","Goji o sagashite imasu.","Mencari jam lima.",0]]],["Kitsu","試着してもいいですか。","Shichaku shite mo ii desu ka.","Bolehkah mencoba pakaian?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["いいえ、食べてください。","Iie, tabete kudasai.","Tidak, silakan makan.",0],["明日、どうぞ。","Ashita, douzo.","Besok, silakan.",0]]],["Kitsu","この色はありますか。","Kono iro wa arimasu ka.","Ada warna ini?",[["はい、あります。","Hai, arimasu.","Ya, ada.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["右にあります。","Migi ni arimasu.","Ada di kanan.",0]]],["Kitsu","袋をお願いします。","Fukuro o onegaishimasu.","Tolong beri kantong.",[["はい、どうぞ。","Hai, douzo.","Baik, silakan.",1],["はい、駅です。","Hai, eki desu.","Ya, stasiun.",0],["明日、お願いします。","Ashita, onegaishimasu.","Tolong besok.",0]]],["Kitsu","これにします。","Kore ni shimasu.","Saya pilih yang ini.",[["ありがとうございます。","Arigatou gozaimasu.","Terima kasih.",1],["さようならです。","Sayounara desu.","Selamat tinggal.",0],["おはようを食べます。","Ohayou o tabemasu.","Makan selamat pagi.",0]]]],[["Kitsu","これはありますか。","Kore wa arimasu ka.","Apakah ada ini?",[["はい、あります。","Hai, arimasu.","Ya, ada.",1],["あそこです。","Asoko desu.","Di sana.",0],["はい、どうぞ。","Hai, douzo.","Ya, silakan.",0]]],["Kitsu","どこにありますか。","Doko ni arimasu ka.","Ada di mana?",[["あそこです。","Asoko desu.","Di sana.",1],["はい、あります。","Hai, arimasu.","Ya, ada.",0],["はい、どうぞ。","Hai, douzo.","Ya, silakan.",0]]],["Kitsu","別の色はありますか。","Betsu no iro wa arimasu ka.","Ada warna lain?",[["はい、あります。","Hai, arimasu.","Ya, ada.",1],["あそこです。","Asoko desu.","Di sana.",0],["はい、どうぞ。","Hai, douzo.","Ya, silakan.",0]]],["Kitsu","試着してもいいですか。","Shichaku shite mo ii desu ka.","Bolehkah saya mencoba pakaian?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、あります。","Hai, arimasu.","Ya, ada.",0],["あそこです。","Asoko desu.","Di sana.",0]]],["Kitsu","これを見せてください。","Kore o misete kudasai.","Tolong tunjukkan ini.",[["はい、どうぞ。","Hai, douzo.","Baik, silakan.",1],["はい、あります。","Hai, arimasu.","Ya, ada.",0],["あそこです。","Asoko desu.","Di sana.",0]]],["Kitsu","いらっしゃいませ。","Irasshaimase.","Selamat datang.",[["こんにちは。","Konnichiwa.","Halo.",1],["おやすみなさい。","Oyasuminasai.","Selamat tidur.",0],["五時です。","Goji desu.","Jam lima.",0]]],["Kitsu","何かお探しですか。","Nanika osagashi desu ka.","Apakah mencari sesuatu?",[["はい、靴を探しています。","Hai, kutsu o sagashite imasu.","Ya, mencari sepatu.",1],["はい、水を探しています。","Hai, mizu o sagashite imasu.","Ya, mencari air.",0],["駅を食べています。","Eki o tabete imasu.","Sedang makan stasiun.",0]]],["Kitsu","これは人気がありますか。","Kore wa ninki ga arimasu ka.","Apakah ini populer?",[["はい、人気があります。","Hai, ninki ga arimasu.","Ya, populer.",1],["はい、駅があります。","Hai, eki ga arimasu.","Ya, ada stasiun.",0],["人気を飲みます。","Ninki o nomimasu.","Minum popularitas.",0]]],["Kitsu","色違いはありますか。","Iro chigai wa arimasu ka.","Ada warna lain?",[["はい、あります。","Hai, arimasu.","Ya, ada.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["右違いがあります。","Migi chigai ga arimasu.","Ada kanan lain.",0]]],["Kitsu","また来ます。","Mata kimasu.","Saya akan datang lagi.",[["ありがとうございます。","Arigatou gozaimasu.","Terima kasih.",1],["いただきます。","Itadakimasu.","Selamat makan.",0],["五百円を飲みます。","Gohyaku en o nomimasu.","Minum 500 yen.",0]]]],[["Kitsu","駅はどこですか。","Eki wa doko desu ka.","Di mana stasiunnya?",[["あそこです。","Asoko desu.","Di sana.",1],["いいえ、近いです。","Iie, chikai desu.","Tidak, dekat.",0],["はい、行きます。","Hai, ikimasu.","Ya, saya pergi.",0]]],["Kitsu","駅まで遠いですか。","Eki made tooi desu ka.","Apakah stasiunnya jauh?",[["いいえ、近いです。","Iie, chikai desu.","Tidak, dekat.",1],["あそこです。","Asoko desu.","Di sana.",0],["はい、行きます。","Hai, ikimasu.","Ya, saya pergi.",0]]],["Kitsu","駅に行きますか。","Eki ni ikimasu ka.","Apakah pergi ke stasiun?",[["はい、行きます。","Hai, ikimasu.","Ya, saya pergi.",1],["あそこです。","Asoko desu.","Di sana.",0],["いいえ、近いです。","Iie, chikai desu.","Tidak, dekat.",0]]],["Kitsu","切符はどこですか。","Kippu wa doko desu ka.","Di mana tiketnya?",[["あそこです。","Asoko desu.","Di sana.",1],["いいえ、近いです。","Iie, chikai desu.","Tidak, dekat.",0],["はい、行きます。","Hai, ikimasu.","Ya, saya pergi.",0]]],["Kitsu","駅は何時に開きますか。","Eki wa nanji ni hirakimasu ka.","Stasiun buka jam berapa?",[["六時です。","Rokuji desu.","Jam enam.",1],["あそこです。","Asoko desu.","Di sana.",0],["いいえ、近いです。","Iie, chikai desu.","Tidak, dekat.",0]]],["Kitsu","切符はどこで買えますか。","Kippu wa doko de kaemasu ka.","Di mana bisa membeli tiket?",[["あそこで買えます。","Asoko de kaemasu.","Bisa beli di sana.",1],["あそこで食べます。","Asoko de tabemasu.","Makan di sana.",0],["明日で買えます。","Ashita de kaemasu.","Bisa beli besok.",0]]],["Kitsu","東京行きの電車はどれですか。","Tokyo-yuki no densha wa dore desu ka.","Kereta ke Tokyo yang mana?",[["この電車です。","Kono densha desu.","Kereta ini.",1],["この駅を飲みます。","Kono eki o nomimasu.","Minum stasiun ini.",0],["この明日です。","Kono ashita desu.","Besok ini.",0]]],["Kitsu","何番線ですか。","Nanbansen desu ka.","Jalur nomor berapa?",[["三番線です。","San-bansen desu.","Jalur 3.",1],["三時です。","Sanji desu.","Jam tiga.",0],["三駅です。","San-eki desu.","Tiga stasiun.",0]]],["Kitsu","電車は何時に来ますか。","Densha wa nanji ni kimasu ka.","Kereta datang jam berapa?",[["七時に来ます。","Shichiji ni kimasu.","Datang jam tujuh.",1],["七時に食べます。","Shichiji ni tabemasu.","Makan jam tujuh.",0],["右に来ます。","Migi ni kimasu.","Datang ke kanan.",0]]],["Kitsu","この電車は新宿へ行きますか。","Kono densha wa Shinjuku e ikimasu ka.","Apakah kereta ini menuju Shinjuku?",[["はい、行きます。","Hai, ikimasu.","Ya, menuju ke sana.",1],["はい、飲みます。","Hai, nomimasu.","Ya, minum.",0],["駅を食べます。","Eki o tabemasu.","Makan stasiun.",0]]]],[["Kitsu","右ですか、左ですか。","Migi desu ka, hidari desu ka.","Kanan atau kiri?",[["右です。","Migi desu.","Kanan.",1],["はい、まっすぐです。","Hai, massugu desu.","Ya, lurus.",0],["はい、近いです。","Hai, chikai desu.","Ya, dekat.",0]]],["Kitsu","まっすぐですか。","Massugu desu ka.","Apakah lurus?",[["はい、まっすぐです。","Hai, massugu desu.","Ya, lurus.",1],["右です。","Migi desu.","Kanan.",0],["はい、近いです。","Hai, chikai desu.","Ya, dekat.",0]]],["Kitsu","ここから近いですか。","Koko kara chikai desu ka.","Apakah dekat dari sini?",[["はい、近いです。","Hai, chikai desu.","Ya, dekat.",1],["右です。","Migi desu.","Kanan.",0],["はい、まっすぐです。","Hai, massugu desu.","Ya, lurus.",0]]],["Kitsu","どちらへ行きますか。","Dochira e ikimasu ka.","Ke arah mana?",[["右へ行きます。","Migi e ikimasu.","Ke kanan.",1],["右です。","Migi desu.","Kanan.",0],["はい、まっすぐです。","Hai, massugu desu.","Ya, lurus.",0]]],["Kitsu","この道で合っていますか。","Kono michi de atteimasu ka.","Apakah jalan ini benar?",[["はい、合っています。","Hai, atteimasu.","Ya, benar.",1],["右です。","Migi desu.","Kanan.",0],["はい、まっすぐです。","Hai, massugu desu.","Ya, lurus.",0]]],["Kitsu","コンビニはどちらですか。","Konbini wa dochira desu ka.","Di mana minimarket?",[["あちらです。","Achira desu.","Di sana.",1],["あちらを食べます。","Achira o tabemasu.","Makan di sana.",0],["明日です。","Ashita desu.","Besok.",0]]],["Kitsu","まっすぐ行ってください。","Massugu itte kudasai.","Silakan jalan lurus.",[["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",1],["はい、飲みました。","Hai, nomimashita.","Ya, sudah minum.",0],["右を食べました。","Migi o tabemashita.","Makan kanan.",0]]],["Kitsu","左に曲がりますか。","Hidari ni magarimasu ka.","Belok kiri?",[["はい、左に曲がります。","Hai, hidari ni magarimasu.","Ya, belok kiri.",1],["はい、左を飲みます。","Hai, hidari o nomimasu.","Ya, minum kiri.",0],["明日、左です。","Ashita, hidari desu.","Besok kiri.",0]]],["Kitsu","ここから近いですか。","Koko kara chikai desu ka.","Apakah dekat dari sini?",[["はい、近いです。","Hai, chikai desu.","Ya, dekat.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["五時から右です。","Goji kara migi desu.","Dari jam lima kanan.",0]]],["Kitsu","地図を見てもいいですか。","Chizu o mite mo ii desu ka.","Bolehkah melihat peta?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、食べてもいいです。","Hai, tabete mo ii desu.","Boleh makan.",0],["右を飲んでもいいです。","Migi o nonde mo ii desu.","Boleh minum kanan.",0]]]],[["Kitsu","電車に乗りますか。","Densha ni norimasu ka.","Apakah naik kereta?",[["はい、乗ります。","Hai, norimasu.","Ya, naik.",1],["この線に乗ります。","Kono sen ni norimasu.","Saya naik jalur ini.",0],["三時です。","Sanji desu.","Jam tiga.",0]]],["Kitsu","何線に乗りますか。","Nansen ni norimasu ka.","Naik jalur apa?",[["この線に乗ります。","Kono sen ni norimasu.","Saya naik jalur ini.",1],["はい、乗ります。","Hai, norimasu.","Ya, naik.",0],["三時です。","Sanji desu.","Jam tiga.",0]]],["Kitsu","電車は何時ですか。","Densha wa nanji desu ka.","Kereta jam berapa?",[["三時です。","Sanji desu.","Jam tiga.",1],["はい、乗ります。","Hai, norimasu.","Ya, naik.",0],["この線に乗ります。","Kono sen ni norimasu.","Saya naik jalur ini.",0]]],["Kitsu","次の電車はいつですか。","Tsugi no densha wa itsu desu ka.","Kereta berikutnya kapan?",[["五分後です。","Gofun go desu.","Lima menit lagi.",1],["はい、乗ります。","Hai, norimasu.","Ya, naik.",0],["この線に乗ります。","Kono sen ni norimasu.","Saya naik jalur ini.",0]]],["Kitsu","ここで降りますか。","Koko de orimasu ka.","Turun di sini?",[["はい、ここで降ります。","Hai, koko de orimasu.","Ya, turun di sini.",1],["はい、乗ります。","Hai, norimasu.","Ya, naik.",0],["この線に乗ります。","Kono sen ni norimasu.","Saya naik jalur ini.",0]]],["Kitsu","電車に乗りますか。","Densha ni norimasu ka.","Apakah naik kereta?",[["はい、乗ります。","Hai, norimasu.","Ya, naik.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["駅を飲みます。","Eki o nomimasu.","Minum stasiun.",0]]],["Kitsu","座ってもいいですか。","Suwatte mo ii desu ka.","Bolehkah duduk?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["いいえ、食べます。","Iie, tabemasu.","Tidak, makan.",0],["右を買います。","Migi o kaimasu.","Membeli kanan.",0]]],["Kitsu","次の駅はどこですか。","Tsugi no eki wa doko desu ka.","Stasiun berikutnya apa?",[["新宿です。","Shinjuku desu.","Shinjuku.",1],["三時です。","Sanji desu.","Jam tiga.",0],["水です。","Mizu desu.","Air.",0]]],["Kitsu","電車は混んでいますか。","Densha wa konde imasu ka.","Apakah keretanya ramai?",[["はい、混んでいます。","Hai, konde imasu.","Ya, ramai.",1],["はい、食べています。","Hai, tabete imasu.","Ya, sedang makan.",0],["右が混んでいます。","Migi ga konde imasu.","Kanan ramai.",0]]],["Kitsu","次で降りますか。","Tsugi de orimasu ka.","Turun di stasiun berikutnya?",[["はい、降ります。","Hai, orimasu.","Ya, turun.",1],["はい、飲みます。","Hai, nomimasu.","Ya, minum.",0],["明日で食べます。","Ashita de tabemasu.","Makan besok.",0]]]],[["Kitsu","久しぶりです！","Hisashiburi desu!","Lama tidak bertemu!",[["久しぶりです！","Hisashiburi desu!","Lama tidak bertemu!",1],["うん、元気だった。","Un, genki datta.","Ya, aku baik.",0],["毎日勉強してる。","Mainichi benkyou shiteru.","Saya belajar setiap hari.",0]]],["Kitsu","元気だった？","Genki datta?","Kamu baik-baik saja?",[["うん、元気だった。","Un, genki datta.","Ya, aku baik.",1],["久しぶりです！","Hisashiburi desu!","Lama tidak bertemu!",0],["毎日勉強してる。","Mainichi benkyou shiteru.","Saya belajar setiap hari.",0]]],["Kitsu","最近どうしてる？","Saikin doushiteru?","Akhir-akhir ini bagaimana?",[["毎日勉強してる。","Mainichi benkyou shiteru.","Saya belajar setiap hari.",1],["久しぶりです！","Hisashiburi desu!","Lama tidak bertemu!",0],["うん、元気だった。","Un, genki datta.","Ya, aku baik.",0]]],["Kitsu","また会えてうれしいですか。","Mata aete ureshii desu ka.","Senang bertemu lagi?",[["はい、うれしいです。","Hai, ureshii desu.","Ya, senang.",1],["久しぶりです！","Hisashiburi desu!","Lama tidak bertemu!",0],["うん、元気だった。","Un, genki datta.","Ya, aku baik.",0]]],["Kitsu","今日は一緒にいますか。","Kyou wa issho ni imasu ka.","Hari ini bersama?",[["はい、一緒にいます。","Hai, issho ni imasu.","Ya, kita bersama.",1],["久しぶりです！","Hisashiburi desu!","Lama tidak bertemu!",0],["うん、元気だった。","Un, genki datta.","Ya, aku baik.",0]]],["Kitsu","最近どうですか。","Saikin dou desu ka.","Bagaimana akhir-akhir ini?",[["元気ですよ。","Genki desu yo.","Saya baik.",1],["駅ですよ。","Eki desu yo.","Stasiun.",0],["五百円ですよ。","Gohyaku en desu yo.","500 yen.",0]]],["Kitsu","久しぶりに会えてうれしいです。","Hisashiburi ni aete ureshii desu.","Senang bisa bertemu setelah lama.",[["私もうれしいです。","Watashi mo ureshii desu.","Saya juga senang.",1],["私も食べます。","Watashi mo tabemasu.","Saya juga makan.",0],["私も右です。","Watashi mo migi desu.","Saya juga kanan.",0]]],["Kitsu","最近忙しいですか。","Saikin isogashii desu ka.","Belakangan sibuk?",[["はい、少し忙しいです。","Hai, sukoshi isogashii desu.","Ya, agak sibuk.",1],["はい、少し食べます。","Hai, sukoshi tabemasu.","Ya, makan sedikit.",0],["駅が少し忙しいです。","Eki ga sukoshi isogashii desu.","Stasiun agak sibuk.",0]]],["Kitsu","今度一緒にご飯を食べませんか。","Kondo issho ni gohan o tabemasen ka.","Lain kali makan bersama?",[["いいですね！","Ii desu ne!","Boleh juga!",1],["いい天気ですね。","Ii tenki desu ne.","Cuaca bagus ya.",0],["右ですね。","Migi desu ne.","Kanan ya.",0]]],["Kitsu","連絡しますね。","Renraku shimasu ne.","Nanti saya hubungi ya.",[["はい、お願いします。","Hai, onegaishimasu.","Ya, tolong.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["はい、駅です。","Hai, eki desu.","Ya, stasiun.",0]]]],[["Kitsu","一緒に行きませんか。","Issho ni ikimasen ka.","Mau pergi bersama?",[["はい、行きましょう。","Hai, ikimashou.","Ya, ayo pergi.",1],["いいですね。","Ii desu ne.","Boleh juga.",0],["はい、遊びましょう。","Hai, asobimashou.","Ya, ayo.",0]]],["Kitsu","映画を見ませんか。","Eiga o mimasen ka.","Mau menonton film?",[["いいですね。","Ii desu ne.","Boleh juga.",1],["はい、行きましょう。","Hai, ikimashou.","Ya, ayo pergi.",0],["はい、遊びましょう。","Hai, asobimashou.","Ya, ayo.",0]]],["Kitsu","明日遊びませんか。","Ashita asobimasen ka.","Mau bermain besok?",[["はい、遊びましょう。","Hai, asobimashou.","Ya, ayo.",1],["はい、行きましょう。","Hai, ikimashou.","Ya, ayo pergi.",0],["いいですね。","Ii desu ne.","Boleh juga.",0]]],["Kitsu","どこへ行きましょうか。","Doko e ikimashou ka.","Kita pergi ke mana?",[["公園へ行きましょう。","Kouen e ikimashou.","Ayo ke taman.",1],["はい、行きましょう。","Hai, ikimashou.","Ya, ayo pergi.",0],["いいですね。","Ii desu ne.","Boleh juga.",0]]],["Kitsu","何時に会いましょうか。","Nanji ni aimashou ka.","Kita bertemu jam berapa?",[["三時に会いましょう。","Sanji ni aimashou.","Mari bertemu jam tiga.",1],["はい、行きましょう。","Hai, ikimashou.","Ya, ayo pergi.",0],["いいですね。","Ii desu ne.","Boleh juga.",0]]],["Kitsu","週末、何をしますか。","Shuumatsu, nani o shimasu ka.","Akhir pekan mau melakukan apa?",[["映画を見に行きます。","Eiga o mi ni ikimasu.","Pergi menonton film.",1],["駅を見に行きます。","Eki o mi ni ikimasu.","Pergi melihat stasiun.",0],["水を見に行きます。","Mizu o mi ni ikimasu.","Pergi melihat air.",0]]],["Kitsu","一緒に映画を見ませんか。","Issho ni eiga o mimasen ka.","Mau nonton film bersama?",[["はい、行きましょう。","Hai, ikimashou.","Ya, ayo.",1],["はい、食べましょう。","Hai, tabemashou.","Ya, ayo makan.",0],["はい、寝ましょう。","Hai, nemashou.","Ya, ayo tidur.",0]]],["Kitsu","何時に会いましょうか。","Nanji ni aimashou ka.","Jam berapa kita bertemu?",[["三時に会いましょう。","Sanji ni aimashou.","Mari bertemu jam tiga.",1],["三時に食べましょう。","Sanji ni tabemashou.","Mari makan jam tiga.",0],["三時に右へ。","Sanji ni migi e.","Jam tiga ke kanan.",0]]],["Kitsu","駅で待ち合わせしませんか。","Eki de machiawase shimasen ka.","Mau bertemu di stasiun?",[["いいですね。","Ii desu ne.","Boleh.",1],["いい水ですね。","Ii mizu desu ne.","Air bagus.",0],["いい右ですね。","Ii migi desu ne.","Kanan bagus.",0]]],["Kitsu","雨だったらどうしますか。","Ame dattara dou shimasu ka.","Kalau hujan bagaimana?",[["家で映画を見ましょう。","Ie de eiga o mimashou.","Mari menonton film di rumah.",1],["家で駅を食べましょう。","Ie de eki o tabemashou.","Makan stasiun di rumah.",0],["右で寝ましょう。","Migi de nemashou.","Tidur di kanan.",0]]]],[["Kitsu","趣味は何ですか。","Shumi wa nan desu ka.","Apa hobimu?",[["ゲームです。","Geemu desu.","Game.",1],["ゲームをします。","Geemu o shimasu.","Saya bermain game.",0],["はい、好きです。","Hai, suki desu.","Ya, saya suka.",0]]],["Kitsu","休みの日は何をしますか。","Yasumi no hi wa nani o shimasu ka.","Apa yang dilakukan saat libur?",[["ゲームをします。","Geemu o shimasu.","Saya bermain game.",1],["ゲームです。","Geemu desu.","Game.",0],["はい、好きです。","Hai, suki desu.","Ya, saya suka.",0]]],["Kitsu","音楽が好きですか。","Ongaku ga suki desu ka.","Apakah suka musik?",[["はい、好きです。","Hai, suki desu.","Ya, saya suka.",1],["ゲームです。","Geemu desu.","Game.",0],["ゲームをします。","Geemu o shimasu.","Saya bermain game.",0]]],["Kitsu","スポーツをしますか。","Supootsu o shimasu ka.","Apakah berolahraga?",[["はい、します。","Hai, shimasu.","Ya, saya berolahraga.",1],["ゲームです。","Geemu desu.","Game.",0],["ゲームをします。","Geemu o shimasu.","Saya bermain game.",0]]],["Kitsu","何を集めていますか。","Nani o atsumete imasu ka.","Apa yang kamu koleksi?",[["本を集めています。","Hon o atsumete imasu.","Saya mengoleksi buku.",1],["ゲームです。","Geemu desu.","Game.",0],["ゲームをします。","Geemu o shimasu.","Saya bermain game.",0]]],["Kitsu","趣味は何ですか。","Shumi wa nan desu ka.","Apa hobimu?",[["音楽を聞くことです。","Ongaku o kiku koto desu.","Mendengarkan musik.",1],["駅を聞くことです。","Eki o kiku koto desu.","Mendengarkan stasiun.",0],["五時を聞くことです。","Goji o kiku koto desu.","Mendengarkan jam lima.",0]]],["Kitsu","ゲームをしますか。","Geemu o shimasu ka.","Apakah bermain game?",[["はい、よくします。","Hai, yoku shimasu.","Ya, sering.",1],["はい、よく食べます。","Hai, yoku tabemasu.","Ya, sering makan.",0],["右をよくします。","Migi o yoku shimasu.","Sering melakukan kanan.",0]]],["Kitsu","スポーツは好きですか。","Supootsu wa suki desu ka.","Suka olahraga?",[["はい、好きです。","Hai, suki desu.","Ya, suka.",1],["はい、飲みます。","Hai, nomimasu.","Ya, minum.",0],["駅が好きです。","Eki ga suki desu.","Suka stasiun.",0]]],["Kitsu","休みの日は何をしますか。","Yasumi no hi wa nani o shimasu ka.","Apa yang dilakukan saat libur?",[["音楽を聞きます。","Ongaku o kikimasu.","Mendengarkan musik.",1],["駅を飲みます。","Eki o nomimasu.","Minum stasiun.",0],["右を食べます。","Migi o tabemasu.","Makan kanan.",0]]],["Kitsu","一人でしますか。","Hitori de shimasu ka.","Melakukannya sendirian?",[["はい、一人でします。","Hai, hitori de shimasu.","Ya, sendirian.",1],["はい、一人で食べます。","Hai, hitori de tabemasu.","Ya, makan sendirian.",0],["一人で右です。","Hitori de migi desu.","Sendirian di kanan.",0]]]],[["Kitsu","今何時ですか。","Ima nanji desu ka.","Sekarang jam berapa?",[["三時です。","Sanji desu.","Jam tiga.",1],["七時に起きます。","Shichiji ni okimasu.","Bangun jam tujuh.",0],["十一時に寝ます。","Juuichiji ni nemasu.","Tidur jam sebelas.",0]]],["Kitsu","何時に起きますか。","Nanji ni okimasu ka.","Bangun jam berapa?",[["七時に起きます。","Shichiji ni okimasu.","Bangun jam tujuh.",1],["三時です。","Sanji desu.","Jam tiga.",0],["十一時に寝ます。","Juuichiji ni nemasu.","Tidur jam sebelas.",0]]],["Kitsu","何時に寝ますか。","Nanji ni nemasu ka.","Tidur jam berapa?",[["十一時に寝ます。","Juuichiji ni nemasu.","Tidur jam sebelas.",1],["三時です。","Sanji desu.","Jam tiga.",0],["七時に起きます。","Shichiji ni okimasu.","Bangun jam tujuh.",0]]],["Kitsu","今何分ですか。","Ima nanpun desu ka.","Sekarang menit berapa?",[["十分です。","Juppun desu.","Sepuluh menit.",1],["三時です。","Sanji desu.","Jam tiga.",0],["七時に起きます。","Shichiji ni okimasu.","Bangun jam tujuh.",0]]],["Kitsu","いつ勉強しますか。","Itsu benkyou shimasu ka.","Kapan belajar?",[["夜に勉強します。","Yoru ni benkyou shimasu.","Saya belajar malam.",1],["三時です。","Sanji desu.","Jam tiga.",0],["七時に起きます。","Shichiji ni okimasu.","Bangun jam tujuh.",0]]],["Kitsu","今は何時ですか。","Ima wa nanji desu ka.","Sekarang jam berapa?",[["八時です。","Hachiji desu.","Jam delapan.",1],["八駅です。","Hachi-eki desu.","Delapan stasiun.",0],["八円です。","Hachi-en desu.","8 yen.",0]]],["Kitsu","何時に起きますか。","Nanji ni okimasu ka.","Bangun jam berapa?",[["七時に起きます。","Shichiji ni okimasu.","Bangun jam tujuh.",1],["七時に食べます。","Shichiji ni tabemasu.","Makan jam tujuh.",0],["右に起きます。","Migi ni okimasu.","Bangun di kanan.",0]]],["Kitsu","何時に寝ますか。","Nanji ni nemasu ka.","Tidur jam berapa?",[["十一時に寝ます。","Juuichiji ni nemasu.","Tidur jam sebelas.",1],["十一時に飲みます。","Juuichiji ni nomimasu.","Minum jam sebelas.",0],["駅に寝ます。","Eki ni nemasu.","Tidur di stasiun.",0]]],["Kitsu","今、忙しい時間ですか。","Ima, isogashii jikan desu ka.","Apakah sekarang waktu sibuk?",[["はい、忙しい時間です。","Hai, isogashii jikan desu.","Ya, waktu sibuk.",1],["はい、おいしい時間です。","Hai, oishii jikan desu.","Ya, waktu enak.",0],["右の時間です。","Migi no jikan desu.","Waktu kanan.",0]]],["Kitsu","何分かかりますか。","Nanpun kakarimasu ka.","Berapa menit?",[["十分かかります。","Juppun kakarimasu.","Sepuluh menit.",1],["十駅かかります。","Juu-eki kakarimasu.","Sepuluh stasiun.",0],["十分食べます。","Juppun tabemasu.","Makan sepuluh menit.",0]]]],[["Kitsu","今日は何曜日ですか。","Kyou wa nan youbi desu ka.","Hari ini hari apa?",[["月曜日です。","Getsuyoubi desu.","Hari Senin.",1],["火曜日です。","Kayoubi desu.","Hari Selasa.",0],["日曜日でした。","Nichiyoubi deshita.","Hari Minggu.",0]]],["Kitsu","明日は何曜日ですか。","Ashita wa nan youbi desu ka.","Besok hari apa?",[["火曜日です。","Kayoubi desu.","Hari Selasa.",1],["月曜日です。","Getsuyoubi desu.","Hari Senin.",0],["日曜日でした。","Nichiyoubi deshita.","Hari Minggu.",0]]],["Kitsu","昨日は何曜日でしたか。","Kinou wa nan youbi deshita ka.","Kemarin hari apa?",[["日曜日でした。","Nichiyoubi deshita.","Hari Minggu.",1],["月曜日です。","Getsuyoubi desu.","Hari Senin.",0],["火曜日です。","Kayoubi desu.","Hari Selasa.",0]]],["Kitsu","今日は何日ですか。","Kyou wa nan nichi desu ka.","Hari ini tanggal berapa?",[["九日です。","Kokonoka desu.","Tanggal sembilan.",1],["月曜日です。","Getsuyoubi desu.","Hari Senin.",0],["火曜日です。","Kayoubi desu.","Hari Selasa.",0]]],["Kitsu","週末は何をしますか。","Shuumatsu wa nani o shimasu ka.","Apa yang dilakukan akhir pekan?",[["友達と遊びます。","Tomodachi to asobimasu.","Bermain dengan teman.",1],["月曜日です。","Getsuyoubi desu.","Hari Senin.",0],["火曜日です。","Kayoubi desu.","Hari Selasa.",0]]],["Kitsu","今日は何をしますか。","Kyou wa nani o shimasu ka.","Hari ini mau melakukan apa?",[["日本語を勉強します。","Nihongo o benkyou shimasu.","Belajar bahasa Jepang.",1],["駅を勉強します。","Eki o benkyou shimasu.","Belajar stasiun.",0],["水を勉強します。","Mizu o benkyou shimasu.","Belajar air.",0]]],["Kitsu","明日は休みですか。","Ashita wa yasumi desu ka.","Besok libur?",[["はい、休みです。","Hai, yasumi desu.","Ya, libur.",1],["はい、駅です。","Hai, eki desu.","Ya, stasiun.",0],["はい、右です。","Hai, migi desu.","Ya, kanan.",0]]],["Kitsu","昨日は何を食べましたか。","Kinou wa nani o tabemashita ka.","Kemarin makan apa?",[["ご飯を食べました。","Gohan o tabemashita.","Makan nasi.",1],["駅を食べました。","Eki o tabemashita.","Makan stasiun.",0],["右を食べました。","Migi o tabemashita.","Makan kanan.",0]]],["Kitsu","今週は忙しいですか。","Konshuu wa isogashii desu ka.","Minggu ini sibuk?",[["はい、忙しいです。","Hai, isogashii desu.","Ya, sibuk.",1],["はい、おいしいです。","Hai, oishii desu.","Ya, enak.",0],["駅は忙しいです。","Eki wa isogashii desu.","Stasiun sibuk.",0]]],["Kitsu","来週も勉強しますか。","Raishuu mo benkyou shimasu ka.","Minggu depan juga belajar?",[["はい、勉強します。","Hai, benkyou shimasu.","Ya, belajar.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["来週も駅です。","Raishuu mo eki desu.","Minggu depan stasiun.",0]]]],[["Kitsu","家に帰りますか。","Ie ni kaerimasu ka.","Apakah pulang ke rumah?",[["はい、帰ります。","Hai, kaerimasu.","Ya, saya pulang.",1],["勉強します。","Benkyou shimasu.","Saya belajar.",0],["はい、います。","Hai, imasu.","Ya, saya di rumah.",0]]],["Kitsu","家で何をしますか。","Ie de nani o shimasu ka.","Apa yang dilakukan di rumah?",[["勉強します。","Benkyou shimasu.","Saya belajar.",1],["はい、帰ります。","Hai, kaerimasu.","Ya, saya pulang.",0],["はい、います。","Hai, imasu.","Ya, saya di rumah.",0]]],["Kitsu","今家にいますか。","Ima ie ni imasu ka.","Apakah sekarang di rumah?",[["はい、います。","Hai, imasu.","Ya, saya di rumah.",1],["はい、帰ります。","Hai, kaerimasu.","Ya, saya pulang.",0],["勉強します。","Benkyou shimasu.","Saya belajar.",0]]],["Kitsu","部屋はどこですか。","Heya wa doko desu ka.","Di mana kamarnya?",[["二階です。","Nikai desu.","Di lantai dua.",1],["はい、帰ります。","Hai, kaerimasu.","Ya, saya pulang.",0],["勉強します。","Benkyou shimasu.","Saya belajar.",0]]],["Kitsu","家で食べますか。","Ie de tabemasu ka.","Makan di rumah?",[["はい、食べます。","Hai, tabemasu.","Ya, makan.",1],["はい、帰ります。","Hai, kaerimasu.","Ya, saya pulang.",0],["勉強します。","Benkyou shimasu.","Saya belajar.",0]]],["Kitsu","もう家に帰りましたか。","Mou ie ni kaerimashita ka.","Sudah pulang ke rumah?",[["はい、帰りました。","Hai, kaerimashita.","Ya, sudah pulang.",1],["はい、食べました。","Hai, tabemashita.","Ya, sudah makan.",0],["駅に帰りました。","Eki ni kaerimashita.","Pulang ke stasiun.",0]]],["Kitsu","家で何をしますか。","Ie de nani o shimasu ka.","Di rumah melakukan apa?",[["本を読みます。","Hon o yomimasu.","Membaca buku.",1],["駅を読みます。","Eki o yomimasu.","Membaca stasiun.",0],["右を読みます。","Migi o yomimasu.","Membaca kanan.",0]]],["Kitsu","部屋はきれいですか。","Heya wa kirei desu ka.","Apakah kamarnya bersih?",[["はい、きれいです。","Hai, kirei desu.","Ya, bersih.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["右はきれいです。","Migi wa kirei desu.","Kanan bersih.",0]]],["Kitsu","家に誰がいますか。","Ie ni dare ga imasu ka.","Siapa yang ada di rumah?",[["家族がいます。","Kazoku ga imasu.","Ada keluarga.",1],["駅がいます。","Eki ga imasu.","Ada stasiun.",0],["水がいます。","Mizu ga imasu.","Ada air.",0]]],["Kitsu","家で休みますか。","Ie de yasumimasu ka.","Istirahat di rumah?",[["はい、休みます。","Hai, yasumimasu.","Ya, istirahat.",1],["はい、駅します。","Hai, eki shimasu.","Ya, melakukan stasiun.",0],["右で休みます。","Migi de yasumimasu.","Istirahat di kanan.",0]]]],[["Kitsu","日本語を勉強しますか。","Nihongo o benkyou shimasu ka.","Apakah belajar bahasa Jepang?",[["はい、勉強します。","Hai, benkyou shimasu.","Ya, saya belajar.",1],["はい、少し難しいです。","Hai, sukoshi muzukashii desu.","Ya, agak sulit.",0],["はい、読めます。","Hai, yomemasu.","Ya, bisa.",0]]],["Kitsu","漢字は難しいですか。","Kanji wa muzukashii desu ka.","Apakah Kanji sulit?",[["はい、少し難しいです。","Hai, sukoshi muzukashii desu.","Ya, agak sulit.",1],["はい、勉強します。","Hai, benkyou shimasu.","Ya, saya belajar.",0],["はい、読めます。","Hai, yomemasu.","Ya, bisa.",0]]],["Kitsu","ひらがなを読めますか。","Hiragana o yomemasu ka.","Bisa membaca Hiragana?",[["はい、読めます。","Hai, yomemasu.","Ya, bisa.",1],["はい、勉強します。","Hai, benkyou shimasu.","Ya, saya belajar.",0],["はい、少し難しいです。","Hai, sukoshi muzukashii desu.","Ya, agak sulit.",0]]],["Kitsu","日本語を話せますか。","Nihongo o hanasemasu ka.","Bisa berbicara bahasa Jepang?",[["少し話せます。","Sukoshi hanasemasu.","Bisa sedikit.",1],["はい、勉強します。","Hai, benkyou shimasu.","Ya, saya belajar.",0],["はい、少し難しいです。","Hai, sukoshi muzukashii desu.","Ya, agak sulit.",0]]],["Kitsu","毎日日本語を練習しますか。","Mainichi nihongo o renshuu shimasu ka.","Apakah latihan bahasa Jepang setiap hari?",[["はい、練習します。","Hai, renshuu shimasu.","Ya, saya latihan.",1],["はい、勉強します。","Hai, benkyou shimasu.","Ya, saya belajar.",0],["はい、少し難しいです。","Hai, sukoshi muzukashii desu.","Ya, agak sulit.",0]]],["Kitsu","日本語をどのくらい勉強しますか。","Nihongo o dono kurai benkyou shimasu ka.","Belajar bahasa Jepang berapa lama?",[["毎日一時間です。","Mainichi ichi-jikan desu.","Satu jam setiap hari.",1],["毎日一駅です。","Mainichi ichi-eki desu.","Satu stasiun setiap hari.",0],["毎日一杯です。","Mainichi ippai desu.","Satu gelas setiap hari.",0]]],["Kitsu","漢字は難しいですか。","Kanji wa muzukashii desu ka.","Apakah Kanji sulit?",[["はい、少し難しいです。","Hai, sukoshi muzukashii desu.","Ya, agak sulit.",1],["はい、少し食べます。","Hai, sukoshi tabemasu.","Ya, makan sedikit.",0],["漢字は駅です。","Kanji wa eki desu.","Kanji adalah stasiun.",0]]],["Kitsu","日本語で話せますか。","Nihongo de hanasemasu ka.","Bisa berbicara bahasa Jepang?",[["少し話せます。","Sukoshi hanasemasu.","Bisa sedikit.",1],["少し食べられます。","Sukoshi taberaremasu.","Bisa makan sedikit.",0],["少し駅です。","Sukoshi eki desu.","Sedikit stasiun.",0]]],["Kitsu","ひらがなを読めますか。","Hiragana o yomemasu ka.","Bisa membaca Hiragana?",[["はい、読めます。","Hai, yomemasu.","Ya, bisa.",1],["はい、飲めます。","Hai, nomemasu.","Ya, bisa minum.",0],["右が読めます。","Migi ga yomemasu.","Bisa membaca kanan.",0]]],["Kitsu","もっと日本語を練習したいですか。","Motto Nihongo o renshuu shitai desu ka.","Ingin lebih banyak latihan bahasa Jepang?",[["はい、練習したいです。","Hai, renshuu shitai desu.","Ya, ingin latihan.",1],["はい、食べたいです。","Hai, tabetai desu.","Ya, ingin makan.",0],["駅を練習したいです。","Eki o renshuu shitai desu.","Ingin latihan stasiun.",0]]]],[["Kitsu","手伝ってください。","Tetsudatte kudasai.","Tolong bantu saya.",[["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",1],["はい、もちろんです。","Hai, mochiron desu.","Ya, tentu.",0],["はい、どうぞ。","Hai, douzo.","Ya, silakan.",0]]],["Kitsu","これを手伝ってもらえますか。","Kore o tetsudatte moraemasu ka.","Bisakah membantu ini?",[["はい、もちろんです。","Hai, mochiron desu.","Ya, tentu.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["はい、どうぞ。","Hai, douzo.","Ya, silakan.",0]]],["Kitsu","ちょっと手伝ってください。","Chotto tetsudatte kudasai.","Tolong bantu sebentar.",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["はい、もちろんです。","Hai, mochiron desu.","Ya, tentu.",0]]],["Kitsu","助けが必要ですか。","Tasuke ga hitsuyou desu ka.","Apakah perlu bantuan?",[["はい、お願いします。","Hai, onegaishimasu.","Ya, tolong.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["はい、もちろんです。","Hai, mochiron desu.","Ya, tentu.",0]]],["Kitsu","一人でできますか。","Hitori de dekimasu ka.","Bisa melakukannya sendiri?",[["いいえ、手伝ってください。","Iie, tetsudatte kudasai.","Tidak, tolong bantu.",1],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0],["はい、もちろんです。","Hai, mochiron desu.","Ya, tentu.",0]]],["Kitsu","ちょっと手伝ってもらえますか。","Chotto tetsudatte moraemasu ka.","Bisa bantu sebentar?",[["はい、もちろんです。","Hai, mochiron desu.","Ya, tentu.",1],["いいえ、食べます。","Iie, tabemasu.","Tidak, saya makan.",0],["右を飲みます。","Migi o nomimasu.","Minum kanan.",0]]],["Kitsu","これを持ってくれますか。","Kore o motte kuremasu ka.","Bisa bawakan ini?",[["はい、わかりました。","Hai, wakarimashita.","Ya, mengerti.",1],["はい、これを食べます。","Hai, kore o tabemasu.","Ya, makan ini.",0],["明日を持ちます。","Ashita o mochimasu.","Membawa besok.",0]]],["Kitsu","どうしたらいいですか。","Dou shitara ii desu ka.","Apa yang sebaiknya saya lakukan?",[["ここで待ってください。","Koko de matte kudasai.","Tolong tunggu di sini.",1],["ここで食べてください。","Koko de tabete kudasai.","Silakan makan di sini.",0],["ここで右です。","Koko de migi desu.","Di sini kanan.",0]]],["Kitsu","もう少しゆっくり話してもらえますか。","Mou sukoshi yukkuri hanashite moraemasu ka.","Bisa bicara sedikit lebih pelan?",[["はい、わかりました。","Hai, wakarimashita.","Ya, mengerti.",1],["はい、早く食べます。","Hai, hayaku tabemasu.","Ya, makan cepat.",0],["右を話します。","Migi o hanashimasu.","Berbicara kanan.",0]]],["Kitsu","助けが必要ですか。","Tasuke ga hitsuyou desu ka.","Apakah butuh bantuan?",[["はい、お願いします。","Hai, onegaishimasu.","Ya, tolong.",1],["はい、水を食べます。","Hai, mizu o tabemasu.","Ya, makan air.",0],["明日をお願いします。","Ashita o onegaishimasu.","Tolong besok.",0]]]],[["Kitsu","入ってもいいですか。","Haitte mo ii desu ka.","Bolehkah saya masuk?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、大丈夫です。","Hai, daijoubu desu.","Ya, tidak masalah.",0],["はい、いいですよ。","Hai, ii desu yo.","Ya, boleh.",0]]],["Kitsu","ここに座ってもいいですか。","Koko ni suwatte mo ii desu ka.","Bolehkah duduk di sini?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、大丈夫です。","Hai, daijoubu desu.","Ya, tidak masalah.",0],["はい、いいですよ。","Hai, ii desu yo.","Ya, boleh.",0]]],["Kitsu","写真を撮ってもいいですか。","Shashin o totte mo ii desu ka.","Bolehkah mengambil foto?",[["はい、大丈夫です。","Hai, daijoubu desu.","Ya, tidak masalah.",1],["はい、どうぞ。","Hai, douzo.","Ya, silakan.",0],["はい、いいですよ。","Hai, ii desu yo.","Ya, boleh.",0]]],["Kitsu","これを使ってもいいですか。","Kore o tsukatte mo ii desu ka.","Bolehkah memakai ini?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、大丈夫です。","Hai, daijoubu desu.","Ya, tidak masalah.",0],["はい、いいですよ。","Hai, ii desu yo.","Ya, boleh.",0]]],["Kitsu","窓を開けてもいいですか。","Mado o akete mo ii desu ka.","Bolehkah membuka jendela?",[["はい、いいですよ。","Hai, ii desu yo.","Ya, boleh.",1],["はい、どうぞ。","Hai, douzo.","Ya, silakan.",0],["はい、大丈夫です。","Hai, daijoubu desu.","Ya, tidak masalah.",0]]],["Kitsu","ここに座ってもいいですか。","Koko ni suwatte mo ii desu ka.","Bolehkah duduk di sini?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、ここを食べます。","Hai, koko o tabemasu.","Ya, makan sini.",0],["右に寝てもいいです。","Migi ni nete mo ii desu.","Boleh tidur di kanan.",0]]],["Kitsu","写真を撮ってもいいですか。","Shashin o totte mo ii desu ka.","Bolehkah mengambil foto?",[["はい、大丈夫です。","Hai, daijoubu desu.","Ya, tidak masalah.",1],["はい、写真を食べます。","Hai, shashin o tabemasu.","Ya, makan foto.",0],["右を撮ってください。","Migi o totte kudasai.","Ambil kanan.",0]]],["Kitsu","窓を開けてもいいですか。","Mado o akete mo ii desu ka.","Bolehkah membuka jendela?",[["はい、いいですよ。","Hai, ii desu yo.","Ya, boleh.",1],["はい、窓を食べます。","Hai, mado o tabemasu.","Ya, makan jendela.",0],["駅を開けます。","Eki o akemasu.","Membuka stasiun.",0]]],["Kitsu","ここで話してもいいですか。","Koko de hanashite mo ii desu ka.","Bolehkah berbicara di sini?",[["はい、いいですよ。","Hai, ii desu yo.","Ya, boleh.",1],["はい、ここで飲みます。","Hai, koko de nomimasu.","Ya, minum di sini.",0],["右で話します。","Migi de hanashimasu.","Berbicara di kanan.",0]]],["Kitsu","少し休んでもいいですか。","Sukoshi yasunde mo ii desu ka.","Bolehkah istirahat sebentar?",[["はい、どうぞ。","Hai, douzo.","Ya, silakan.",1],["はい、少し食べます。","Hai, sukoshi tabemasu.","Ya, makan sedikit.",0],["駅で休みます。","Eki de yasumimasu.","Istirahat di stasiun.",0]]]],[["Kitsu","わかりますか。","Wakarimasu ka.","Apakah mengerti?",[["はい、わかります。","Hai, wakarimasu.","Ya, mengerti.",1],["はい、わかりません。","Hai, wakarimasen.","Ya, tidak mengerti.",0],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0]]],["Kitsu","わかりませんか。","Wakarimasen ka.","Apakah tidak mengerti?",[["はい、わかりません。","Hai, wakarimasen.","Ya, tidak mengerti.",1],["はい、わかります。","Hai, wakarimasu.","Ya, mengerti.",0],["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",0]]],["Kitsu","もう一度お願いします。","Mou ichido onegaishimasu.","Tolong sekali lagi.",[["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",1],["はい、わかります。","Hai, wakarimasu.","Ya, mengerti.",0],["はい、わかりません。","Hai, wakarimasen.","Ya, tidak mengerti.",0]]],["Kitsu","ゆっくり話してください。","Yukkuri hanashite kudasai.","Tolong bicara pelan-pelan.",[["はい、わかりました。","Hai, wakarimashita.","Baik, saya mengerti.",1],["はい、わかります。","Hai, wakarimasu.","Ya, mengerti.",0],["はい、わかりません。","Hai, wakarimasen.","Ya, tidak mengerti.",0]]],["Kitsu","この言葉の意味がわかりますか。","Kono kotoba no imi ga wakarimasu ka.","Apakah mengerti arti kata ini?",[["いいえ、わかりません。","Iie, wakarimasen.","Tidak, saya tidak mengerti.",1],["はい、わかります。","Hai, wakarimasu.","Ya, mengerti.",0],["はい、わかりません。","Hai, wakarimasen.","Ya, tidak mengerti.",0]]],["Kitsu","わかりましたか。","Wakarimashita ka.","Sudah mengerti?",[["まだよくわかりません。","Mada yoku wakarimasen.","Saya masih belum begitu mengerti.",1],["はい、食べました。","Hai, tabemashita.","Ya, sudah makan.",0],["駅がわかります。","Eki ga wakarimasu.","Mengerti stasiun.",0]]],["Kitsu","意味がわかりますか。","Imi ga wakarimasu ka.","Mengerti artinya?",[["少しわかります。","Sukoshi wakarimasu.","Sedikit mengerti.",1],["少し食べます。","Sukoshi tabemasu.","Makan sedikit.",0],["右がわかります。","Migi ga wakarimasu.","Mengerti kanan.",0]]],["Kitsu","もう一度説明してくれますか。","Mou ichido setsumei shite kuremasu ka.","Bisa jelaskan sekali lagi?",[["はい、もちろんです。","Hai, mochiron desu.","Ya, tentu.",1],["はい、食べてください。","Hai, tabete kudasai.","Silakan makan.",0],["右を説明します。","Migi o setsumei shimasu.","Menjelaskan kanan.",0]]],["Kitsu","この言葉は何ですか。","Kono kotoba wa nan desu ka.","Kata ini apa?",[["「ありがとう」です。","Arigatou desu.","Artinya 'terima kasih'.",1],["「駅」です。","Eki desu.","Stasiun.",0],["「右」です。","Migi desu.","Kanan.",0]]],["Kitsu","ゆっくり話してください。","Yukkuri hanashite kudasai.","Tolong bicara pelan.",[["はい、わかりました。","Hai, wakarimashita.","Ya, mengerti.",1],["はい、早く食べます。","Hai, hayaku tabemasu.","Ya, makan cepat.",0],["右を飲みます。","Migi o nomimasu.","Minum kanan.",0]]]],[["Kitsu","また明日。","Mata ashita.","Sampai besok.",[["また明日！","Mata ashita!","Sampai besok!",1],["はい、また会いましょう。","Hai, mata aimashou.","Ya, mari bertemu lagi.",0],["またね。","Mata ne.","Sampai jumpa.",0]]],["Kitsu","また会いましょう。","Mata aimashou.","Mari bertemu lagi.",[["はい、また会いましょう。","Hai, mata aimashou.","Ya, mari bertemu lagi.",1],["また明日！","Mata ashita!","Sampai besok!",0],["またね。","Mata ne.","Sampai jumpa.",0]]],["Kitsu","じゃあ、またね。","Jaa, mata ne.","Sampai jumpa.",[["またね。","Mata ne.","Sampai jumpa.",1],["また明日！","Mata ashita!","Sampai besok!",0],["はい、また会いましょう。","Hai, mata aimashou.","Ya, mari bertemu lagi.",0]]],["Kitsu","おやすみなさい。","Oyasuminasai.","Selamat tidur.",[["おやすみなさい。","Oyasuminasai.","Selamat tidur.",1],["また明日！","Mata ashita!","Sampai besok!",0],["はい、また会いましょう。","Hai, mata aimashou.","Ya, mari bertemu lagi.",0]]],["Kitsu","気をつけて帰ってください。","Ki o tsukete kaette kudasai.","Hati-hati pulang.",[["ありがとうございます。","Arigatou gozaimasu.","Terima kasih.",1],["また明日！","Mata ashita!","Sampai besok!",0],["はい、また会いましょう。","Hai, mata aimashou.","Ya, mari bertemu lagi.",0]]],["Kitsu","じゃあ、また明日。","Jaa, mata ashita.","Kalau begitu, sampai besok.",[["また明日！","Mata ashita!","Sampai besok!",1],["いただきます！","Itadakimasu!","Selamat makan!",0],["いくらですか。","Ikura desu ka.","Berapa harganya?",0]]],["Kitsu","気をつけて帰ってください。","Ki o tsukete kaette kudasai.","Hati-hati saat pulang.",[["ありがとうございます。","Arigatou gozaimasu.","Terima kasih.",1],["はい、食べます。","Hai, tabemasu.","Ya, makan.",0],["右へ飲みます。","Migi e nomimasu.","Minum ke kanan.",0]]],["Kitsu","また今度会いましょう。","Mata kondo aimashou.","Mari bertemu lagi lain kali.",[["はい、また会いましょう。","Hai, mata aimashou.","Ya, mari bertemu lagi.",1],["はい、駅を食べましょう。","Hai, eki o tabemashou.","Mari makan stasiun.",0],["明日を飲みましょう。","Ashita o nomimashou.","Mari minum besok.",0]]],["Kitsu","今日は楽しかったです。","Kyou wa tanoshikatta desu.","Hari ini menyenangkan.",[["私も楽しかったです。","Watashi mo tanoshikatta desu.","Saya juga senang.",1],["私も食べました。","Watashi mo tabemashita.","Saya juga makan.",0],["私も右です。","Watashi mo migi desu.","Saya juga kanan.",0]]],["Kitsu","また連絡します。","Mata renraku shimasu.","Saya akan menghubungi lagi.",[["はい、待っています。","Hai, matte imasu.","Ya, saya tunggu.",1],["はい、食べています。","Hai, tabete imasu.","Ya, sedang makan.",0],["右で待っています。","Migi de matte imasu.","Menunggu di kanan.",0]]]],[["Kitsu","最近どう？","Saikin dou?","Akhir-akhir ini bagaimana?",[["元気だよ。","Genki da yo.","Aku baik.",1],["日本語を勉強してる。","Nihongo o benkyou shiteru.","Sedang belajar bahasa Jepang.",0],["うん、話そう！","Un, hanasou!","Ya, ayo ngobrol!",0]]],["Kitsu","今日は何してる？","Kyou wa nani shiteru?","Hari ini sedang apa?",[["日本語を勉強してる。","Nihongo o benkyou shiteru.","Sedang belajar bahasa Jepang.",1],["元気だよ。","Genki da yo.","Aku baik.",0],["うん、話そう！","Un, hanasou!","Ya, ayo ngobrol!",0]]],["Kitsu","一緒に話さない？","Issho ni hanasanai?","Mau ngobrol bersama?",[["うん、話そう！","Un, hanasou!","Ya, ayo ngobrol!",1],["元気だよ。","Genki da yo.","Aku baik.",0],["日本語を勉強してる。","Nihongo o benkyou shiteru.","Sedang belajar bahasa Jepang.",0]]],["Kitsu","日本語は楽しい？","Nihongo wa tanoshii?","Bahasa Jepang menyenangkan?",[["うん、楽しい！","Un, tanoshii!","Ya, menyenangkan!",1],["元気だよ。","Genki da yo.","Aku baik.",0],["日本語を勉強してる。","Nihongo o benkyou shiteru.","Sedang belajar bahasa Jepang.",0]]],["Kitsu","また明日話そうか。","Mata ashita hanasou ka.","Besok ngobrol lagi?",[["うん、また話そう！","Un, mata hanasou!","Ya, ngobrol lagi!",1],["元気だよ。","Genki da yo.","Aku baik.",0],["日本語を勉強してる。","Nihongo o benkyou shiteru.","Sedang belajar bahasa Jepang.",0]]],["Kitsu","最近、何か面白いことありましたか。","Saikin, nanika omoshiroi koto arimashita ka.","Ada hal menarik akhir-akhir ini?",[["はい、新しい映画を見ました。","Hai, atarashii eiga o mimashita.","Ya, menonton film baru.",1],["はい、新しい駅を食べました。","Hai, atarashii eki o tabemashita.","Makan stasiun baru.",0],["右を見ました。","Migi o mimashita.","Melihat kanan.",0]]],["Kitsu","今日はどんな一日でしたか。","Kyou wa donna ichinichi deshita ka.","Hari ini harinya seperti apa?",[["楽しい一日でした。","Tanoshii ichinichi deshita.","Hari yang menyenangkan.",1],["おいしい駅でした。","Oishii eki deshita.","Stasiun yang enak.",0],["右の一日でした。","Migi no ichinichi deshita.","Hari kanan.",0]]],["Kitsu","明日は何をしたいですか。","Ashita wa nani o shitai desu ka.","Besok ingin melakukan apa?",[["ゆっくり休みたいです。","Yukkuri yasumitai desu.","Saya ingin istirahat santai.",1],["ゆっくり駅したいです。","Yukkuri eki shitai desu.","Ingin melakukan stasiun.",0],["水をしたいです。","Mizu o shitai desu.","Ingin melakukan air.",0]]],["Kitsu","最近、日本語はどうですか。","Saikin, Nihongo wa dou desu ka.","Bagaimana bahasa Jepangmu akhir-akhir ini?",[["少し上手になりました。","Sukoshi jouzu ni narimashita.","Menjadi sedikit lebih mahir.",1],["少し駅になりました。","Sukoshi eki ni narimashita.","Menjadi sedikit stasiun.",0],["少し食べになりました。","Sukoshi tabe ni narimashita.","Menjadi sedikit makan.",0]]],["Kitsu","また一緒に話しましょうか。","Mata issho ni hanashimashou ka.","Mau ngobrol bersama lagi?",[["はい、ぜひ！","Hai, zehi!","Ya, tentu!",1],["はい、ぜひ食べます。","Hai, zehi tabemasu.","Ya, tentu makan.",0],["はい、ぜひ右です。","Hai, zehi migi desu.","Ya, tentu kanan.",0]]]]];
+
+const KEY="kitsumiKaiwaV3";
+const RESUME_KEY="kitsumiKaiwaResumeV1";
+const XP_KEY="kitsumiXP";
+let state=load();
+let topic=0, line=0, answered=false;
+
+function load(){
+  try{
+    const x=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(x&&Array.isArray(x.done)&&x.done.length===30){
+      if(!Array.isArray(x.completedQuestions)||x.completedQuestions.length!==30)
+        x.completedQuestions=Array.from({length:30},()=>[]);
+      return x;
+    }
+  }catch(e){}
+  return {
+    done:Array(30).fill(false),
+    completedQuestions:Array.from({length:30},()=>[]),
+    xp:0
+  };
+}
+function getGlobalXP(){
+  return Number(localStorage.getItem(XP_KEY)||0);
+}
+function addGlobalXP(amount){
+  const total=getGlobalXP()+amount;
+  localStorage.setItem(XP_KEY,String(total));
+  state.xp=total;
+  return total;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function saveResume(){
+  localStorage.setItem(RESUME_KEY,JSON.stringify({topic:topic,line:line}));
+}
+function getResume(){
+  try{return JSON.parse(localStorage.getItem(RESUME_KEY)||"null")}catch(e){return null}
+}
+function getTopicProgress(i){
+  return Math.min(10,(state.completedQuestions[i]||[]).length);
+}
+function toggleTopicDone(e,i){
+  e.preventDefault();
+  e.stopPropagation();
+  state.done[i]=!state.done[i];
+  save();
+  render();
+}
+function render(){
+  const done=state.done.filter(Boolean).length;
+  state.xp=getGlobalXP();
+  document.getElementById("xp").textContent=state.xp;
+  document.getElementById("totalText").textContent=done+" / 30 topik";
+  document.getElementById("totalBar").style.width=(done/30*100)+"%";
+
+  const box=document.getElementById("cards");box.innerHTML="";
+  TOPICS.forEach((t,i)=>{
+    const progress=getTopicProgress(i);
+    const b=document.createElement("div");
+    b.className="kaiwa-card"+(state.done[i]?" done":"");
+    b.setAttribute("role","button");
+    b.setAttribute("tabindex","0");
+    b.innerHTML=`<div class="card-icon">${t[1]}</div>
+      <div class="card-info">
+        <h2>${i+1}. ${t[0]}</h2>
+        <p>${t[2]} • <span class="qcount">${progress}/10 pertanyaan</span></p>
+        <div class="card-progress"><i style="width:${progress/5*100}%"></i></div>
+      </div>
+      <button class="card-check ${state.done[i]?"checked":""}" onclick="toggleTopicDone(event,${i})" aria-label="Centang atau hapus centang topik selesai">${state.done[i]?"":" "}</button>
+      <div class="card-right">›</div>`;
+    b.onclick=()=>openTopic(i);
+    b.onkeydown=(e)=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openTopic(i)}};
+    box.appendChild(b);
+  });
+}
+
+function openTopic(i){
+  topic=i;
+  const resume=getResume();
+  // Jika pengguna sebelumnya sedang mengerjakan topik ini, lanjutkan dari pertanyaan terakhir.
+  if(resume && resume.topic===i && !state.done[i]){
+    line=Math.min(9,Math.max(0,Number(resume.line)||0));
+  }else{
+    const completed=state.completedQuestions[i]||[];
+    line=completed.length<10?completed.length:0;
+    if(line>9)line=0;
+  }
+  answered=false;
+  document.getElementById("lessonScreen").style.display="block";
+  document.body.style.overflow="hidden";
+  document.getElementById("lessonContent").style.display="block";
+  document.getElementById("finish").style.display="none";
+  document.getElementById("lessonScreen").querySelector(".wrap").classList.remove("finish-active");
+  showLine();
+}
+
+function closeLesson(){
+  if("speechSynthesis" in window)speechSynthesis.cancel();
+  saveResume();
+  document.getElementById("lessonScreen").style.display="none";
+  document.body.style.overflow="";
+  render();
+}
+
+function showLine(){
+  const q=KAIWA[topic][line];
+  answered=false;
+  saveResume();
+
+  document.getElementById("lessonTopTitle").textContent=TOPICS[topic][0];
+  document.getElementById("lessonNum").textContent=(line+1)+" / 10";
+  document.getElementById("lessonProgress").style.width=((line+1)/10*100)+"%";
+  document.getElementById("scene").textContent=TOPICS[topic][2];
+  document.getElementById("lessonTitle").textContent=TOPICS[topic][0];
+
+  const dialogue=document.getElementById("dialogue");
+  dialogue.innerHTML="";
+  const bubble=document.createElement("div");
+  bubble.className="bubble kitsu open";
+  bubble.innerHTML=`<div class="speaker">🦊 Kitsu</div><div class="jp">${q[1]}</div><div class="romaji">${q[2]}</div><div class="meaning" style="display:block">${q[3]}</div>`;
+  bubble.onclick=()=>speakText(q[1],"kitsu");
+  dialogue.appendChild(bubble);
+
+  document.getElementById("answerLabel").textContent="Pilih kartu jawabanmu:";
+  const answers=document.getElementById("answerCards");
+  answers.innerHTML="";
+  const options=[...q[4]];
+  for(let i=options.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [options[i],options[j]]=[options[j],options[i]];
+  }
+  options.forEach(opt=>{
+    const b=document.createElement("button");
+    b.className="answer-card";
+    b.innerHTML=`<div class="answer-jp">${opt[0]}</div><div class="answer-id">${opt[2]}</div>`;
+    b.onclick=()=>chooseAnswer(b,opt,q);
+    answers.appendChild(b);
+  });
+  document.getElementById("answerFeedback").textContent="";
+  document.getElementById("answerFeedback").className="answer-feedback";
+  document.querySelector(".next").style.display="none";
+  setTimeout(()=>speakText(q[1],"kitsu"),180);
+}
+
+function chooseAnswer(button,opt,q){
+  if(answered)return;
+  const all=[...document.querySelectorAll(".answer-card")];
+
+  if(opt[3]===1){
+    answered=true;
+    button.classList.add("correct");
+    all.forEach(b=>b.disabled=true);
+
+    if(!state.completedQuestions[topic].includes(line)){
+      state.completedQuestions[topic].push(line);
+      state.completedQuestions[topic].sort((a,b)=>a-b);
+      addGlobalXP(5);
+      save();
+    }
+
+    const fb=document.getElementById("answerFeedback");
+    fb.textContent="Benar! 🎉 +5 XP";
+    fb.className="answer-feedback good";
+    speakText(opt[0],"user");
+    document.querySelector(".next").style.display="block";
+  }else{
+    button.classList.add("wrong");
+    const fb=document.getElementById("answerFeedback");
+    fb.textContent="Belum tepat, coba lagi! 🦊";
+    fb.className="answer-feedback bad";
+    speakText(opt[0],"user");
+    setTimeout(()=>button.classList.remove("wrong"),550);
+  }
+}
+
+function nextLine(){
+  if(!answered)return;
+
+  if(line<9){
+    // Lanjut ke pertanyaan berikutnya dan simpan posisi.
+    line++;
+    saveResume();
+    showLine();
+    return;
+  }
+
+  // 10 pertanyaan sudah selesai.
+  state.done[topic]=true;
+  save();
+  localStorage.removeItem(RESUME_KEY);
+
+  document.getElementById("lessonContent").style.display="none";
+  document.getElementById("finish").style.display="block";
+  document.getElementById("lessonScreen").querySelector(".wrap").classList.add("finish-active");
+  document.getElementById("finishText").textContent=
+    "Hebat! Kaiwa “"+TOPICS[topic][0]+"” selesai. 5/10 pertanyaan benar. 🦊";
+  speakText("Yey! Kaiwa selesai! Selamat!","kitsu");
+  render();
+}
+
+function speakCurrent(){
+  const q=KAIWA[topic][line];
+  speakText(q[1],"kitsu");
+}
+
+let japaneseVoices=[];
+function loadJapaneseVoices(){
+  if(!("speechSynthesis" in window)) return;
+  japaneseVoices=speechSynthesis.getVoices().filter(v=>(v.lang||"").toLowerCase().startsWith("ja"));
+}
+if("speechSynthesis" in window){
+  loadJapaneseVoices();
+  speechSynthesis.onvoiceschanged=loadJapaneseVoices;
+}
+
+function pickVoice(role){
+  if(!japaneseVoices.length) return null;
+  const maleWords=["male","man","otoya","otoya-jp","google 日本語","ichiro","hattori","takumi","kyoko"];
+  const childWords=["child","junior","kids","boy","girl"];
+  const femaleWords=["female","woman","kyoko","haruka","sayaka"];
+  let candidates=japaneseVoices;
+
+  if(role==="user"){
+    // Utamakan suara laki-laki/anak. Hindari voice perempuan jika browser menyediakan alternatif.
+    const nonFemale=candidates.filter(v=>{
+      const n=(v.name||"").toLowerCase();
+      return !femaleWords.some(w=>n.includes(w));
+    });
+    if(nonFemale.length) candidates=nonFemale;
+    const preferred=candidates.find(v=>{
+      const n=(v.name||"").toLowerCase();
+      return maleWords.concat(childWords).some(w=>n.includes(w));
+    });
+    if(preferred) return preferred;
+    return candidates[0]||null;
+  }
+
+  // Kitsu memakai voice Jepang lain dari suara pengguna bila memungkinkan.
+  const userVoice=pickVoice("user");
+  const other=candidates.find(v=>!userVoice || v.name!==userVoice.name);
+  return other||candidates[0]||null;
+}
+
+function speakText(text,role="kitsu"){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="ja-JP";
+  const voice=pickVoice(role);
+  if(voice) u.voice=voice;
+
+  if(role==="user"){
+    // Suara pengguna dibuat lebih rendah dan natural seperti lawan bicara laki-laki/anak.
+    u.rate=.86;
+    u.pitch=.82;
+  }else{
+    u.rate=.82;
+    u.pitch=1.08;
+  }
+  speechSynthesis.speak(u);
+}
+
+document.addEventListener("DOMContentLoaded",render);
+</script>
+</body>
+</html>
