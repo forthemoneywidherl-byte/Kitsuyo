@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kitsumi — 120 Kanji</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;600;700;800;900&family=Nunito:wght@700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f6faff;color:#173f72;font-family:"Nunito","Arial Rounded MT Bold",system-ui,sans-serif}
+.app{max-width:620px;margin:auto;min-height:100vh;padding-bottom:92px}
+header{height:78px;background:#fff;display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(30,70,120,.06)}
+.back{border:0;background:transparent;font-size:34px;color:#173f72;cursor:pointer}
+.logo{font-family:"Nunito",sans-serif;font-size:29px;font-weight:600;color:#173f72}.logo span{color:#ef5d82}
+.spacer{flex:1}.xp{font-family:"Nunito",sans-serif;font-weight:600;font-size:15px}
+main{padding:18px 16px}
+.hero{background:linear-gradient(115deg,#eaf5ff,#f7fbff);border-radius:25px;padding:19px 18px;margin-bottom:14px;border:1px solid #deebf6}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.eyebrow{font-size:12px;letter-spacing:1px;color:#7c91a8;font-weight:600}
+h1{font-family:"Nunito",sans-serif;font-size:30px;margin-top:2px}
+.hero-fox{font-size:52px}
+.hero p{margin-top:5px;color:#7890a6;font-size:13px;line-height:1.45}
+.total-line{height:10px;background:#dce8f5;border-radius:99px;overflow:hidden;margin-top:14px}
+.total-line i{display:block;height:100%;width:0;background:#2f7ff0;border-radius:99px;transition:.3s}
+.total-text{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:#8093a6}
+.day-card{width:100%;border:0;background:#fff;border-radius:25px;margin:8px 0;padding:15px 13px;display:flex;align-items:center;gap:13px;text-align:left;color:#173f72;box-shadow:0 6px 19px rgba(35,78,125,.07);border:1px solid #edf2f6;transition:.15s}
+.day-card:active{transform:scale(.985)}
+.day-card.locked{opacity:.52;filter:saturate(.55)}
+.day-card.current{border:2px solid #2f7ff0;padding:14px 12px}
+.day-card.complete{background:#fff}
+.day-icon{width:75px;height:75px;border-radius:18px;background:#edf5ff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;font-family:"Nunito",sans-serif;color:#37618f}
+.day-icon span{font-size:11px;font-weight:600;line-height:1}.day-icon b{font-size:24px;margin-top:2px}
+.complete .day-icon{background:#dff8eb;color:#15985c}
+.current .day-icon{background:#dcecff;color:#2469ac}
+.day-info{flex:1;min-width:0}.day-info h2{font-family:"Nunito",sans-serif;font-size:22px;color:#173f72;font-weight:700}
+.day-info p{font-size:12px;color:#91a1b0;margin-top:1px}
+.kanji-strip{font-family:"Noto Sans JP",sans-serif;font-size:21px;font-weight:600;color:#304e70;letter-spacing:2px;margin-top:7px;white-space:nowrap;overflow:hidden}
+.mini-progress{height:6px;background:#e9eef3;border-radius:99px;overflow:hidden;margin-top:7px}
+.mini-progress i{display:block;height:100%;width:0;background:#58cc02;border-radius:99px}
+.day-right{font-size:30px;color:#7890a6;width:24px;text-align:center}
+.complete .day-right{font-size:22px;color:#58a97a}
+.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(620px,100%);height:76px;background:#fff;border-top:1px solid #edf0f5;display:grid;grid-template-columns:repeat(3,1fr);z-index:20;box-shadow:0 -7px 20px rgba(20,50,90,.06)}
+.nav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:#a1acba;font-size:12px;font-weight:600}.nav b{font-size:26px;line-height:1}.active{color:#2f7ff0}
+.modal{display:none;position:fixed;inset:0;background:#142b3b99;z-index:30;align-items:flex-end;justify-content:center;padding:14px}
+.modal.show{display:flex}
+.sheet{width:min(100%,600px);background:#fff;border-radius:26px;padding:19px;max-height:88vh;overflow:auto}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.sheet h2{font-family:"Nunito",sans-serif;font-size:25px;font-weight:700}.close{border:0;background:#edf4f8;width:40px;height:40px;border-radius:13px;font-size:21px}
+.kanji-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.k-card{background:#f7fbff;border:1px solid #e4edf5;border-radius:17px;padding:12px 4px;text-align:center}
+.k-card strong{display:block;font-size:35px;line-height:1.15;color:#173f72}.k-card small{display:block;color:#73879a;font-size:10px;margin-top:4px;white-space:nowrap;overflow:hidden}
+.start{width:100%;height:52px;border:0;border-radius:17px;background:#58cc02;color:#fff;font-family:"Nunito",sans-serif;font-size:17px;font-weight:600;margin-top:14px;box-shadow:0 3px #46a302}
+.note{font-size:11px;color:#8a99a5;text-align:center;margin-top:8px}
+@media(max-width:390px){.day-icon{width:67px;height:67px}.day-info h2{font-size:20px}.kanji-strip{font-size:18px}}
+
+/* ===== KANJI LEARNING SCREEN ===== */
+.learn-screen{display:none;position:fixed;inset:0;background:#f7fbff;z-index:50;overflow:auto}
+.learn-wrap{max-width:620px;margin:auto;min-height:100vh;padding:14px 17px 28px}
+.learn-top{display:flex;align-items:center;gap:10px;height:52px}
+.learn-back{width:42px;height:42px;border:0;border-radius:14px;background:#edf4fa;color:#173f72;font-size:27px}
+.learn-title{font-size:17px;font-weight:600}.learn-num{margin-left:auto;color:#8295a6;font-size:12px}
+.learn-progress{height:10px;background:#e1ebf2;border-radius:99px;overflow:hidden;margin:7px 0 18px}
+.learn-progress i{display:block;height:100%;width:10%;background:#58cc02;border-radius:99px;transition:.3s}
+.learn-card{background:#fff;border:1px solid #e1ebf3;border-radius:26px;padding:18px;box-shadow:0 7px 22px rgba(30,75,120,.06)}
+.learn-label{font-size:12px;color:#7d91a3;text-align:center;text-transform:uppercase;letter-spacing:.7px}
+.learn-kanji{font-family:"Noto Sans JP",sans-serif;text-align:center;font-size:105px;line-height:1.1;color:#173f72;font-weight:700;margin:3px 0}
+.learn-reading{font-family:"Noto Sans JP",sans-serif;text-align:center;font-size:21px;color:#2f80e7;font-weight:600}
+.learn-meaning{text-align:center;font-size:19px;margin-top:5px}.learn-example{text-align:center;color:#7c8f9e;font-size:12px;margin-top:3px}
+.learn-section{margin-top:15px;border:1px solid #e5edf2;border-radius:20px;padding:13px}
+.learn-section h3{font-size:14px;margin-bottom:9px;color:#2f80e7}
+.stroke-box{height:235px;border:1px dashed #d5e4ed;border-radius:16px;background:#fbfdff;display:grid;place-items:center;overflow:hidden}
+.stroke-box svg{width:220px;height:220px}.stroke-box path{fill:none;stroke:#173f72;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.stroke-fallback{font-family:"Noto Sans JP",sans-serif;font-size:145px;font-weight:600;color:#dce7f0}
+.learn-tip{background:#fff7e5;border-radius:14px;padding:10px 12px;margin-top:9px;color:#80682d;font-size:11px;line-height:1.4}
+.learn-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:9px;margin-top:12px}
+.listen-btn,.continue-btn{height:53px;cursor:pointer;touch-action:manipulation;border-radius:17px;font-weight:600}
+.listen-btn{border:2px solid #dceaf2;background:#fff;color:#2f80e7;box-shadow:0 3px #dceaf2}
+.continue-btn{border:2px solid #46a302;background:#58cc02;color:#fff;box-shadow:0 3px #46a302}
+.learn-finished{display:none;text-align:center;padding:42px 15px}.learn-finished .emoji{font-size:62px}
+.learn-finished h2{font-size:28px;margin:10px 0 5px}.learn-finished p{font-size:13px;color:#7c8e9d;line-height:1.5}
+.review-btn{width:100%;height:51px;margin-top:12px;border:0;border-radius:17px;background:#2f80e7;color:#fff;font-weight:600;box-shadow:0 3px #2065bd}
+@media(max-width:390px){.learn-kanji{font-size:86px}.stroke-box{height:205px}}
+
+/* ===== REAL QUIZ ===== */
+.quiz-card{background:#fff;border:1px solid #e1ebf3;border-radius:26px;padding:20px;box-shadow:0 7px 22px rgba(30,75,120,.06)}
+.quiz-head{display:flex;justify-content:space-between;align-items:center;color:#8295a6;font-size:12px;font-weight:600}
+.quiz-progress{height:10px;background:#e1ebf2;border-radius:99px;overflow:hidden;margin:10px 0 25px}
+.quiz-progress i{display:block;height:100%;width:10%;background:#58cc02;border-radius:99px;transition:.3s}
+.quiz-prompt{text-align:center;color:#7d91a3;font-size:13px;font-weight:600}
+.quiz-meaning{text-align:center;font-size:30px;font-weight:600;color:#173f72;margin:8px 0 22px}
+.quiz-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.quiz-option{min-height:92px;border:2px solid #dce8f1;border-bottom-width:4px;border-radius:18px;background:#f8fbfd;color:#173f72;font-family:"Noto Sans JP",sans-serif;font-size:48px;font-weight:600;cursor:pointer;touch-action:manipulation}
+.quiz-option:active{transform:translateY(2px)}
+.quiz-option:disabled{cursor:default}
+.quiz-option.correct{background:#dff8eb;border-color:#58cc02;color:#15985c}
+.quiz-option.wrong{background:#ffe9ed;border-color:#ef5d82;color:#d13d62}
+.quiz-feedback{text-align:center;min-height:24px;margin-top:16px;font-weight:600;font-size:14px}
+.quiz-feedback.good{color:#15985c}.quiz-feedback.bad{color:#d13d62}
+@media(max-width:390px){.quiz-option{min-height:78px;font-size:40px}}
+
+/* ===== FONT TUNING — lebih ringan seperti referensi ===== */
+body{font-weight:600}
+.logo{font-weight:800}
+.eyebrow{font-weight:700}
+h1{font-weight:700}
+.xp{font-weight:700}
+.day-info h2{font-weight:700}
+.day-icon span,.day-icon b{font-weight:700}
+.learn-title{font-weight:700}
+.learn-num{font-weight:600}
+.learn-label{font-weight:600}
+.learn-kanji{font-weight:700}
+.learn-reading{font-weight:600}
+.learn-meaning{font-weight:600}
+.learn-section h3{font-weight:700}
+.listen-btn,.continue-btn{font-weight:700}
+.start{font-weight:700}
+.review-btn{font-weight:700}
+.quiz-head{font-weight:700}
+.quiz-prompt{font-weight:600}
+.quiz-meaning{font-weight:700}
+.quiz-option{font-weight:700}
+
+/* ===== FONT FINAL — lebih tebal seperti referensi ===== */
+body{font-weight:700}
+.logo{font-weight:900}
+.eyebrow{font-weight:800}
+h1{font-weight:800}
+.xp{font-weight:800}
+.day-info h2{font-weight:800}
+.day-info p{font-weight:600}
+.day-icon span,.day-icon b{font-weight:800}
+.learn-title{font-weight:800}
+.learn-num{font-weight:700}
+.learn-label{font-weight:700}
+.learn-kanji{font-weight:800}
+.learn-reading{font-weight:700}
+.learn-meaning{font-weight:700}
+.learn-section h3{font-weight:800}
+.listen-btn,.continue-btn{font-weight:800}
+.start{font-weight:800}
+.review-btn{font-weight:800}
+.quiz-head{font-weight:800}
+.quiz-prompt{font-weight:700}
+.quiz-meaning{font-weight:800}
+.quiz-option{font-weight:800}
+.learn-finished h2{font-weight:800}
+.learn-finished p{font-weight:600}
+
+/* ===== AREA BELAJAR MENGGORES ===== */
+.practice-title{display:flex;align-items:center;gap:6px;margin:14px 0 8px;font-size:14px;color:#2f80e7;font-weight:800}
+.draw-box{position:relative;height:245px;border:2px dashed #d5e4ed;border-radius:18px;background:#fbfdff;overflow:hidden;touch-action:none}
+.draw-box canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.draw-guide{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-family:"Noto Sans JP",sans-serif;font-size:145px;font-weight:800;color:#e6eef5;opacity:.62}
+.draw-hint{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:10px;color:#a1b0bc;pointer-events:none;font-weight:600}
+.draw-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.draw-tool{height:42px;border:1px solid #dce8f1;border-radius:14px;background:#fff;color:#52718d;font-weight:700;cursor:pointer;touch-action:manipulation}
+.draw-tool:active{transform:scale(.98)}
+.draw-score{text-align:center;font-size:11px;color:#8295a6;margin-top:6px;min-height:16px;font-weight:700}
+@media(max-width:390px){.draw-box{height:215px}.draw-guide{font-size:125px}}
+
+/* ===== QUIZ DI TENGAH LAYAR ===== */
+@media(min-width:391px){
+  .learn-wrap.quiz-active{position:relative;min-height:100vh}
+  .learn-wrap.quiz-active .quiz-card{
+    position:absolute;
+    left:50%;
+    top:57%;
+    transform:translate(-50%,-50%);
+    width:calc(100% - 34px);
+    max-height:calc(100vh - 150px);
+    overflow:auto;
+  }
+}
+@media(max-width:390px){
+  .learn-wrap.quiz-active{position:relative;min-height:100vh}
+  .learn-wrap.quiz-active .quiz-card{
+    position:absolute;
+    left:50%;
+    top:58%;
+    transform:translate(-50%,-50%);
+    width:calc(100% - 28px);
+    max-height:calc(100vh - 135px);
+    overflow:auto;
+  }
+}
+
+/* ===== HASIL DAY DI TENGAH LAYAR ===== */
+.learn-wrap.finish-active{position:relative;min-height:100vh}
+.learn-wrap.finish-active .learn-finished{
+  position:absolute;
+  left:50%;
+  top:57%;
+  transform:translate(-50%,-50%);
+  width:calc(100% - 34px);
+  max-height:calc(100vh - 150px);
+  overflow:auto;
+  padding:30px 15px;
+}
+@media(max-width:390px){
+  .learn-wrap.finish-active .learn-finished{
+    width:calc(100% - 28px);
+    top:58%;
+    max-height:calc(100vh - 135px);
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<button class="back" onclick="if(document.getElementById('learnScreen').style.display==='block')closeLearning();else history.back()">‹</button>
+<div class="logo">Kits<span>u</span>mi</div>
+<div class="spacer"></div><div class="xp">⭐ <span id="xp">0</span></div>
+</header>
+<main>
+<section class="hero">
+<div class="hero-top"><div><div class="eyebrow">LATIHAN KANJI</div><h1>120 Kanji</h1></div><div class="hero-fox">🦊</div></div>
+<p>10 kanji baru setiap hari. Selesaikan satu Day, lalu ulangi kapan saja untuk review.</p>
+<div class="total-line"><i id="totalBar"></i></div>
+<div class="total-text"><span id="totalText">0 / 120 kanji</span><span>12 Day</span></div>
+</section>
+
+    <button class="day-card" id="day1" onclick="openDay(1)">
+      <div class="day-icon"><span>DAY</span><b>1</b></div>
+      <div class="day-info">
+        <h2>Day 1</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">一二三四五六七八九十</div>
+        <div class="mini-progress"><i id="bar1"></i></div>
+      </div>
+      <div class="day-right" id="right1">›</div>
+    </button>
+    <button class="day-card" id="day2" onclick="openDay(2)">
+      <div class="day-icon"><span>DAY</span><b>2</b></div>
+      <div class="day-info">
+        <h2>Day 2</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">百千万円日月火水木金</div>
+        <div class="mini-progress"><i id="bar2"></i></div>
+      </div>
+      <div class="day-right" id="right2">›</div>
+    </button>
+    <button class="day-card" id="day3" onclick="openDay(3)">
+      <div class="day-icon"><span>DAY</span><b>3</b></div>
+      <div class="day-info">
+        <h2>Day 3</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">土山川田天気雨空電車</div>
+        <div class="mini-progress"><i id="bar3"></i></div>
+      </div>
+      <div class="day-right" id="right3">›</div>
+    </button>
+    <button class="day-card" id="day4" onclick="openDay(4)">
+      <div class="day-icon"><span>DAY</span><b>4</b></div>
+      <div class="day-info">
+        <h2>Day 4</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">駅道門家店国学校生先</div>
+        <div class="mini-progress"><i id="bar4"></i></div>
+      </div>
+      <div class="day-right" id="right4">›</div>
+    </button>
+    <button class="day-card" id="day5" onclick="openDay(5)">
+      <div class="day-icon"><span>DAY</span><b>5</b></div>
+      <div class="day-info">
+        <h2>Day 5</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">年時分今午前後毎週曜</div>
+        <div class="mini-progress"><i id="bar5"></i></div>
+      </div>
+      <div class="day-right" id="right5">›</div>
+    </button>
+    <button class="day-card" id="day6" onclick="openDay(6)">
+      <div class="day-icon"><span>DAY</span><b>6</b></div>
+      <div class="day-info">
+        <h2>Day 6</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">何人男女子友父母兄姉</div>
+        <div class="mini-progress"><i id="bar6"></i></div>
+      </div>
+      <div class="day-right" id="right6">›</div>
+    </button>
+    <button class="day-card" id="day7" onclick="openDay(7)">
+      <div class="day-icon"><span>DAY</span><b>7</b></div>
+      <div class="day-info">
+        <h2>Day 7</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">弟妹目耳口手足力心体</div>
+        <div class="mini-progress"><i id="bar7"></i></div>
+      </div>
+      <div class="day-right" id="right7">›</div>
+    </button>
+    <button class="day-card" id="day8" onclick="openDay(8)">
+      <div class="day-icon"><span>DAY</span><b>8</b></div>
+      <div class="day-info">
+        <h2>Day 8</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">上下中外左右東西南北</div>
+        <div class="mini-progress"><i id="bar8"></i></div>
+      </div>
+      <div class="day-right" id="right8">›</div>
+    </button>
+    <button class="day-card" id="day9" onclick="openDay(9)">
+      <div class="day-icon"><span>DAY</span><b>9</b></div>
+      <div class="day-info">
+        <h2>Day 9</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">大小新古長高安白黒赤</div>
+        <div class="mini-progress"><i id="bar9"></i></div>
+      </div>
+      <div class="day-right" id="right9">›</div>
+    </button>
+    <button class="day-card" id="day10" onclick="openDay(10)">
+      <div class="day-icon"><span>DAY</span><b>10</b></div>
+      <div class="day-info">
+        <h2>Day 10</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">青本文字名語話読書見</div>
+        <div class="mini-progress"><i id="bar10"></i></div>
+      </div>
+      <div class="day-right" id="right10">›</div>
+    </button>
+    <button class="day-card" id="day11" onclick="openDay(11)">
+      <div class="day-icon"><span>DAY</span><b>11</b></div>
+      <div class="day-info">
+        <h2>Day 11</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">聞行来帰食飲買売休会</div>
+        <div class="mini-progress"><i id="bar11"></i></div>
+      </div>
+      <div class="day-right" id="right11">›</div>
+    </button>
+    <button class="day-card" id="day12" onclick="openDay(12)">
+      <div class="day-icon"><span>DAY</span><b>12</b></div>
+      <div class="day-info">
+        <h2>Day 12</h2>
+        <p>10 kanji baru</p>
+        <div class="kanji-strip">社病院医物魚鳥花犬猫</div>
+        <div class="mini-progress"><i id="bar12"></i></div>
+      </div>
+      <div class="day-right" id="right12">›</div>
+    </button>
+</main>
+<nav class="bottom-nav">
+<a class="nav" href="index.html"><b>🏠</b>Beranda</a>
+<a class="nav active" href="#"><b>📖</b>Materi</a>
+<a class="nav" href="profil.html"><b>♙</b>Profil</a>
+</nav>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+<div class="sheet">
+<div class="sheet-head"><h2 id="modalTitle">Day 1</h2><button class="close" onclick="closeModal()">×</button></div>
+<div class="kanji-grid" id="grid"></div>
+<button class="start" id="startBtn">Mulai Latihan</button>
+<div class="note">Setelah selesai, kamu boleh mengulang Day ini tanpa batas.</div>
+</div>
+</div>
+
+<script>
+const DAYS = [[{"kanji": "一", "reading": "いち / ひとつ", "meaning": "satu"}, {"kanji": "二", "reading": "に / ふたつ", "meaning": "dua"}, {"kanji": "三", "reading": "さん / みっつ", "meaning": "tiga"}, {"kanji": "四", "reading": "よん / し", "meaning": "empat"}, {"kanji": "五", "reading": "ご / いつつ", "meaning": "lima"}, {"kanji": "六", "reading": "ろく / むっつ", "meaning": "enam"}, {"kanji": "七", "reading": "なな / しち", "meaning": "tujuh"}, {"kanji": "八", "reading": "はち / やっつ", "meaning": "delapan"}, {"kanji": "九", "reading": "きゅう / ここのつ", "meaning": "sembilan"}, {"kanji": "十", "reading": "じゅう / とお", "meaning": "sepuluh"}], [{"kanji": "百", "reading": "ひゃく", "meaning": "seratus"}, {"kanji": "千", "reading": "せん", "meaning": "seribu"}, {"kanji": "万", "reading": "まん", "meaning": "sepuluh ribu"}, {"kanji": "円", "reading": "えん", "meaning": "yen / lingkaran"}, {"kanji": "日", "reading": "ひ / にち / じつ", "meaning": "hari / matahari"}, {"kanji": "月", "reading": "つき / げつ / がつ", "meaning": "bulan"}, {"kanji": "火", "reading": "ひ / か", "meaning": "api"}, {"kanji": "水", "reading": "みず / すい", "meaning": "air"}, {"kanji": "木", "reading": "き / もく", "meaning": "pohon"}, {"kanji": "金", "reading": "かね / きん", "meaning": "emas / uang"}], [{"kanji": "土", "reading": "つち / ど", "meaning": "tanah"}, {"kanji": "山", "reading": "やま / さん", "meaning": "gunung"}, {"kanji": "川", "reading": "かわ / せん", "meaning": "sungai"}, {"kanji": "田", "reading": "た / でん", "meaning": "sawah"}, {"kanji": "天", "reading": "てん", "meaning": "langit"}, {"kanji": "気", "reading": "き / け", "meaning": "energi / suasana"}, {"kanji": "雨", "reading": "あめ / う", "meaning": "hujan"}, {"kanji": "空", "reading": "そら / くう", "meaning": "langit / kosong"}, {"kanji": "電", "reading": "でん", "meaning": "listrik"}, {"kanji": "車", "reading": "くるま / しゃ", "meaning": "mobil / kendaraan"}], [{"kanji": "駅", "reading": "えき", "meaning": "stasiun"}, {"kanji": "道", "reading": "みち / どう", "meaning": "jalan"}, {"kanji": "門", "reading": "もん / かど", "meaning": "gerbang"}, {"kanji": "家", "reading": "いえ / か", "meaning": "rumah"}, {"kanji": "店", "reading": "みせ / てん", "meaning": "toko"}, {"kanji": "国", "reading": "くに / こく", "meaning": "negara"}, {"kanji": "学", "reading": "がく / まなぶ", "meaning": "belajar"}, {"kanji": "校", "reading": "こう", "meaning": "sekolah"}, {"kanji": "生", "reading": "せい / しょう / いきる", "meaning": "hidup / lahir"}, {"kanji": "先", "reading": "さき / せん", "meaning": "sebelum / depan"}], [{"kanji": "年", "reading": "とし / ねん", "meaning": "tahun"}, {"kanji": "時", "reading": "とき / じ", "meaning": "waktu / jam"}, {"kanji": "分", "reading": "ふん / ぶん / わける", "meaning": "menit / bagian"}, {"kanji": "今", "reading": "いま / こん", "meaning": "sekarang"}, {"kanji": "午", "reading": "ご", "meaning": "siang"}, {"kanji": "前", "reading": "まえ / ぜん", "meaning": "depan / sebelum"}, {"kanji": "後", "reading": "あと / ご / こう", "meaning": "belakang / setelah"}, {"kanji": "毎", "reading": "まい", "meaning": "setiap"}, {"kanji": "週", "reading": "しゅう", "meaning": "minggu"}, {"kanji": "曜", "reading": "よう", "meaning": "hari dalam minggu"}], [{"kanji": "何", "reading": "なに / なん", "meaning": "apa / berapa"}, {"kanji": "人", "reading": "ひと / じん / にん", "meaning": "orang"}, {"kanji": "男", "reading": "おとこ / だん", "meaning": "laki-laki"}, {"kanji": "女", "reading": "おんな / じょ", "meaning": "perempuan"}, {"kanji": "子", "reading": "こ / し", "meaning": "anak"}, {"kanji": "友", "reading": "とも / ゆう", "meaning": "teman"}, {"kanji": "父", "reading": "ちち / ふ", "meaning": "ayah"}, {"kanji": "母", "reading": "はは / ぼ", "meaning": "ibu"}, {"kanji": "兄", "reading": "あに / きょう", "meaning": "kakak laki-laki"}, {"kanji": "姉", "reading": "あね / し", "meaning": "kakak perempuan"}], [{"kanji": "弟", "reading": "おとうと / てい", "meaning": "adik laki-laki"}, {"kanji": "妹", "reading": "いもうと / まい", "meaning": "adik perempuan"}, {"kanji": "目", "reading": "め / もく", "meaning": "mata"}, {"kanji": "耳", "reading": "みみ / じ", "meaning": "telinga"}, {"kanji": "口", "reading": "くち / こう", "meaning": "mulut"}, {"kanji": "手", "reading": "て / しゅ", "meaning": "tangan"}, {"kanji": "足", "reading": "あし / そく", "meaning": "kaki"}, {"kanji": "力", "reading": "ちから / りょく", "meaning": "kekuatan"}, {"kanji": "心", "reading": "こころ / しん", "meaning": "hati"}, {"kanji": "体", "reading": "からだ / たい", "meaning": "tubuh"}], [{"kanji": "上", "reading": "うえ / じょう", "meaning": "atas"}, {"kanji": "下", "reading": "した / か", "meaning": "bawah"}, {"kanji": "中", "reading": "なか / ちゅう", "meaning": "dalam / tengah"}, {"kanji": "外", "reading": "そと / がい", "meaning": "luar"}, {"kanji": "左", "reading": "ひだり / さ", "meaning": "kiri"}, {"kanji": "右", "reading": "みぎ / う", "meaning": "kanan"}, {"kanji": "東", "reading": "ひがし / とう", "meaning": "timur"}, {"kanji": "西", "reading": "にし / せい", "meaning": "barat"}, {"kanji": "南", "reading": "みなみ / なん", "meaning": "selatan"}, {"kanji": "北", "reading": "きた / ほく", "meaning": "utara"}], [{"kanji": "大", "reading": "おおきい / だい", "meaning": "besar"}, {"kanji": "小", "reading": "ちいさい / しょう", "meaning": "kecil"}, {"kanji": "新", "reading": "あたらしい / しん", "meaning": "baru"}, {"kanji": "古", "reading": "ふるい / こ", "meaning": "lama / kuno"}, {"kanji": "長", "reading": "ながい / ちょう", "meaning": "panjang"}, {"kanji": "高", "reading": "たかい / こう", "meaning": "tinggi / mahal"}, {"kanji": "安", "reading": "やすい / あん", "meaning": "murah / aman"}, {"kanji": "白", "reading": "しろい / はく", "meaning": "putih"}, {"kanji": "黒", "reading": "くろい / こく", "meaning": "hitam"}, {"kanji": "赤", "reading": "あかい / せき", "meaning": "merah"}], [{"kanji": "青", "reading": "あおい / せい", "meaning": "biru"}, {"kanji": "本", "reading": "ほん / もと", "meaning": "buku / asal"}, {"kanji": "文", "reading": "ぶん / もん", "meaning": "kalimat / tulisan"}, {"kanji": "字", "reading": "じ / あざ", "meaning": "huruf"}, {"kanji": "名", "reading": "な / めい", "meaning": "nama"}, {"kanji": "語", "reading": "ご / かたる", "meaning": "bahasa / kata"}, {"kanji": "話", "reading": "はなす / わ", "meaning": "berbicara"}, {"kanji": "読", "reading": "よむ / どく", "meaning": "membaca"}, {"kanji": "書", "reading": "かく / しょ", "meaning": "menulis"}, {"kanji": "見", "reading": "みる / けん", "meaning": "melihat"}], [{"kanji": "聞", "reading": "きく / ぶん", "meaning": "mendengar / bertanya"}, {"kanji": "行", "reading": "いく / こう", "meaning": "pergi"}, {"kanji": "来", "reading": "くる / らい", "meaning": "datang"}, {"kanji": "帰", "reading": "かえる / き", "meaning": "pulang"}, {"kanji": "食", "reading": "たべる / しょく", "meaning": "makan"}, {"kanji": "飲", "reading": "のむ / いん", "meaning": "minum"}, {"kanji": "買", "reading": "かう / ばい", "meaning": "membeli"}, {"kanji": "売", "reading": "うる / ばい", "meaning": "menjual"}, {"kanji": "休", "reading": "やすむ / きゅう", "meaning": "istirahat"}, {"kanji": "会", "reading": "あう / かい", "meaning": "bertemu"}], [{"kanji": "社", "reading": "しゃ", "meaning": "perusahaan"}, {"kanji": "病", "reading": "びょう", "meaning": "sakit"}, {"kanji": "院", "reading": "いん", "meaning": "institusi"}, {"kanji": "医", "reading": "い / いしゃ", "meaning": "dokter / medis"}, {"kanji": "物", "reading": "もの / ぶつ", "meaning": "benda"}, {"kanji": "魚", "reading": "さかな / ぎょ", "meaning": "ikan"}, {"kanji": "鳥", "reading": "とり / ちょう", "meaning": "burung"}, {"kanji": "花", "reading": "はな / か", "meaning": "bunga"}, {"kanji": "犬", "reading": "いぬ / けん", "meaning": "anjing"}, {"kanji": "猫", "reading": "ねこ", "meaning": "kucing"}]];
+const KEY = "kitsumiKanji120_v5";
+
+const DEFAULT_STATE = {
+  done: Array(120).fill(false),
+  xp: 0,
+  streak: 0,
+  lastStudy: "",
+  bestScore: 0,
+  quizDone: {}
+};
+
+let s = loadState();
+let selected = 1;
+let learningDay = 1;
+let learningPos = 0;
+let review = false;
+let quizMode = false;
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = false;
+let quizItems = [];
+
+function loadState(){
+  try{
+    const old = JSON.parse(localStorage.getItem(KEY) || "null");
+    if(old && Array.isArray(old.done) && old.done.length === 120) {
+      return {...DEFAULT_STATE, ...old};
+    }
+  }catch(e){}
+  // Migrate the older file's storage if present.
+  try{
+    const old = JSON.parse(localStorage.getItem("kitsumiKanji120Days") || "null");
+    if(old && Array.isArray(old.done) && old.done.length === 120) {
+      return {...DEFAULT_STATE, done: old.done, xp: Number(old.xp)||0};
+    }
+  }catch(e){}
+  return {...DEFAULT_STATE, done:Array(120).fill(false)};
+}
+
+function save(){
+  localStorage.setItem(KEY, JSON.stringify(s));
+}
+
+function countDay(d){
+  const a=(d-1)*10;
+  return s.done.slice(a,a+10).filter(Boolean).length;
+}
+
+function todayKey(){
+  const d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+function updateStreak(){
+  const today=todayKey();
+  if(s.lastStudy===today) return;
+  const last=s.lastStudy ? new Date(s.lastStudy+"T00:00:00") : null;
+  const now=new Date(today+"T00:00:00");
+  if(last){
+    const diff=Math.round((now-last)/86400000);
+    s.streak = diff===1 ? (s.streak||0)+1 : 1;
+  }else{
+    s.streak=1;
+  }
+  s.lastStudy=today;
+}
+
+function render(){
+  const total=s.done.filter(Boolean).length;
+  const xp=document.getElementById("xp");
+  const totalText=document.getElementById("totalText");
+  const totalBar=document.getElementById("totalBar");
+  if(xp) xp.textContent=s.xp;
+  if(totalText) totalText.textContent=total+" / 120 kanji";
+  if(totalBar) totalBar.style.width=(total/120*100)+"%";
+
+  for(let d=1;d<=12;d++){
+    const c=countDay(d);
+    const card=document.getElementById("day"+d);
+    const bar=document.getElementById("bar"+d);
+    const right=document.getElementById("right"+d);
+    if(!card) continue;
+    if(bar) bar.style.width=(c/10*100)+"%";
+    card.classList.toggle("complete",c===10);
+    card.classList.toggle("current",c<10 && (d===1 || countDay(d-1)===10));
+    card.classList.toggle("locked",d>1 && countDay(d-1)<10);
+    if(right) right.textContent=c===10?"✓":(d>1&&countDay(d-1)<10?"🔒":"›");
+  }
+}
+
+function openDay(d){
+  if(d>1 && countDay(d-1)<10){
+    alert("Selesaikan Day "+(d-1)+" terlebih dahulu 🦊");
+    return;
+  }
+  selected=d;
+  document.getElementById("modalTitle").textContent="Day "+d+" • 10 Kanji";
+  const grid=document.getElementById("grid");
+  grid.innerHTML="";
+  DAYS[d-1].forEach(x=>{
+    const div=document.createElement("div");
+    div.className="k-card";
+    div.innerHTML="<strong>"+x.kanji+"</strong><small>"+x.meaning+"</small>";
+    grid.appendChild(div);
+  });
+  document.getElementById("startBtn").onclick=()=>startPractice(d,false);
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+function startPractice(d,isReview){
+  selected=d;
+  learningDay=d;
+  learningPos=0;
+  review=!!isReview;
+  quizMode=false;
+  closeModal();
+  document.getElementById("learnScreen").style.display="block";
+  document.body.style.overflow="hidden";
+  document.getElementById("learnFinished").style.display="none";
+  document.getElementById("learnScreen").querySelector(".learn-wrap").classList.remove("quiz-active","finish-active");
+  document.getElementById("learnContent").style.display="block";
+  document.getElementById("quizContent").style.display="none";
+  showLearning();
+}
+
+function closeLearning(){
+  speechSynthesis?.cancel?.();
+  document.getElementById("learnScreen").style.display="none";
+  document.body.style.overflow="";
+  render();
+}
+
+
+/* ===== KANVAS LATIHAN MENGGORES ===== */
+let drawCanvas=null, drawCtx=null, drawing=false, lastX=0, lastY=0;
+
+function setupDrawing(){
+  drawCanvas=document.getElementById("drawCanvas");
+  if(!drawCanvas) return;
+  resizeDrawingCanvas();
+
+  drawCanvas.addEventListener("pointerdown",e=>{
+    e.preventDefault();
+    drawing=true;
+    drawCanvas.setPointerCapture?.(e.pointerId);
+    const p=drawPoint(e);
+    lastX=p.x; lastY=p.y;
+  });
+
+  drawCanvas.addEventListener("pointermove",e=>{
+    if(!drawing) return;
+    e.preventDefault();
+    const p=drawPoint(e);
+    drawCtx.beginPath();
+    drawCtx.moveTo(lastX,lastY);
+    drawCtx.lineTo(p.x,p.y);
+    drawCtx.stroke();
+    lastX=p.x; lastY=p.y;
+    const score=document.getElementById("drawScore");
+    if(score) score.textContent="Bagus! Terus ikuti bentuk Kanji ✍️";
+  });
+
+  const stop=e=>{
+    drawing=false;
+    if(e) e.preventDefault();
+  };
+  drawCanvas.addEventListener("pointerup",stop);
+  drawCanvas.addEventListener("pointercancel",stop);
+  drawCanvas.addEventListener("pointerleave",stop);
+  window.addEventListener("resize",resizeDrawingCanvas);
+}
+
+function resizeDrawingCanvas(){
+  if(!drawCanvas) return;
+  const rect=drawCanvas.getBoundingClientRect();
+  if(!rect.width || !rect.height) return;
+
+  const old=document.createElement("canvas");
+  old.width=drawCanvas.width;
+  old.height=drawCanvas.height;
+  if(drawCanvas.width && drawCanvas.height){
+    old.getContext("2d").drawImage(drawCanvas,0,0);
+  }
+
+  const ratio=Math.max(1,window.devicePixelRatio||1);
+  drawCanvas.width=Math.round(rect.width*ratio);
+  drawCanvas.height=Math.round(rect.height*ratio);
+  drawCtx=drawCanvas.getContext("2d");
+  drawCtx.setTransform(ratio,0,0,ratio,0,0);
+  drawCtx.lineWidth=5;
+  drawCtx.lineCap="round";
+  drawCtx.lineJoin="round";
+  drawCtx.strokeStyle="#2f5f91";
+
+  if(old.width && old.height){
+    drawCtx.drawImage(old,0,0,old.width,old.height,0,0,rect.width,rect.height);
+  }
+}
+
+function drawPoint(e){
+  const r=drawCanvas.getBoundingClientRect();
+  return {x:e.clientX-r.left,y:e.clientY-r.top};
+}
+
+function clearDrawing(){
+  if(!drawCanvas || !drawCtx) return;
+  const r=drawCanvas.getBoundingClientRect();
+  drawCtx.clearRect(0,0,r.width,r.height);
+  const score=document.getElementById("drawScore");
+  if(score) score.textContent="Coba tulis Kanji di atas dengan jari.";
+}
+
+function showGuide(){
+  const guide=document.getElementById("drawGuide");
+  if(!guide) return;
+  const hidden=guide.style.opacity==="0";
+  guide.style.opacity=hidden?".62":"0";
+}
+
+function updateDrawingGuide(){
+  const x=DAYS[learningDay-1][learningPos];
+  const guide=document.getElementById("drawGuide");
+  if(guide) guide.textContent=x.kanji;
+  clearDrawing();
+}
+
+function showLearning(){
+  const x=DAYS[learningDay-1][learningPos];
+  updateDrawingGuide();
+  document.getElementById("learnTitle").textContent="Day "+learningDay;
+  document.getElementById("learnNum").textContent="Kanji "+(learningPos+1)+" / 10";
+  document.getElementById("learnProgress").style.width=((learningPos+1)/10*100)+"%";
+  document.getElementById("learnKanji").textContent=x.kanji;
+  document.getElementById("learnReading").textContent=x.reading;
+  document.getElementById("learnMeaning").textContent=x.meaning;
+  document.getElementById("learnExample").textContent=x.example || ("Contoh: "+x.kanji+" を おぼえよう！");
+  document.getElementById("strokeFallback").textContent=x.kanji;
+  loadLearningStroke(x.kanji);
+  setTimeout(speakLearning,250);
+}
+
+async function loadLearningStroke(ch){
+  const svg=document.getElementById("learnStrokeSvg");
+  const fallback=document.getElementById("strokeFallback");
+  svg.innerHTML="";
+  fallback.style.display="block";
+  try{
+    const code=ch.codePointAt(0).toString(16).padStart(5,"0");
+    const res=await fetch("https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/"+code+".svg",{cache:"force-cache"});
+    if(!res.ok) throw new Error("no svg");
+    const text=await res.text();
+    const doc=new DOMParser().parseFromString(text,"image/svg+xml");
+    const paths=[...doc.querySelectorAll("path")].filter(p=>p.getAttribute("d"));
+    if(!paths.length) throw new Error("no path");
+    fallback.style.display="none";
+    paths.forEach((p,i)=>{
+      const q=document.createElementNS("http://www.w3.org/2000/svg","path");
+      q.setAttribute("d",p.getAttribute("d"));
+      q.style.strokeDasharray="1000";
+      q.style.strokeDashoffset="1000";
+      svg.appendChild(q);
+      requestAnimationFrame(()=>setTimeout(()=>{
+        q.style.transition="stroke-dashoffset .55s ease";
+        q.style.strokeDashoffset="0";
+      },i*500));
+    });
+  }catch(e){
+    fallback.style.display="block";
+  }
+}
+
+function speakLearning(){
+  const x=DAYS[learningDay-1][learningPos];
+  speakText(x.kanji,.78,1.08);
+}
+
+function speakText(text,rate=.85,pitch=1.08){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="ja-JP";
+  u.rate=rate;
+  u.pitch=pitch;
+  speechSynthesis.speak(u);
+}
+
+function finishOneLearning(){
+  const idx=(learningDay-1)*10+learningPos;
+  if(!review && !s.done[idx]){
+    s.done[idx]=true;
+    s.xp+=10;
+    updateStreak();
+    save();
+  }
+
+  if(learningPos<9){
+    learningPos++;
+    showLearning();
+    render();
+    return;
+  }
+
+  // After learning all 10, give the learner a real memory check.
+  document.getElementById("learnContent").style.display="none";
+  startQuiz(false);
+}
+
+function buildQuiz(){
+  const source=DAYS[learningDay-1];
+  const arr=source.map((x,i)=>({x,i}));
+  // Shuffle question order so each replay feels different.
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function startQuiz(fromReview){
+  quizMode=true;
+  quizIndex=0;
+  quizScore=0;
+  quizAnswered=false;
+  quizItems=buildQuiz();
+  document.getElementById("learnContent").style.display="none";
+  document.getElementById("learnFinished").style.display="none";
+  document.getElementById("learnScreen").querySelector(".learn-wrap").classList.add("quiz-active");
+  document.getElementById("quizContent").style.display="block";
+  showQuizQuestion();
+}
+
+function makeOptions(correct){
+  const pool=[];
+  DAYS.flat().forEach(x=>{
+    if(x.kanji!==correct.kanji && !pool.some(p=>p.kanji===x.kanji)) pool.push(x);
+  });
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]]=[pool[j],pool[i]];
+  }
+  const opts=[correct,...pool.slice(0,2)];
+  for(let i=opts.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [opts[i],opts[j]]=[opts[j],opts[i]];
+  }
+  return opts;
+}
+
+function showQuizQuestion(){
+  const item=quizItems[quizIndex].x;
+  document.getElementById("quizNum").textContent="Soal "+(quizIndex+1)+" / 10";
+  document.getElementById("quizProgress").style.width=((quizIndex+1)/10*100)+"%";
+  document.getElementById("quizPrompt").textContent="Pilih Kanji yang berarti:";
+  document.getElementById("quizMeaning").textContent=item.meaning;
+  document.getElementById("quizFeedback").textContent="";
+  document.getElementById("quizFeedback").className="quiz-feedback";
+  const box=document.getElementById("quizOptions");
+  box.innerHTML="";
+  makeOptions(item).forEach(opt=>{
+    const b=document.createElement("button");
+    b.className="quiz-option";
+    b.textContent=opt.kanji;
+    b.onclick=()=>answerQuiz(b,opt.kanji===item.kanji,item);
+    box.appendChild(b);
+  });
+}
+
+function answerQuiz(button,correct,item){
+  if(quizAnswered) return;
+  quizAnswered=true;
+  const buttons=[...document.querySelectorAll(".quiz-option")];
+  buttons.forEach(b=>b.disabled=true);
+  if(correct){
+    quizScore++;
+    button.classList.add("correct");
+    document.getElementById("quizFeedback").textContent="Benar! 🎉";
+    document.getElementById("quizFeedback").className="quiz-feedback good";
+    speakText(item.kanji);
+  }else{
+    button.classList.add("wrong");
+    const correctButton=buttons.find(b=>b.textContent===item.kanji);
+    if(correctButton) correctButton.classList.add("correct");
+    document.getElementById("quizFeedback").textContent="Belum tepat — jawaban: "+item.kanji;
+    document.getElementById("quizFeedback").className="quiz-feedback bad";
+    speakText(item.kanji);
+  }
+  setTimeout(()=>{
+    quizAnswered=false;
+    quizIndex++;
+    if(quizIndex<10) showQuizQuestion();
+    else finishQuiz();
+  },750);
+}
+
+
+function speakSuccess(){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance("Yey! Anda berhasil! Selamat!");
+  u.lang="id-ID";
+  u.rate=.88;
+  u.pitch=1.15;
+  speechSynthesis.speak(u);
+}
+
+function finishQuiz(){
+  document.getElementById("learnScreen").querySelector(".learn-wrap").classList.remove("quiz-active");
+  document.getElementById("learnScreen").querySelector(".learn-wrap").classList.add("finish-active");
+  document.getElementById("quizContent").style.display="none";
+  document.getElementById("learnFinished").style.display="block";
+  document.getElementById("learnScreen").querySelector(".learn-wrap").classList.add("finish-active");
+  const passed=quizScore>=7;
+  const already=s.quizDone[learningDay]===true;
+  if(!already){
+    s.quizDone[learningDay]=true;
+    const bonus=quizScore*5;
+    s.xp+=bonus;
+    if(quizScore>s.bestScore) s.bestScore=quizScore;
+    updateStreak();
+    save();
+  }
+  render();
+  document.getElementById("finishText").textContent=
+    "Quiz selesai: "+quizScore+"/10. "+
+    (already ? "XP bonus hari ini sudah diberikan." :
+     "Bonus +"+(quizScore*5)+" XP.")+
+    (passed ? " Mantap! 🦊" : " Ulangi lagi agar makin hafal.");
+  setTimeout(speakSuccess,180);
+}
+
+function reviewDay(){
+  startPractice(learningDay,true);
+}
+
+function retryQuiz(){
+  document.getElementById("learnFinished").style.display="none";
+  startQuiz(true);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setupDrawing();
+  const btn=document.getElementById("continueBtn");
+  if(btn) btn.addEventListener("click",e=>{
+    e.preventDefault();
+    finishOneLearning();
+  });
+  render();
+});
+</script>
+
+<!-- Learning interface -->
+<div class="learn-screen" id="learnScreen">
+  <div class="learn-wrap">
+    <div class="learn-top">
+      <button class="learn-back" onclick="closeLearning()">‹</button>
+      <div class="learn-title" id="learnTitle">Day 1</div>
+      <div class="learn-num" id="learnNum">Kanji 1 / 10</div>
+    </div>
+    <div class="learn-progress"><i id="learnProgress"></i></div>
+
+    <section class="learn-card" id="learnContent" aria-live="polite">
+      <div class="learn-label">Pelajari Kanji</div>
+      <div class="learn-kanji" id="learnKanji">日</div>
+      <div class="learn-reading" id="learnReading">ひ / にち</div>
+      <div class="learn-meaning" id="learnMeaning">hari, matahari</div>
+      <div class="learn-example" id="learnExample">日本（にほん）— Jepang</div>
+
+      <div class="learn-section">
+        <h3>✍️ Cara menulis</h3>
+        
+\1
+         <div class="stroke-box">
+           <span class="stroke-fallback" id="strokeFallback">日</span>
+           <svg id="learnStrokeSvg" viewBox="0 0 200 200"></svg>
+         </div>
+         <div class="learn-tip">Perhatikan urutan goresan yang berjalan otomatis. Pelajari bentuknya dulu, lalu coba tulis sendiri di bawah.</div>
+
+         <div class="practice-title">✍️ Latihan menggores sendiri</div>
+         <div class="draw-box" id="drawBox">
+           <div class="draw-guide" id="drawGuide">日</div>
+           <canvas id="drawCanvas"></canvas>
+           <div class="draw-hint">Ikuti bentuk Kanji dengan jari kamu</div>
+         </div>
+         <div class="draw-tools">
+           <button class="draw-tool" type="button" onclick="clearDrawing()">↻ Hapus goresan</button>
+           <button class="draw-tool" type="button" onclick="showGuide()">👁 Tampilkan panduan</button>
+         </div>
+         <div class="draw-score" id="drawScore">Coba tulis Kanji di atas dengan jari.</div>
+        <div class="learn-tip">Perhatikan urutan goresan yang berjalan otomatis. Pelajari bentuknya dulu, lalu lanjut ke Kanji berikutnya.</div>
+      </div>
+
+      <div class="learn-actions">
+        <button class="listen-btn" onclick="speakLearning()">🔊 Dengarkan</button>
+        <button type="button" class="continue-btn" id="continueBtn">Saya sudah belajar →</button>
+      </div>
+    </section>
+
+    
+<section class="quiz-card" id="quizContent" style="display:none" aria-live="polite">
+  <div class="quiz-head"><span>🧠 CEK INGATAN</span><span id="quizNum">Soal 1 / 10</span></div>
+  <div class="quiz-progress"><i id="quizProgress"></i></div>
+  <div class="quiz-prompt" id="quizPrompt">Pilih Kanji yang berarti:</div>
+  <div class="quiz-meaning" id="quizMeaning">satu</div>
+  <div class="quiz-options" id="quizOptions"></div>
+  <div class="quiz-feedback" id="quizFeedback"></div>
+</section>
+
+    <section class="learn-finished" id="learnFinished">
+      <div class="emoji">🎉</div>
+      <h2>Day selesai!</h2>
+      <p id="finishText">10 Kanji sudah dipelajari.</p>
+      <button class="review-btn" onclick="reviewDay()">↻ Ulangi 10 Kanji</button>
+      <button class="review-btn" style="background:#edf3f7;color:#516675;box-shadow:none" onclick="closeLearning()">Kembali ke daftar Day</button>
+    </section>
+  </div>
+</div>
+</body>
+</html>
