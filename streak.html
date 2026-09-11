@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Kitsumi — Streak Belajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#2f80ed; --blue2:#1769d3; --navy:#173b68; --text:#425466;
+  --muted:#7b8da1; --bg:#f7fbff; --card:#fff; --line:#e4edf6;
+  --green:#42b883; --orange:#ff9f1c; --red:#ef5b62; --purple:#8c63d9;
+  --shadow:0 10px 28px rgba(40,83,125,.10);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:linear-gradient(180deg,#eef7ff 0,#f9fcff 38%,#fff 100%);
+  color:var(--text); font-family:"Nunito",system-ui,sans-serif;
+}
+button{font:inherit}
+.app{width:min(900px,100%);margin:auto;padding:0 14px 105px}
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 4px 14px;background:#fff;position:sticky;top:0;z-index:20;margin:0 -14px 16px;padding-left:14px;padding-right:14px;border-bottom:1px solid #edf2f7}
+.back-btn{width:46px;height:46px;border:0;border-radius:15px;background:#eef6fc;color:#607991;font-size:31px;font-weight:900;line-height:1;display:grid;place-items:center;cursor:pointer}.back-btn:active{transform:scale(.96)}
+.logo{width:auto;height:auto;border:0;box-shadow:none;background:transparent;display:block;font-size:24px;font-weight:900;color:var(--navy);letter-spacing:-1px}.logo .pink{color:#ef6686}
+.topbar h1{margin:0;color:var(--navy);font-size:23px;font-weight:900}
+.topbar p{margin:2px 0 0;color:var(--muted);font-weight:700;font-size:13px}
+.card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);margin-bottom:15px}
+.hero{padding:25px 18px 20px;text-align:center}
+.flame{font-size:42px;line-height:1;margin-bottom:4px}
+.streak-number{font-size:70px;line-height:.95;color:#6f8499;font-weight:900;letter-spacing:-2px}
+.streak-number small{font-size:20px;letter-spacing:0;color:#7b8da1;font-weight:900}
+.status{
+  display:flex;justify-content:center;align-items:center;gap:7px;margin:18px auto 20px;
+  padding:12px 15px;border-radius:16px;background:#f6f9fd;font-weight:800;color:#53687d
+}
+.status.ok{color:#24815c;background:#effaf5}.status.missed{color:#bd5555;background:#fff3f3}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{border:1px solid var(--line);border-radius:18px;padding:14px 8px;background:#fbfdff}
+.stat b{display:block;font-size:28px;color:#70859a;font-weight:900}
+.stat span{font-size:13px;color:#7d8fa1;font-weight:800}
+.goal{margin-top:18px;text-align:left}
+.goal-row{display:flex;justify-content:space-between;font-weight:900;color:#5b6f83;font-size:14px;margin-bottom:8px}
+.progress{height:16px;border-radius:999px;background:#e9f0f7;overflow:hidden}
+.progress>div{height:100%;background:linear-gradient(90deg,#ffab24,#ff9518);border-radius:999px;transition:width .35s}
+.calendar-card{padding:19px 13px 16px}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 13px}.month{text-align:center;font-weight:900;color:#657b91;font-size:20px;margin:0;flex:1}.cal-btn{width:40px;height:40px;border:0;border-radius:13px;background:#f2f7fc;color:#557089;font-size:20px;font-weight:900;cursor:pointer}.cal-btn:active{transform:scale(.96)}.cal-btn:disabled{opacity:.35;cursor:not-allowed}.today-btn{display:block;margin:10px auto 0;border:0;background:#eaf4ff;color:#2f80ed;font-weight:900;padding:8px 14px;border-radius:999px;cursor:pointer}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:7px}
+.week div{text-align:center;font-size:12px;font-weight:900;color:#91a0af;padding:3px 0}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.day{
+  min-height:49px;border-radius:13px;background:#f4f8fb;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;position:relative;font-size:15px;font-weight:900;color:#667b90;
+  border:2px solid transparent;
+}
+.day.empty{background:transparent}
+.day.today{border-color:#69a6e9;color:#d38a13;background:#fff9ed}
+.day.active{background:#fff4dc;color:#657b91}
+.day.active.today{border-color:#69a6e9}.day.future{opacity:.55}
+.day .mini{font-size:13px;line-height:14px}
+.day .fire{position:absolute;right:5px;bottom:2px;font-size:13px}
+.tip{
+  padding:17px 18px;background:#f4f9ff;border:1px dashed #cbdff4;border-radius:20px;
+  color:#60758a;font-size:13px;font-weight:700;line-height:1.5
+}
+.footer{text-align:center;color:#98a6b4;font-size:12px;font-weight:700;margin-top:5px}
+
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:82px;background:rgba(255,255,255,.98);border-top:1px solid #e7edf4;box-shadow:0 -6px 20px rgba(36,72,108,.07);display:flex;justify-content:center;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-inner{width:min(900px,100%);display:grid;grid-template-columns:repeat(3,1fr);height:100%}
+.nav-item{border:0;background:transparent;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#a6b0ba;font-weight:900;font-size:13px;cursor:pointer}
+.nav-item .nav-icon{font-size:28px;line-height:1;filter:grayscale(.15)}
+.nav-item.active{color:#3184d8}.nav-item.active .nav-icon{transform:translateY(-1px)}
+@media(max-width:480px){
+  .app{padding:12px 10px 28px}.hero{padding:22px 12px 17px}
+  .streak-number{font-size:62px}.day{min-height:45px;border-radius:11px}.days,.week{gap:5px}
+  .rank-head{align-items:flex-start}.badge{font-size:11px;padding:7px 9px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <button class="back-btn" id="backBtn" aria-label="Kembali">‹</button>
+    <div class="logo">Kits<span class="pink">u</span>mi</div>
+  </header>
+
+  <section class="card hero">
+    <div class="flame">🔥</div>
+    <div class="streak-number" id="streakNumber">0 <small>hari</small></div>
+    <div class="status" id="status">📚 Belum ada aktivitas belajar hari ini</div>
+
+    <div class="stats">
+      <div class="stat"><b id="bestStreak">0</b><span>Streak terpanjang</span></div>
+      <div class="stat"><b id="totalDays">0</b><span>Total hari belajar</span></div>
+    </div>
+
+    <div class="goal">
+      <div class="goal-row"><span>Target <span id="goalDays">3</span> hari</span><span id="goalText">0/3</span></div>
+      <div class="progress"><div id="goalBar" style="width:0%"></div></div>
+    </div>
+  </section>
+
+  <section class="card calendar-card">
+    <div class="calendar-head">
+      <button class="cal-btn" id="prevMonth" aria-label="Bulan sebelumnya">‹</button>
+      <div class="month" id="monthTitle"></div>
+      <button class="cal-btn" id="nextMonth" aria-label="Bulan berikutnya">›</button>
+    </div>
+    <div class="week">
+      <div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div><div>Min</div>
+    </div>
+    <div class="days" id="calendar"></div>
+    <button class="today-btn" id="todayBtn">📍 Kembali ke bulan ini</button>
+  </section>
+
+  <div class="tip">💡 <b>Streak otomatis.</b> Kamu tidak perlu menekan tombol apa pun. Begitu salah satu materi Kitsumi mencatat aktivitas belajar hari ini, tanggal tersebut otomatis masuk ke kalender dan streak bertambah. Jika satu hari penuh terlewat, streak aktif kembali menjadi <b>0</b>. Sistem streak ini berdiri sendiri dan tidak memakai XP atau rank.</div>
+  <div class="footer">Kitsumi • Belajar Jepang dengan cara yang menyenangkan 🦊</div>
+</div>
+
+<nav class="bottom-nav" aria-label="Navigasi utama">
+  <div class="nav-inner">
+    <a class="nav-item" href="index.html">
+      <span class="nav-icon">🏠</span><span>Beranda</span>
+    </a>
+    <a class="nav-item" href="materi.html">
+      <span class="nav-icon">📖</span><span>Materi</span>
+    </a>
+    <a class="nav-item active" href="profil.html" aria-current="page">
+      <span class="nav-icon">♙</span><span>Profil</span>
+    </a>
+  </div>
+</nav>
+
+<script>
+/*
+  KITSUMI STREAK ENGINE
+  ------------------------------------------------------------
+  Sistem streak ini berdiri sendiri dan TIDAK menggunakan XP.
+
+  Dari halaman materi/quiz, panggil saja:
+      KitsumiProgress.recordActivity();
+
+  Satu tanggal hanya dihitung satu kali, walaupun pengguna
+  menyelesaikan banyak materi dalam hari yang sama.
+*/
+
+const ACTIVITY_KEY = "kitsumi_learning_dates";
+const TARGET_DAYS = 3;
+
+function pad(n){return String(n).padStart(2,"0")}
+function dateKey(d=new Date()){
+  return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+}
+function fromKey(key){
+  const [y,m,d]=key.split("-").map(Number);
+  return new Date(y,m-1,d);
+}
+function addDays(d,n){
+  const x=new Date(d); x.setDate(x.getDate()+n); return x;
+}
+function getDates(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||"[]");
+    return [...new Set(Array.isArray(raw)?raw.filter(x=>/^\\d{4}-\\d{2}-\\d{2}$/.test(x)):[])]
+      .sort();
+  }catch(e){return []}
+}
+function saveDates(arr){
+  localStorage.setItem(ACTIVITY_KEY, JSON.stringify([...new Set(arr)].sort()));
+}
+
+function migrateLegacyStreak(){
+  const dates=getDates();
+  if(dates.length) return;
+
+  const legacy=Math.max(
+    Number(localStorage.getItem("kitsumiStreak")||0),
+    Number(localStorage.getItem("kitsumi_streak")||0)
+  );
+
+  // Older versions stored only the number. We cannot reconstruct unknown
+  // previous dates, but if the old value says the user has an active streak,
+  // preserve that active state by recording today once.
+  if(legacy>0){
+    const today=dateKey();
+    saveDates([today]);
+  }
+}
+
+
+// Nilai ini menjadi jembatan bersama dengan index.html.
+// index.html cukup membaca localStorage key "kitsumi_streak".
+function syncStreakToIndex(streak){
+  localStorage.setItem("kitsumiStreak", String(streak));
+  // Alias lama tetap diperbarui agar kompatibel dengan versi sebelumnya.
+  localStorage.setItem("kitsumi_streak", String(streak));
+  localStorage.setItem("kitsumi_streak_updated", String(Date.now()));
+}
+window.KitsumiProgress = {
+  recordActivity(){
+    const today=dateKey();
+    const dates=getDates();
+    if(!dates.includes(today)){
+      dates.push(today);
+      saveDates(dates);
+    }
+    render();
+  }
+};
+
+function getStreak(dates){
+  if(!dates.length) return 0;
+  const set=new Set(dates), today=new Date();
+  const todayKey=dateKey(today);
+  if(!set.has(todayKey)) return 0;
+  let streak=0, cursor=new Date(today);
+  while(set.has(dateKey(cursor))){
+    streak++; cursor=addDays(cursor,-1);
+  }
+  return streak;
+}
+function getBestStreak(dates){
+  if(!dates.length)return 0;
+  const set=new Set(dates);
+  let best=0;
+  for(const key of dates){
+    const prev=addDays(fromKey(key),-1);
+    if(!set.has(dateKey(prev))){
+      let n=0,cur=fromKey(key);
+      while(set.has(dateKey(cur))){n++;cur=addDays(cur,1)}
+      best=Math.max(best,n);
+    }
+  }
+  return best;
+}
+function cleanupFutureDates(dates){
+  const today=dateKey();
+  return dates.filter(k=>k<=today);
+}
+let calendarCursor = new Date();
+calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth(), 1);
+
+function sameMonth(a,b){
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth();
+}
+function renderCalendar(){
+  const realToday=new Date();
+  const nowMonth=new Date(realToday.getFullYear(),realToday.getMonth(),1);
+  const year=calendarCursor.getFullYear(), month=calendarCursor.getMonth();
+  document.getElementById("monthTitle").textContent =
+    calendarCursor.toLocaleDateString("id-ID",{month:"long",year:"numeric"});
+
+  const cal=document.getElementById("calendar");
+  cal.innerHTML="";
+  const first=new Date(year,month,1);
+  const mondayIndex=first.getDay()===0?6:first.getDay()-1;
+  for(let i=0;i<mondayIndex;i++){
+    const e=document.createElement("div"); e.className="day empty"; cal.appendChild(e);
+  }
+
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const dates=new Set(getDates());
+  const todayKey=dateKey(realToday);
+  const isFutureMonth=calendarCursor>nowMonth;
+
+  for(let n=1;n<=daysInMonth;n++){
+    const d=new Date(year,month,n), key=dateKey(d);
+    const el=document.createElement("div");
+    el.className="day";
+    if(key===todayKey) el.classList.add("today");
+    if(d>realToday) el.classList.add("future");
+    if(dates.has(key)) el.classList.add("active");
+    el.innerHTML='<span class="mini">'+n+'</span>'+(dates.has(key)?'<span class="fire">🔥</span>':'');
+    cal.appendChild(el);
+  }
+
+  document.getElementById("prevMonth").disabled=false;
+  document.getElementById("nextMonth").disabled=isFutureMonth || sameMonth(calendarCursor,nowMonth);
+  document.getElementById("todayBtn").style.visibility=sameMonth(calendarCursor,nowMonth)?"hidden":"visible";
+}
+
+document.getElementById("prevMonth").addEventListener("click",()=>{
+  calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);
+  renderCalendar();
+});
+document.getElementById("nextMonth").addEventListener("click",()=>{
+  const now=new Date();
+  const next=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);
+  const current=new Date(now.getFullYear(),now.getMonth(),1);
+  if(next<=current){ calendarCursor=next; renderCalendar(); }
+});
+document.getElementById("todayBtn").addEventListener("click",()=>{
+  const now=new Date();
+  calendarCursor=new Date(now.getFullYear(),now.getMonth(),1);
+  renderCalendar();
+});
+
+function render(){
+  let dates=cleanupFutureDates(getDates());
+  saveDates(dates);
+  const streak=getStreak(dates), best=getBestStreak(dates);
+  syncStreakToIndex(streak);
+  const today=dateKey(), learnedToday=dates.includes(today);
+  document.getElementById("streakNumber").innerHTML=streak+' <small>hari</small>';
+  document.getElementById("bestStreak").textContent=best;
+  document.getElementById("totalDays").textContent=dates.length;
+
+  const status=document.getElementById("status");
+  status.className="status "+(learnedToday?"ok":"missed");
+  status.textContent=learnedToday
+    ? "✅ Kamu sudah belajar hari ini! Streak aman."
+    : "📚 Belum ada aktivitas belajar hari ini";
+
+  const goal=Math.min(streak,TARGET_DAYS);
+  document.getElementById("goalDays").textContent=TARGET_DAYS;
+  document.getElementById("goalText").textContent=goal+"/"+TARGET_DAYS;
+  document.getElementById("goalBar").style.width=((goal/TARGET_DAYS)*100)+"%";
+  renderCalendar();
+}
+
+document.getElementById("backBtn").addEventListener("click",()=>{
+  if(history.length>1) history.back();
+  else location.href="profil.html";
+});
+
+window.addEventListener("storage",render);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){migrateLegacyStreak();render()}});
+migrateLegacyStreak();
+render();
+</script>
+</body>
+</html>
